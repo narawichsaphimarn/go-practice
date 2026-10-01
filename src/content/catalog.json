@@ -3533,6 +3533,111 @@
           "answer": 1
         }
       ]
+    },
+    {
+      "id": "z01-finale",
+      "level": "expert",
+      "order": 42,
+      "title": {
+        "th": "โจทย์ปิดท้าย",
+        "en": "Final problems"
+      },
+      "goal": {
+        "th": "แก้ห้าปัญหาที่แต่ละข้อต้องประกอบความรู้จากหลายบท",
+        "en": "Solve five problems that each combine several lessons"
+      },
+      "exercises": [
+        {
+          "id": "1",
+          "difficulty": "capstone",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน Apply ให้ clamp N ของแต่ละ Item เข้าช่วง 1 ถึง 10 คืน error เมื่อชื่อว่าง และคืน nil เมื่อได้ nil",
+            "en": "Write Apply to clamp each Item N into 1 through 10, return an error for an empty name, and return nil for a nil slice"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\ntype Item struct {\n\tName string\n\tN    int\n}\n\nfunc Apply(items []Item) ([]Item, error) {\n\treturn nil, nil\n}\n",
+          "hint": {
+            "th": "ตรวจชื่อก่อน แล้วดึง N ที่ต่ำกว่า 1 ขึ้นมา และกด N ที่สูงกว่า 10 ลง",
+            "en": "Check the name first. Raise N when it is below 1 and lower N when it is above 10"
+          }
+        },
+        {
+          "id": "2",
+          "difficulty": "capstone",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน SumPositive ให้อ่าน JSON array ของฟิลด์ n จาก Reader รวมค่าที่ไม่มีฟิลด์เป็น 0 และห่อ ErrNegative เมื่อมีค่าติดลบ",
+            "en": "Write SumPositive to read a JSON array of n from a Reader, treat a missing n as 0, and wrap ErrNegative when a value is negative"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nimport (\n\t\"errors\"\n\t\"io\"\n)\n\nvar ErrNegative = errors.New(\"negative\")\n\nfunc SumPositive(r io.Reader) (int, error) {\n\treturn 0, nil\n}\n",
+          "hint": {
+            "th": "ถอด JSON ทั้งก้อน ถ้า n ติดลบให้ห่อ ErrNegative ด้วย %w ถ้า JSON พังให้คืน error นั้นตรงๆ",
+            "en": "Decode the whole JSON. Wrap ErrNegative with %w when n is negative. Return the decode error as it is when the JSON is broken"
+          }
+        },
+        {
+          "id": "3",
+          "difficulty": "capstone",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน RunAll ให้ทำงานพร้อมกันไม่เกิน limit นับงานที่สำเร็จกับงานที่คืน error และไม่เริ่มงานเมื่อ context จบแล้ว",
+            "en": "Write RunAll so at most limit jobs run at once, count successes and errors, and start nothing when the context has already ended"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nimport \"context\"\n\nfunc RunAll(ctx context.Context, limit int, jobs []func() error) (done int, failed int) {\n\treturn 0, 0\n}\n",
+          "hint": {
+            "th": "ถ้า context จบแล้วให้คืนทันที ที่เหลือจองที่ว่างเท่า limit แล้วรอให้ทุกงานที่เริ่มแล้วจบก่อนคืนผลนับ",
+            "en": "Return immediately when the context has ended. Otherwise reserve only limit slots and wait for every started job before returning the counts"
+          }
+        },
+        {
+          "id": "4",
+          "difficulty": "capstone",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน Handle ให้รับ POST ที่เป็น JSON ของ host กับ port ตอบที่อยู่จาก net.JoinHostPort พร้อม log ระดับ Info method อื่นตอบ 405 พร้อม log ระดับ Warn และ JSON ที่พังตอบ 400",
+            "en": "Write Handle to accept a POST JSON host and port, respond with net.JoinHostPort, log Info, answer 405 with a Warn log for any other method, and answer 400 for broken JSON"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nimport (\n\t\"io\"\n\t\"net/http\"\n)\n\nfunc Handle(w http.ResponseWriter, r *http.Request, log io.Writer) {\n}\n",
+          "hint": {
+            "th": "แยก method ก่อนถอด JSON แล้วส่ง host กับ port เข้า JoinHostPort อย่าต่อสตริงเอง",
+            "en": "Branch on the method before decoding JSON, then pass host and port to JoinHostPort. Do not join the strings yourself"
+          }
+        },
+        {
+          "id": "5",
+          "difficulty": "capstone",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน Collect ให้เรียก Speak ทีละตัว เก็บข้อความที่สำเร็จ นับตัวที่ panic หรือเป็น nil แล้วไปต่อตัวที่เหลือโดยที่ฟังก์ชันเองไม่ panic",
+            "en": "Write Collect to call Speak one item at a time, keep the successful text, count panics and nils, and continue without Collect itself panicking"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\ntype Speaker interface {\n\tSpeak() string\n}\n\nfunc Collect(items []Speaker) (said []string, panicked int) {\n\treturn nil, 0\n}\n",
+          "hint": {
+            "th": "ตรวจ nil ก่อนเรียก และใส่ recover ไว้ในฟังก์ชันย่อยที่เรียก Speak ทีละตัว",
+            "en": "Check nil before the call, and recover inside a helper that calls Speak for one item"
+          }
+        }
+      ]
     }
   ]
 }

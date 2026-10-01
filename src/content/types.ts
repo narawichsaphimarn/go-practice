@@ -2,6 +2,7 @@ import {
   EXERCISE_EASY,
   EXERCISE_HARD,
   EXERCISE_MID,
+  EXERCISE_CAPSTONE,
   EXERCISE_TWIST,
   LEVEL_ADVANCED,
   LEVEL_BEGINNER,
@@ -61,7 +62,7 @@ export function pointsFor(difficulty: string): number {
   if (difficulty === EXERCISE_HARD) {
     return 3;
   }
-  if (difficulty === EXERCISE_TWIST) {
+  if (difficulty === EXERCISE_TWIST || difficulty === EXERCISE_CAPSTONE) {
     return 1;
   }
   return 0;

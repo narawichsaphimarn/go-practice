@@ -73,7 +73,7 @@ function publishLesson(lesson, hints) {
 function publishExercise(exercise, keptHint) {
   const published = {
     id: exercise.id,
-    difficulty: exercise.id,
+    difficulty: exercise.difficulty ?? exercise.id,
     kind: exercise.kind,
     prompt: exercise.prompt,
     rule: exercise.rule,

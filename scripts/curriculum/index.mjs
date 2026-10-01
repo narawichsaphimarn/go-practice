@@ -3,5 +3,6 @@ import { advanced } from "./advanced.mjs";
 import { advancedRest } from "./advanced-rest.mjs";
 import { professional } from "./professional.mjs";
 import { expert } from "./expert.mjs";
+import { finale } from "./finale.mjs";
 
-export const lessons = [...beginner, ...advanced, ...advancedRest, ...professional, ...expert];
+export const lessons = [...beginner, ...advanced, ...advancedRest, ...professional, ...expert, finale];

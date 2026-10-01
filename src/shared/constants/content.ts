@@ -10,6 +10,7 @@ export const EXERCISE_EASY = "easy";
 export const EXERCISE_MID = "mid";
 export const EXERCISE_HARD = "hard";
 export const EXERCISE_TWIST = "twist";
+export const EXERCISE_CAPSTONE = "capstone";
 
 export const KIND_STDOUT = "stdout";
 export const KIND_TEST = "test";
