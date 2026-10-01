@@ -21,6 +21,7 @@ export const messagesEn = {
     hardCase: "Hard case",
     toExercise: "Go to exercise",
     question: "Question",
+    twist: "Twist",
     rule: "Rule",
     format: "Format",
     vet: "Vet",

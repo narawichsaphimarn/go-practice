@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Editor from "@monaco-editor/react";
 import { lessonById, textOf } from "../../../content/load.ts";
-import type { ExerciseSpec, LessonSpec } from "../../../content/types.ts";
+import { exerciseLabel, type ExerciseSpec, type LessonSpec } from "../../../content/types.ts";
 import { usePreferences } from "../../preferences/components/usePreferences.ts";
 import { useProgress } from "../../progress/components/useProgress.ts";
 import {
@@ -20,6 +20,7 @@ import {
   I18N_OUTPUT,
   I18N_PASSED,
   I18N_QUESTION,
+  I18N_TWIST,
   I18N_RUN,
   I18N_UNAVAILABLE,
   I18N_VET,
@@ -115,7 +116,7 @@ function PracticeEditor({ lesson, exercise }: { lesson: LessonSpec; exercise: Ex
       <div className="practice-grid">
         <section>
           <h1>
-            {t(I18N_QUESTION)} {exercise.id}
+            {t(I18N_QUESTION)} {exerciseLabel(exercise.id, t(I18N_TWIST))}
           </h1>
           <p>{textOf(exercise.prompt, locale)}</p>
           <p>{textOf(exercise.rule, locale)}</p>

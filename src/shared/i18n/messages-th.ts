@@ -21,6 +21,7 @@ export const messagesTh = {
     hardCase: "เคสยาก",
     toExercise: "ไปแบบฝึก",
     question: "โจทย์",
+    twist: "พิเศษ",
     rule: "กติกา",
     format: "จัดรูปแบบ",
     vet: "ตรวจ vet",

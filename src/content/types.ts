@@ -2,6 +2,7 @@ import {
   EXERCISE_EASY,
   EXERCISE_HARD,
   EXERCISE_MID,
+  EXERCISE_TWIST,
   LEVEL_ADVANCED,
   LEVEL_BEGINNER,
   LEVEL_EXPERT,
@@ -60,5 +61,15 @@ export function pointsFor(difficulty: string): number {
   if (difficulty === EXERCISE_HARD) {
     return 3;
   }
+  if (difficulty === EXERCISE_TWIST) {
+    return 1;
+  }
   return 0;
+}
+
+export function exerciseLabel(id: string, twistLabel: string): string {
+  if (id === EXERCISE_TWIST) {
+    return twistLabel;
+  }
+  return id;
 }

@@ -9,6 +9,7 @@ export const LEVEL_EXPERT = "expert";
 export const EXERCISE_EASY = "easy";
 export const EXERCISE_MID = "mid";
 export const EXERCISE_HARD = "hard";
+export const EXERCISE_TWIST = "twist";
 
 export const KIND_STDOUT = "stdout";
 export const KIND_TEST = "test";
@@ -40,6 +41,7 @@ export const I18N_EASY_CASE = "shell.easyCase";
 export const I18N_HARD_CASE = "shell.hardCase";
 export const I18N_TO_EXERCISE = "shell.toExercise";
 export const I18N_QUESTION = "shell.question";
+export const I18N_TWIST = "shell.twist";
 export const I18N_RULE = "shell.rule";
 export const I18N_FORMAT = "shell.format";
 export const I18N_VET = "shell.vet";

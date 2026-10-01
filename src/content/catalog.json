@@ -66,6 +66,24 @@
             "th": "พิมพ์บรรทัดเดียวที่ประกอบ sum= กับผลของ 1+2",
             "en": "Print one line that joins sum= with the result of 1+2"
           }
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "stdout",
+          "prompt": {
+            "th": "ต่อข้อความ go กับ 1.25 ด้วยขีดกลาง แล้วพิมพ์บรรทัดเดียว",
+            "en": "Join the text go and 1.25 with a hyphen and print one line"
+          },
+          "rule": {
+            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
+            "en": "Printed output must match every character, including the final newline"
+          },
+          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
+          "hint": {
+            "th": "ต่อข้อความสองค่าด้วยขีดกลาง แล้วพิมพ์บรรทัดเดียว",
+            "en": "Join two text values with a hyphen and print one line"
+          }
         }
       ]
     },
@@ -134,6 +152,24 @@
           "hint": {
             "th": "ประกาศตัวแปร bool โดยไม่ใส่ค่า แล้วพิมพ์ตัวแปรนั้น",
             "en": "Declare a bool with no value, then print that variable"
+          }
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "stdout",
+          "prompt": {
+            "th": "พิมพ์ zero value ของ int ติดกับสตริง go เป็น 0go",
+            "en": "Print the zero value of an int next to the string go as 0go"
+          },
+          "rule": {
+            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
+            "en": "Printed output must match every character, including the final newline"
+          },
+          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
+          "hint": {
+            "th": "พิมพ์ตัวเลขศูนย์กับสตริงในบรรทัดเดียวกัน",
+            "en": "Print the zero and the string on the same line"
           }
         }
       ]
@@ -204,6 +240,24 @@
             "th": "ใช้ switch ที่ case ของ day เท่ากับ 1 แล้วพิมพ์ monday",
             "en": "Use a switch whose case is day equal to 1, then print monday"
           }
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "stdout",
+          "prompt": {
+            "th": "วนจาก 3 ลงมา 1 แล้วพิมพ์ 321 โดยไม่มีช่องว่าง",
+            "en": "Loop from 3 down to 1 and print 321 with no spaces"
+          },
+          "rule": {
+            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
+            "en": "Printed output must match every character, including the final newline"
+          },
+          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
+          "hint": {
+            "th": "ให้ลูปนับถอยหลัง และใช้ Print เพื่อไม่เว้นบรรทัด",
+            "en": "Count downward and use Print so the digits stay on one line"
+          }
         }
       ]
     },
@@ -272,6 +326,24 @@
           "hint": {
             "th": "เมื่อตัวหารเป็นศูนย์ให้พิมพ์คำว่า error แทนผลหาร",
             "en": "When the divisor is zero, print the word error instead of a quotient"
+          }
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "stdout",
+          "prompt": {
+            "th": "เขียน clamp แล้วพิมพ์ผลของ clamp(10, 0, 3)",
+            "en": "Write clamp and print the result of clamp(10, 0, 3)"
+          },
+          "rule": {
+            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
+            "en": "Printed output must match every character, including the final newline"
+          },
+          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
+          "hint": {
+            "th": "ถ้าค่าสูงกว่าเพดานให้คืนเพดาน ถ้าต่ำกว่าพื้นให้คืนพื้น",
+            "en": "Return the ceiling when the value is above it, and the floor when it is below"
           }
         }
       ]
@@ -342,6 +414,24 @@
             "th": "ถ้า slice ว่างให้คืน 0 ไม่เช่นนั้นคืนตัวที่ดัชนีสุดท้าย",
             "en": "Return 0 when the slice is empty, otherwise return the last index"
           }
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน Index ให้คืนตำแหน่งแรกของค่า หรือ -1 เมื่อไม่มี",
+            "en": "Write Index to return the first position of the value, or -1 when it is missing"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nfunc Index(values []int, target int) int {\n\treturn 0\n}\n",
+          "hint": {
+            "th": "เดิน slice จนเจอค่า ถ้าไม่เจอหรือว่างให้คืน -1",
+            "en": "Walk the slice until you find the value. Return -1 when it is missing or the slice is empty"
+          }
         }
       ]
     },
@@ -410,6 +500,24 @@
           "hint": {
             "th": "ตั้งฟิลด์ Name ผ่าน pointer receiver",
             "en": "Set the Name field through the pointer receiver"
+          }
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน Shrink บน *Rect ให้ลบ n จาก W และ H แต่ไม่ต่ำกว่า 0",
+            "en": "Write Shrink on *Rect to subtract n from W and H, but not below 0"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\ntype Rect struct {\n\tW int\n\tH int\n}\n\nfunc (r *Rect) Shrink(n int) {\n}\n",
+          "hint": {
+            "th": "ลบ n ออกจากทั้งสองฟิลด์ แล้วกันไม่ให้ติดลบ",
+            "en": "Subtract n from both fields and keep them from going below zero"
           }
         }
       ]
@@ -480,6 +588,24 @@
             "th": "ตั้งฟิลด์ Name บนค่าที่ pointer ชี้อยู่",
             "en": "Set the Name field on the value the pointer points at"
           }
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน Add ให้บวก delta ผ่าน pointer รวมกรณีที่ delta ติดลบ",
+            "en": "Write Add to add delta through a pointer, including a negative delta"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nfunc Add(n *int, delta int) {\n}\n",
+          "hint": {
+            "th": "บวก delta เข้าค่าที่ pointer ชี้อยู่ delta ติดลบได้",
+            "en": "Add delta through the pointer. Delta may be negative"
+          }
         }
       ]
     },
@@ -548,6 +674,24 @@
           "hint": {
             "th": "ถ้าสตริงว่างให้คืน error ถ้าไม่ว่างให้คืน nil",
             "en": "Return an error when the string is empty, and nil otherwise"
+          }
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน Between ให้คืน error เมื่อค่านอกช่วงปิด และคืนตัวเลขเมื่ออยู่ในช่วง",
+            "en": "Write Between to return an error when the value is outside the closed range, and the number when it is inside"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nfunc Between(n, low, high int) (int, error) {\n\treturn 0, nil\n}\n",
+          "hint": {
+            "th": "คืน error เมื่อค่าต่ำกว่า low หรือสูงกว่า high และคืนตัวเลขเมื่ออยู่ในช่วง",
+            "en": "Return an error when the value is below low or above high, and return the number when it is inside"
           }
         }
       ]
@@ -618,6 +762,24 @@
             "th": "คืนสตริง 1.25 จากฟังก์ชัน",
             "en": "Return the string 1.25 from the function"
           }
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน Label ให้คืนภาษา เว้นวรรค แล้วรุ่น เช่น go 1.25",
+            "en": "Write Label to return the language, a space, then the version, such as go 1.25"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nfunc Label(lang, version string) string {\n\treturn \"\"\n}\n",
+          "hint": {
+            "th": "คืนภาษา เว้นวรรค แล้วรุ่น",
+            "en": "Return the language, a space, then the version"
+          }
         }
       ]
     },
@@ -687,6 +849,24 @@
             "th": "ใน defer ให้เรียก recover แล้วตั้งค่าคืนเป็น true จากนั้นค่อย panic",
             "en": "In defer, call recover and set the result to true, then panic"
           }
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน Mark ให้ใช้ defer สองตัวเติมตัวอักษร แล้วคืน abc",
+            "en": "Write Mark to use two defers to append letters and return abc"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nfunc Mark() (s string) {\n\treturn \"\"\n}\n",
+          "hint": {
+            "th": "defer ที่ประกาศทีหลังทำงานก่อน เลยได้ a แล้ว b แล้ว c",
+            "en": "The defer you register later runs first, so the letters come out a, then b, then c"
+          }
         }
       ]
     },
@@ -744,6 +924,24 @@
             "en": "The function must pass the hidden tests"
           },
           "starter": "package main\n\ntype Speaker interface {\n\tSpeak() string\n}\n\ntype Dog struct{}\n\nfunc (Dog) Speak() string {\n\treturn \"woof\"\n}\n\nfunc Announce(s Speaker) string {\n\treturn \"\"\n}\n"
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน Louder ให้รับ Speaker แล้วคืนคำพูดต่อด้วย !",
+            "en": "Write Louder to accept a Speaker and return the speech plus !"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\ntype Speaker interface {\n\tSpeak() string\n}\n\ntype Cow struct{}\n\nfunc (Cow) Speak() string {\n\treturn \"moo\"\n}\n\nfunc Louder(s Speaker) string {\n\treturn \"\"\n}\n",
+          "hint": {
+            "th": "เรียก Speak แล้วต่อเครื่องหมายตกใจ",
+            "en": "Call Speak and append an exclamation mark"
+          }
         }
       ]
     },
@@ -801,6 +999,24 @@
             "en": "The function must pass the hidden tests"
           },
           "starter": "package main\n\nfunc Map[T any, U any](in []T, f func(T) U) []U {\n\treturn nil\n}\n"
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน Filter ให้คัดสมาชิกที่ฟังก์ชันเก็บไว้ รวม slice ว่าง",
+            "en": "Write Filter to keep the items the function accepts, including an empty slice"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nfunc Filter[T any](in []T, keep func(T) bool) []T {\n\treturn nil\n}\n",
+          "hint": {
+            "th": "สร้าง slice ใหม่เฉพาะสมาชิกที่ keep คืน true รวมกรณีว่าง",
+            "en": "Build a new slice of items keep accepts, including an empty input"
+          }
         }
       ]
     },
@@ -858,6 +1074,24 @@
             "en": "The function must pass the hidden tests"
           },
           "starter": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n)\n\nvar ErrBoom = errors.New(\"boom\")\n\nfunc HasBoom(err error) bool {\n\treturn false\n}\n\nfunc sample() error {\n\treturn fmt.Errorf(\"wrap: %w\", ErrBoom)\n}\n"
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน CodeOr ให้ดึง Code จาก CodeError ที่ถูกห่อสองชั้น ไม่งั้นคืนค่าสำรอง",
+            "en": "Write CodeOr to read Code from a CodeError wrapped twice, or return the fallback"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\ntype CodeError struct {\n\tCode int\n}\n\nfunc (e CodeError) Error() string {\n\treturn \"code\"\n}\n\nfunc CodeOr(err error, fallback int) int {\n\treturn 0\n}\n",
+          "hint": {
+            "th": "ใช้ errors.As ไล่สาย error ที่ห่อไว้ ถ้าไม่เจอให้คืนค่าสำรอง",
+            "en": "Use errors.As to walk the wrapped chain. Return the fallback when it is not there"
+          }
         }
       ]
     },
@@ -915,6 +1149,24 @@
             "en": "The function must pass the hidden tests"
           },
           "starter": "package main\n\nimport \"io\"\n\nfunc Count(r io.Reader) (int, error) {\n\treturn 0, nil\n}\n"
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน Head ให้อ่านได้ไม่เกิน n ไบต์ รวมกรณี n เป็น 0",
+            "en": "Write Head to read at most n bytes, including when n is 0"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nimport \"io\"\n\nfunc Head(r io.Reader, n int) (string, error) {\n\treturn \"\", nil\n}\n",
+          "hint": {
+            "th": "อ่านได้ไม่เกิน n ไบต์ เมื่อ n เป็น 0 ให้คืนสตริงว่าง",
+            "en": "Read at most n bytes. When n is 0, return an empty string"
+          }
         }
       ]
     },
@@ -972,6 +1224,24 @@
             "en": "The function must pass the hidden tests"
           },
           "starter": "package main\n\nfunc DecodeName(data []byte) (string, error) {\n\treturn \"x\", nil\n}\n"
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน SumAges ให้รวมฟิลด์ age จาก JSON array และนับวัตถุที่ไม่มีฟิลด์นั้นเป็น 0",
+            "en": "Write SumAges to add the age fields in a JSON array and count a missing age as 0"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nfunc SumAges(data []byte) (int, error) {\n\treturn 0, nil\n}\n",
+          "hint": {
+            "th": "ถอด JSON เป็น slice ของ struct แล้วบวก age ที่หายให้เป็น 0",
+            "en": "Unmarshal into a slice of structs and treat a missing age as 0"
+          }
         }
       ]
     },
@@ -1029,6 +1299,24 @@
             "en": "The function must pass the hidden tests"
           },
           "starter": "package main\n\nfunc WaitBoth() int {\n\treturn 0\n}\n"
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน CountAsync ให้ goroutine n ตัวส่ง 1 แล้วรวมผล",
+            "en": "Write CountAsync so n goroutines each send 1 and you add the results"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nfunc CountAsync(n int) int {\n\treturn 0\n}\n",
+          "hint": {
+            "th": "เปิด n goroutine ให้แต่ละตัวส่ง 1 แล้วรวม",
+            "en": "Start n goroutines, have each send 1, then add the results"
+          }
         }
       ]
     },
@@ -1086,6 +1374,24 @@
             "en": "The function must pass the hidden tests"
           },
           "starter": "package main\n\nfunc First(ch <-chan int) int {\n\treturn 0\n}\n"
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน Drain ให้รวมค่าจาก channel ที่ผู้เรียกปิดแล้ว รวม channel ปิดที่ว่าง",
+            "en": "Write Drain to sum a channel the caller already closed, including a closed empty channel"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nfunc Drain(ch <-chan int) int {\n\treturn 0\n}\n",
+          "hint": {
+            "th": "range บน channel จนมันถูกปิด channel ปิดที่ว่างรวมได้ 0",
+            "en": "Range the channel until it is closed. A closed empty channel sums to 0"
+          }
         }
       ]
     },
@@ -1143,6 +1449,24 @@
             "en": "The function must pass the hidden tests"
           },
           "starter": "package main\n\nimport \"time\"\n\nfunc OrTimeout(ch <-chan int) int {\n\treturn 0\n}\n"
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน FirstOr ให้คืนค่าที่พร้อมก่อน หรือค่าสำรองทันทีเมื่อไม่มี channel ไหนพร้อม",
+            "en": "Write FirstOr to return the value that is ready first, or the fallback immediately when neither channel is ready"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nfunc FirstOr(a, b <-chan int, fallback int) int {\n\treturn 0\n}\n",
+          "hint": {
+            "th": "ใช้ select รับค่าที่พร้อม หรือ default เมื่อไม่มีใครพร้อม",
+            "en": "Use select to take a ready value, or default when neither channel is ready"
+          }
         }
       ]
     },
@@ -1200,6 +1524,24 @@
             "en": "The function must pass the hidden tests"
           },
           "starter": "package main\n\nimport \"context\"\n\nfunc Wait(ctx context.Context) error {\n\treturn nil\n}\n"
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน Value ให้คืนตัวเลขเมื่อ context ยังทำงาน และคืน ctx.Err() เมื่อจบแล้ว",
+            "en": "Write Value to return the number while the context is active, and ctx.Err() when it has ended"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nimport \"context\"\n\nfunc Value(ctx context.Context, n int) (int, error) {\n\treturn 0, nil\n}\n",
+          "hint": {
+            "th": "ถ้า context จบแล้วให้คืน 0 กับ ctx.Err() ไม่งั้นคืนตัวเลขกับ nil",
+            "en": "When the context has ended, return 0 and ctx.Err. Otherwise return the number and nil"
+          }
         }
       ]
     },
@@ -1257,6 +1599,24 @@
             "en": "The function must pass the hidden tests"
           },
           "starter": "package main\n\nfunc Sign(n int) int {\n\treturn 2\n}\n"
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน Clamp ให้จำกัดค่าในช่วงปิด ทั้งค่าในขอบและนอกขอบ",
+            "en": "Write Clamp to limit a value to a closed range, both on the boundary and outside it"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nfunc Clamp(n, low, high int) int {\n\treturn n\n}\n",
+          "hint": {
+            "th": "ถ้าต่ำกว่า low ให้คืน low ถ้าสูงกว่า high ให้คืน high ค่าที่เท่าขอบอยู่ได้",
+            "en": "Return low when the value is below it and high when it is above. A value on the boundary stays"
+          }
         }
       ]
     },
@@ -1416,6 +1776,24 @@
             "en": "The function must pass the hidden tests"
           },
           "starter": "package main\n\nfunc Run(limit int, jobs []func()) {\n}\n"
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน ErrCount ให้นับงานที่คืน error โดยทำงานพร้อมกันไม่เกิน limit",
+            "en": "Write ErrCount to count jobs that return an error, with at most limit running at once"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nfunc ErrCount(limit int, jobs []func() error) int {\n\treturn 0\n}\n",
+          "hint": {
+            "th": "นับเฉพาะงานที่คืน error และอย่าให้ทำงานพร้อมกันเกิน limit",
+            "en": "Count only jobs that return an error, and do not let more than limit run at once"
+          }
         }
       ]
     },
@@ -1473,6 +1851,24 @@
             "en": "The function must pass the hidden tests"
           },
           "starter": "package main\n\nimport \"sync\"\n\nfunc FanIn(n int) int {\n\tvar wg sync.WaitGroup\n\tfor i := 0; i < n; i++ {\n\t\tgo func() {\n\t\t\twg.Add(1)\n\t\t\twg.Done()\n\t\t}()\n\t}\n\twg.Wait()\n\treturn 0\n}\n"
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน Sum ให้แต่ละ goroutine บวกเลขดัชนีของตัวเองอย่างปลอดภัย ผลของ 4 คือ 6",
+            "en": "Write Sum so each goroutine safely adds its own index. Sum(4) is 6"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nfunc Sum(n int) int {\n\treturn 0\n}\n",
+          "hint": {
+            "th": "แต่ละ goroutine บวกดัชนีของตัวเอง แล้วรอให้ครบก่อนคืนผลรวม",
+            "en": "Each goroutine adds its own index, and you wait for all of them before returning the sum"
+          }
         }
       ]
     },
@@ -1530,6 +1926,24 @@
             "en": "The function must pass the hidden tests"
           },
           "starter": "package main\n\nimport \"context\"\n\nfunc Wait(ctx context.Context) error {\n\treturn nil\n}\n"
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน Remain ให้นับรอบที่ทำได้ก่อน context จบ context ที่จบแล้วได้ 0",
+            "en": "Write Remain to count rounds finished before the context ends. An ended context returns 0"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nimport \"context\"\n\nfunc Remain(ctx context.Context, n int) int {\n\treturn 0\n}\n",
+          "hint": {
+            "th": "ถ้า context จบแล้วอย่าเริ่มรอบ ถ้ายังทำงานให้นับครบ n",
+            "en": "If the context has ended, do not start a round. If it is still active, count all n rounds"
+          }
         }
       ]
     },
@@ -1587,6 +2001,24 @@
             "en": "The function must pass the hidden tests"
           },
           "starter": "package main\n\nimport \"net/http\"\n\nfunc WriteOK(w http.ResponseWriter) {\n}\n"
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน Allow ให้คืน 200 เมื่อ method อยู่ในรายการ และ 405 เมื่อไม่อยู่",
+            "en": "Write Allow to return 200 when the method is in the list and 405 when it is not"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nimport \"net/http\"\n\nfunc Allow(r *http.Request, methods ...string) int {\n\treturn 0\n}\n",
+          "hint": {
+            "th": "คืน 200 เมื่อ method ตรงกับรายการ และ 405 เมื่อไม่ตรง",
+            "en": "Return 200 when the method is in the list and 405 when it is not"
+          }
         }
       ]
     },
@@ -1644,6 +2076,24 @@
             "en": "The function must pass the hidden tests"
           },
           "starter": "package main\n\nfunc AfterTick() bool {\n\treturn false\n}\n"
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน Ticks ให้นอน 500 มิลลิวินาทีสามครั้งแล้วคืน 3",
+            "en": "Write Ticks to sleep for 500 milliseconds three times and return 3"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nfunc Ticks() int {\n\treturn 0\n}\n",
+          "hint": {
+            "th": "นอนครึ่งวินาทีสามครั้งในฟังก์ชัน แล้วคืน 3",
+            "en": "Sleep for half a second three times inside the function, then return 3"
+          }
         }
       ]
     },
@@ -1791,6 +2241,24 @@
           "starter": "package main\n\nfunc V6() string {\n\treturn \"\"\n}\n"
         },
         {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน Join ให้ใช้ net.JoinHostPort กับ host และ port ที่ส่งเข้า",
+            "en": "Write Join to pass the given host and port to net.JoinHostPort"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nfunc Join(host, port string) string {\n\treturn \"\"\n}\n",
+          "hint": {
+            "th": "ส่ง host กับ port เข้า net.JoinHostPort อย่าต่อสตริงเอง",
+            "en": "Pass host and port to net.JoinHostPort. Do not join the strings yourself"
+          }
+        },
+        {
           "id": "hard",
           "difficulty": "hard",
           "kind": "quiz",
@@ -1875,6 +2343,24 @@
             "en": "The function must pass the hidden tests"
           },
           "starter": "package main\n\nimport \"io\"\n\nfunc WithUser(w io.Writer, user, msg string) {\n}\n"
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน InfoPair ให้บันทึกระดับ Info พร้อม attribute left และ right และข้อความ pair",
+            "en": "Write InfoPair to log at Info with attributes left and right and the message pair"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nimport \"io\"\n\nfunc InfoPair(w io.Writer, left, right string) {\n}\n",
+          "hint": {
+            "th": "ใช้ slog ระดับ Info และใส่ attribute สองตัวชื่อ left กับ right",
+            "en": "Use slog at Info and attach two attributes named left and right"
+          }
         }
       ]
     },
@@ -1932,6 +2418,24 @@
             "en": "The function must pass the hidden tests"
           },
           "starter": "package main\n\nfunc At[T any](items []T, index int) (T, bool) {\n\tvar zero T\n\treturn zero, false\n}\n"
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน NonZero ให้คืน slice ที่ตัด zero value ออก ทั้งตัวเลขและสตริง",
+            "en": "Write NonZero to return the slice with zero values removed, for both numbers and strings"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nfunc NonZero[T comparable](items []T) []T {\n\treturn nil\n}\n",
+          "hint": {
+            "th": "ตัดค่าที่เป็น zero value ของชนิดนั้นออก ทั้ง 0 และสตริงว่าง",
+            "en": "Drop values that are the zero value of the type, both 0 and the empty string"
+          }
         }
       ]
     },
@@ -2499,6 +3003,24 @@
             "en": "The program must panic on a nil pointer. It still runs from the editor"
           },
           "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"ok\")\n}\n"
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "stdout",
+          "prompt": {
+            "th": "เรียก load แล้วใช้ *int ก่อนตรวจ error จนโปรแกรม panic",
+            "en": "Call load and use the *int before checking the error so the program panics"
+          },
+          "rule": {
+            "th": "โปรแกรมต้อง panic เพราะ nil pointer และยังอยู่หน้า editor",
+            "en": "The program must panic on a nil pointer. It still runs from the editor"
+          },
+          "starter": "package main\n\nimport \"fmt\"\n\nfunc load() (*int, error) {\n\treturn nil, nil\n}\n\nfunc main() {\n\tfmt.Println(\"ok\")\n}\n",
+          "hint": {
+            "th": "เรียก load แล้วใช้ pointer ก่อนดู error",
+            "en": "Call load and use the pointer before you look at the error"
+          }
         }
       ]
     },

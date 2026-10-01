@@ -1,4 +1,4 @@
-import { copy, lesson, panicEx, panicRule, quiz, text } from "./helpers.mjs";
+import { copy, lesson, panicEx, panicRule, quiz, text, withHint } from "./helpers.mjs";
 
 function say(id, th, en) {
   return { id, th, en };
@@ -139,6 +139,7 @@ export const expert = [
       panicEx(say("easy", "ทำให้ main panic โดย dereference *int ที่เป็น nil", "Make main panic by dereferencing a nil *int"), panicRule, quiet, "nil pointer"),
       panicEx(say("mid", "ทำให้ panic โดยอ่านฟิลด์ผ่าน pointer ของ struct ที่เป็น nil", "Panic by reading a field through a nil struct pointer"), panicRule, quiet, "nil pointer"),
       panicEx(say("hard", "ทำให้ panic โดยเรียก method ที่อ่านฟิลด์บน receiver ที่เป็น nil", "Panic by calling a method that reads a field on a nil receiver"), panicRule, quiet, "nil pointer"),
+      withHint(panicEx(say("twist", "เรียก load แล้วใช้ *int ก่อนตรวจ error จนโปรแกรม panic", "Call load and use the *int before checking the error so the program panics"), panicRule, 'package main\n\nimport "fmt"\n\nfunc load() (*int, error) {\n\treturn nil, nil\n}\n\nfunc main() {\n\tfmt.Println("ok")\n}\n', "nil pointer"), "เรียก load แล้วใช้ pointer ก่อนดู error", "Call load and use the pointer before you look at the error"),
     ],
   }),
   quizLesson(
