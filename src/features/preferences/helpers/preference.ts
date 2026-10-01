@@ -12,6 +12,7 @@ export type Locale = typeof LOCALE_TH | typeof LOCALE_EN;
 export type Theme = typeof THEME_LIGHT | typeof THEME_DARK;
 
 const SCHEME_DARK = "(prefers-color-scheme: dark)";
+const themeListeners = new Set<() => void>();
 
 function readStorage(key: string): string | null {
   try {
@@ -52,8 +53,18 @@ export function applyStoredTheme(): void {
   }
 }
 
+export function subscribeTheme(listener: () => void): () => void {
+  themeListeners.add(listener);
+  return () => {
+    themeListeners.delete(listener);
+  };
+}
+
 export function applyTheme(theme: Theme): void {
   document.documentElement.setAttribute(DATA_THEME, theme);
+  for (const listener of themeListeners) {
+    listener();
+  }
 }
 
 export function applyLocale(locale: Locale): void {

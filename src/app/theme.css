@@ -1,64 +1,85 @@
 :root {
-  --color-bg: #f5f5f2;
-  --color-fg: #1c1c1a;
-  --color-muted: #5c5c57;
-  --color-border: #d9d9d3;
-  --color-bar: #ffffff;
-  --color-button: #f0f0ec;
+  --color-bg: #f4ecd8;
+  --color-fg: #3a3832;
+  --color-muted: #6b6560;
+  --color-border: rgba(58, 56, 50, 0.35);
+  --color-bar: #efe6d2;
+  --color-button: #efe6d2;
+  --color-mark: #ffe56a;
+  --color-on-mark: #3a3832;
+  --color-margin: #e7a3a3;
+  --color-rule: rgba(90, 80, 60, 0.16);
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
-    --color-bg: #141414;
-    --color-fg: #f2f2ef;
-    --color-muted: #a3a39c;
-    --color-border: #33332f;
-    --color-bar: #1c1c1c;
-    --color-button: #2a2a27;
+    --color-bg: #2c2822;
+    --color-fg: #e6dcc8;
+    --color-muted: #b3a898;
+    --color-border: rgba(230, 220, 200, 0.28);
+    --color-bar: #3a342c;
+    --color-button: #3a342c;
+    --color-mark: #c9a227;
+    --color-on-mark: #2c2822;
+    --color-margin: #8f4a4a;
+    --color-rule: rgba(230, 220, 200, 0.1);
     color-scheme: dark;
   }
 }
 
 :root[data-theme="dark"] {
-  --color-bg: #141414;
-  --color-fg: #f2f2ef;
-  --color-muted: #a3a39c;
-  --color-border: #33332f;
-  --color-bar: #1c1c1c;
-  --color-button: #2a2a27;
+  --color-bg: #2c2822;
+  --color-fg: #e6dcc8;
+  --color-muted: #b3a898;
+  --color-border: rgba(230, 220, 200, 0.28);
+  --color-bar: #3a342c;
+  --color-button: #3a342c;
+  --color-mark: #c9a227;
+  --color-on-mark: #2c2822;
+  --color-margin: #8f4a4a;
+  --color-rule: rgba(230, 220, 200, 0.1);
   color-scheme: dark;
 }
 
 :root[data-theme="light"] {
-  --color-bg: #f5f5f2;
-  --color-fg: #1c1c1a;
-  --color-muted: #5c5c57;
-  --color-border: #d9d9d3;
-  --color-bar: #ffffff;
-  --color-button: #f0f0ec;
+  --color-bg: #f4ecd8;
+  --color-fg: #3a3832;
+  --color-muted: #6b6560;
+  --color-border: rgba(58, 56, 50, 0.35);
+  --color-bar: #efe6d2;
+  --color-button: #efe6d2;
+  --color-mark: #ffe56a;
+  --color-on-mark: #3a3832;
+  --color-margin: #e7a3a3;
+  --color-rule: rgba(90, 80, 60, 0.16);
   color-scheme: light;
 }
 
 body {
   margin: 0;
-  background: var(--color-bg);
+  background-color: var(--color-bg);
+  background-image:
+    linear-gradient(to right, transparent 46px, var(--color-margin) 46px, var(--color-margin) 48px, transparent 48px),
+    repeating-linear-gradient(to bottom, transparent 0 31px, var(--color-rule) 31px 32px);
+  background-attachment: local;
   color: var(--color-fg);
-  font-family: system-ui, sans-serif;
+  font-family: "Itim", cursive;
+  font-size: 18px;
 }
 
 .topbar {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 8px 16px;
-  background: var(--color-bar);
+  padding: 8px 16px 8px 64px;
+  background: transparent;
   border-bottom: 1px solid var(--color-border);
 }
 
 .topbar-title {
   color: inherit;
-  font-weight: 600;
+  font-weight: 400;
   text-decoration: none;
 }
 
@@ -75,15 +96,31 @@ body {
 button {
   background: var(--color-button);
   color: inherit;
+  font-family: inherit;
   border: 1px solid var(--color-border);
-  border-radius: 4px;
+  border-radius: 2px;
   padding: 4px 8px;
+}
+
+h1,
+h2 {
+  width: fit-content;
+  padding: 0 6px;
+  background: var(--color-mark);
+  color: var(--color-on-mark);
+  font-weight: 400;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+pre {
+  font-family: inherit;
 }
 
 .page {
   max-width: 1080px;
   margin: 0 auto;
-  padding: 16px;
+  padding: 16px 16px 16px 64px;
   display: grid;
   gap: 12px;
 }
@@ -112,7 +149,7 @@ button {
 
 .bar-fill {
   height: 100%;
-  background: var(--color-fg);
+  background: var(--color-mark);
 }
 
 .row {
@@ -125,8 +162,11 @@ button {
 }
 
 .row.is-last,
-.step.is-current {
-  border-color: var(--color-fg);
+.step.is-current,
+button.is-current {
+  background: var(--color-mark);
+  color: var(--color-on-mark);
+  border-color: var(--color-border);
 }
 
 .cases,
@@ -138,6 +178,7 @@ button {
 .editor-pane {
   height: 420px;
   border: 1px solid var(--color-border);
+  background: var(--color-bg);
 }
 
 .output {
@@ -150,11 +191,6 @@ button {
 .step {
   padding: 8px;
   border: 1px solid var(--color-border);
-}
-
-.step.is-current,
-button.is-current {
-  background: var(--color-button);
 }
 
 a {
