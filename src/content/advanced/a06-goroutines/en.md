@@ -1,23 +1,47 @@
 ## explanation
-go before a call starts a goroutine. That work does not line up with the caller by itself. Use a channel or sync to know it finished. If main returns first, leftover work is dropped.
+Writing go before a call runs that function alongside the current one. The two sides do not wait for each other by themselves. If you need the result, send it on a channel and receive it in main.
 
 ```
-ch := make(chan int, 1)
-go func() { ch <- a + b }()
-fmt.Println(<-ch)
+func AddAsync(a, b int) int {
+	ch := make(chan int)
+	go func() { ch <- a + b }()
+	return <-ch
+}
 ```
+
+AddAsync(2, 3) returns 5 after the goroutine sends the result.
 
 ## apply
-Use it to overlap waiting, such as calling two services and then combining the results.
+Split an addition into pieces and add them back together. Count how many jobs finished. Receive from the channel until every job has reported, or main ends and the result disappears.
 
 ## easy
-Add numbers in a goroutine and receive the result.
+AddAsync returns a+b by letting a goroutine send the result on a channel.
+
+```
+func AddAsync(a, b int) int {
+	ch := make(chan int)
+	go func() { ch <- a + b }()
+	return <-ch
+}
+```
 
 ## hard
-Combine two pieces of work.
+WaitBoth starts two goroutines and waits for both, so it returns 2. SumParts adds results from two goroutines.
 
-## steps
-- Start the goroutine with go
-- Send the result on a channel
-- Receive everything before returning
-- Do not return while nobody is receiving
+```
+func WaitBoth() int {
+	ch := make(chan int)
+	go func() { ch <- 1 }()
+	go func() { ch <- 1 }()
+	return <-ch + <-ch
+}
+```
+
+```
+func SumParts(a, b int) int {
+	ch := make(chan int)
+	go func() { ch <- a }()
+	go func() { ch <- b }()
+	return <-ch + <-ch
+}
+```

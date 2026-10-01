@@ -1,23 +1,50 @@
 ## explanation
-testing/synctest ใน Go 1.25 ให้ทดสอบโค้ดที่เรียก time.Sleep โดยนาฬิกาใน bubble เดินเมื่อ goroutine ใน bubble ว่างทั้งหมด เทสต์จึงไม่ต้องรอเวลาจริงหนึ่งวินาที
+time.Sleep หยุด goroutine ปัจจุบันตามระยะที่กำหนด WaitTick นอนหนึ่งวินาทีแล้วคืน 1 ในเทสต์ที่ใช้ testing/synctest นาฬิกาใน bubble เดินให้เอง จึงไม่ต้องรอนาฬิกาจริงหนึ่งวินาที
 
 ```
-synctest.Test(t, func(t *testing.T) {
+func WaitTick() int {
 	time.Sleep(time.Second)
-})
+	return 1
+}
 ```
+
+ต้อง import "time"
 
 ## apply
-ใช้กับโค้ดที่ยกเลิกตามเวลา หรือหน่วงก่อนลองใหม่ โดยไม่ทำให้ชุดเทสต์ช้า
+Nap จับเวลาที่ผ่านไปหลังนอนสองวินาที โดยใช้ time.Since(start) AfterTick รอจน time.After หนึ่งวินาทีพร้อม แล้วคืน true
+
+```
+func Nap(start time.Time) time.Duration {
+	time.Sleep(2 * time.Second)
+	return time.Since(start)
+}
+```
+
+ถ้า start คือเวลาตอนเริ่ม นอนสองวินาทีแล้ว Nap ได้ระยะประมาณสองวินาที
 
 ## easy
-นอนหนึ่งวินาทีใน bubble แล้วคืน 1
+WaitTick เรียก time.Sleep หนึ่งวินาทีแล้วคืน 1
+
+```
+func WaitTick() int {
+	time.Sleep(time.Second)
+	return 1
+}
+```
 
 ## hard
-คืนระยะเวลาที่นาฬิกาใน bubble เดินไป
+AfterTick คืน true หลังจาก time.After หนึ่งวินาทีพร้อม Nap คืนระยะเวลาหลัง time.Sleep สองวินาที
 
-## steps
-- เรียก time.Sleep ในฟังก์ชันที่ถูกเทสต์
-- อย่าใช้เวลาจริงนอก bubble
-- ให้เทสต์ที่ซ่อนไว้เป็นคนห่อ synctest.Test
-- ตรวจทั้งค่าที่คืนและเวลาที่เดิน
+```
+func AfterTick() bool {
+	<-time.After(time.Second)
+	return true
+}
+```
+
+```
+func Nap(start time.Time) time.Duration {
+	time.Sleep(2 * time.Second)
+	return time.Since(start)
+}
+```

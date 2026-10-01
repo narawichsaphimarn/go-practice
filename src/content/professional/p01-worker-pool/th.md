@@ -1,22 +1,75 @@
 ## explanation
-worker pool จำกัดจำนวนงานที่ทำพร้อมกันด้วย channel ของ token หรือด้วยจำนวน goroutine คงที่ งานที่เหลือต้องรอคิว ไม่งั้นโปรแกรมจะเปิด goroutine ตามจำนวนงานทั้งก้อน
+งานคู่ขนานคือให้หลาย goroutine ทำคนละชิ้นพร้อมกัน ถ้าปล่อยทุกงานวิ่งพร้อมกันโดยไม่จำกัด เครื่องอาจรับไม่ไหว channel ขนาด limit คือช่องจอด ใครจะเริ่มงานต้องจอดในช่องก่อน เมื่อช่องเต็ม คนถัดไปรอ
 
 ```
-slots := make(chan struct{}, limit)
-slots <- struct{}{}
+func SumJobs(values []int) int {
+	total := 0
+	for _, v := range values {
+		total += v
+	}
+	return total
+}
 ```
+
+SumJobs([]int{1, 2, 3}) ได้ 6 เพราะบวกทุกค่าใน slice
 
 ## apply
-ใช้ตอนยิง request จำนวนมาก หรือประมวลผลไฟล์ โดยไม่อยากให้เครื่องรับงานพร้อมกันเกินที่กำหนด
+CountJobs นับว่ามีงานกี่ชิ้นโดยดูความยาวของ jobs Run รับรายการฟังก์ชัน jobs แล้วให้ทำงานพร้อมกันได้ไม่เกิน limit ชิ้น ใช้ channel เป็นช่องจอด และใช้ WaitGroup รอจนทุกงานจบ
+
+```
+func Run(limit int, jobs []func()) {
+	sem := make(chan struct{}, limit)
+	var wg sync.WaitGroup
+	for _, job := range jobs {
+		wg.Add(1)
+		sem <- struct{}{}
+		go func(job func()) {
+			defer wg.Done()
+			defer func() { <-sem }()
+			job()
+		}(job)
+	}
+	wg.Wait()
+}
+```
+
+ต้อง import "sync" ถ้า limit เป็น 2 และมีงาน 5 ชิ้น จะมี goroutine ที่กำลังทำ job ได้ไม่เกิน 2 ตัวในเวลาเดียวกัน
 
 ## easy
-รวมผลจากงานหลายชิ้น
+SumJobs บวกทุกค่าใน slice แล้วคืนผลรวม
+
+```
+func SumJobs(values []int) int {
+	total := 0
+	for _, v := range values {
+		total += v
+	}
+	return total
+}
+```
 
 ## hard
-พิสูจน์ว่าจำนวนงานที่ซ้อนกันไม่เกิน limit
+Run ทำงานใน jobs พร้อมกันได้ไม่เกิน limit CountJobs คืนจำนวนงานจากความยาวของ jobs
 
-## steps
-- สร้างที่ว่างเท่า limit
-- จองก่อนเริ่มงาน
-- คืนที่ว่างเมื่อจบ
-- รอจนทุกงานเสร็จ
+```
+func Run(limit int, jobs []func()) {
+	sem := make(chan struct{}, limit)
+	var wg sync.WaitGroup
+	for _, job := range jobs {
+		wg.Add(1)
+		sem <- struct{}{}
+		go func(job func()) {
+			defer wg.Done()
+			defer func() { <-sem }()
+			job()
+		}(job)
+	}
+	wg.Wait()
+}
+```
+
+```
+func CountJobs(limit int, jobs []int) int {
+	return len(jobs)
+}
+```

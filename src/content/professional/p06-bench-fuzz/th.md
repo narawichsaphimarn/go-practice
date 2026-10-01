@@ -1,26 +1,55 @@
 ## explanation
-go test -bench วัดเวลาต่องานหนึ่งหน่วย ผลมี ns/op และอาจมี allocs/op fuzz ส่งข้อมูลสุ่มเข้าฟังก์ชันแล้วดูว่า panic หรือไม่ เป้าหมาย fuzz รับ *testing.F แล้วเรียก f.Add กับ f.Fuzz
+benchmark วัดว่าฟังก์ชันใช้เวลานานแค่ไหนต่องานหนึ่งครั้ง ผลมีช่อง ns/op คือเวลาเฉลี่ยเป็นนาโนวินาทีต่องานหนึ่งครั้ง
 
 ```
-func FuzzParse(f *testing.F) {
-	f.Add("seed")
-	f.Fuzz(func(t *testing.T, s string) {
-		_ = len(s)
+func BenchmarkSum(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		SumJobs([]int{1, 2, 3})
+	}
+}
+```
+
+ถ้าผลเป็น 40 ns/op แปลว่างาน SumJobs หนึ่งครั้งใช้เวลาเฉลี่ย 40 นาโนวินาที ต้อง import "testing"
+
+## apply
+allocs/op คือจำนวนครั้งที่งานหนึ่งครั้งจองหน่วยความจำบน heap ตัวเลขที่ลดลงแปลว่าจองน้อยลง fuzz คือให้เครื่องมือสุ่มอินพุตใส่ฟังก์ชัน Fuzz ที่รับ *testing.F แล้วเรียก f.Fuzz
+
+```
+func FuzzSign(f *testing.F) {
+	f.Add(0)
+	f.Fuzz(func(t *testing.T, n int) {
+		got := Sign(n)
+		if got < -1 || got > 1 {
+			t.Fatalf("Sign(%d)=%d", n, got)
+		}
 	})
 }
 ```
 
-## apply
-ใช้ตอนจูนฟังก์ชันที่ถูกเรียกบ่อย และตอนหา input ที่ทำให้ parser พัง
+f.Add(0) คือเมล็ดเริ่มต้น f.Fuzz คือตัวที่ถูกเรียกกับค่าที่สุ่มมา
 
 ## easy
-อ่านคอลัมน์ของผล bench
+ns/op คือเวลาเฉลี่ยเป็นนาโนวินาทีต่องานหนึ่งครั้ง อ่านจากผลของ Benchmark
+
+```
+func BenchmarkSum(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		SumJobs([]int{1, 2, 3})
+	}
+}
+```
 
 ## hard
-รูปร่างของ fuzz target
+fuzz target ขั้นต่ำคือฟังก์ชันชื่อขึ้นต้นด้วย Fuzz รับ *testing.F แล้วเรียก f.Fuzz allocs/op ที่ลดลงแปลว่างานหนึ่งครั้งจอง heap น้อยลง
 
-## steps
-- แยก ns/op ออกจาก allocs/op
-- ดูว่าตัวเลขน้อยลงคือเร็วขึ้น
-- จำว่า fuzz อยู่ใน _test.go
-- ตอบในหน้านี้
+```
+func FuzzSign(f *testing.F) {
+	f.Add(0)
+	f.Fuzz(func(t *testing.T, n int) {
+		got := Sign(n)
+		if got < -1 || got > 1 {
+			t.Fatalf("Sign(%d)=%d", n, got)
+		}
+	})
+}
+```

@@ -1,23 +1,50 @@
 ## explanation
-testing/synctest in Go 1.25 tests code that calls time.Sleep. The clock inside the bubble advances when every goroutine in the bubble is idle, so the test does not wait a real second.
+time.Sleep pauses the current goroutine for the duration you give it. WaitTick sleeps one second and returns 1. In a test that uses testing/synctest, the clock inside the bubble advances for you, so you do not wait one real second.
 
 ```
-synctest.Test(t, func(t *testing.T) {
+func WaitTick() int {
 	time.Sleep(time.Second)
-})
+	return 1
+}
 ```
+
+Import "time".
 
 ## apply
-Use it for code that cancels on a timer or waits before a retry, without slowing the suite down.
+Nap reports the time that passed after sleeping two seconds, using time.Since(start). AfterTick waits until a one-second time.After is ready, then returns true.
+
+```
+func Nap(start time.Time) time.Duration {
+	time.Sleep(2 * time.Second)
+	return time.Since(start)
+}
+```
+
+If start is the time at the beginning, after a two-second sleep Nap is about two seconds.
 
 ## easy
-Sleep one second inside the bubble and return 1.
+WaitTick calls time.Sleep for one second and returns 1.
+
+```
+func WaitTick() int {
+	time.Sleep(time.Second)
+	return 1
+}
+```
 
 ## hard
-Return how far the bubble clock moved.
+AfterTick returns true only after a one-second time.After is ready. Nap returns the elapsed time after a two-second time.Sleep.
 
-## steps
-- Call time.Sleep in the function under test
-- Do not depend on real time outside the bubble
-- The hidden test wraps the call in synctest.Test
-- Check both the returned value and the clock
+```
+func AfterTick() bool {
+	<-time.After(time.Second)
+	return true
+}
+```
+
+```
+func Nap(start time.Time) time.Duration {
+	time.Sleep(2 * time.Second)
+	return time.Since(start)
+}
+```

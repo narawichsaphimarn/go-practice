@@ -11,6 +11,7 @@ import {
   I18N_BACK,
   I18N_CHECK,
   I18N_FORMAT,
+  I18N_HINT,
   I18N_NEXT_EXERCISE,
   I18N_NOT_FOUND,
   I18N_NOT_PASSED,
@@ -26,9 +27,9 @@ import {
 import { ROUTE_HOME } from "../../../shared/constants/preference.ts";
 import { exercisePath, lessonPath } from "../../../shared/helpers/routes.ts";
 import type { PracticeResult } from "../../../shared/api/practice.ts";
-import { EDITOR_LANG, FONT_NOTEBOOK, MODE_CHECK, MODE_FORMAT, MODE_RUN, MODE_VET } from "../constants/editor.ts";
+import { EDITOR_LANG, FONT_NOTEBOOK, MODE_CHECK, MODE_FORMAT, MODE_RUN, MODE_VET, RUN_FAILS_BEFORE_HINT } from "../constants/editor.ts";
 import { runPracticeAction } from "../helpers/actions.ts";
-import { defineNotebookThemes, editorTheme, registerGoCompletions } from "../helpers/editor.ts";
+import { defineNotebookThemes, editorTheme, HOVER_DELAY_MS, registerGoCompletions } from "../helpers/editor.ts";
 
 export function PracticePage() {
   const { lessonId = "", exerciseId = "" } = useParams();
@@ -54,11 +55,16 @@ function PracticeEditor({ lesson, exercise }: { lesson: LessonSpec; exercise: Ex
   const [source, setSource] = useState(exercise.starter);
   const [output, setOutput] = useState("");
   const [busy, setBusy] = useState(false);
+  const [runFails, setRunFails] = useState(0);
+  const [hintOpen, setHintOpen] = useState(false);
   const passed = isPassed(lesson.id, exercise.id);
+  const showHint = runFails > RUN_FAILS_BEFORE_HINT && exercise.hint !== undefined;
 
   useEffect(() => {
     setSource(exercise.starter);
     setOutput("");
+    setRunFails(0);
+    setHintOpen(false);
   }, [exercise]);
 
   async function perform(mode: string) {
@@ -69,6 +75,9 @@ function PracticeEditor({ lesson, exercise }: { lesson: LessonSpec; exercise: Ex
     if (result.unavailable) {
       setOutput(t(I18N_UNAVAILABLE));
       return;
+    }
+    if (mode === MODE_RUN && !result.ok) {
+      setRunFails((count) => count + 1);
     }
     if (mode === MODE_FORMAT && result.ok && result.formatted) {
       setSource(result.formatted);
@@ -102,12 +111,14 @@ function PracticeEditor({ lesson, exercise }: { lesson: LessonSpec; exercise: Ex
               value={source}
               onChange={(value) => setSource(value ?? "")}
               beforeMount={defineNotebookThemes}
-              onMount={(_editor, monaco) => registerGoCompletions(monaco)}
+              onMount={(codeEditor, monaco) => registerGoCompletions(monaco, codeEditor)}
               options={{
                 minimap: { enabled: false },
                 fontSize: 18,
                 fontFamily: FONT_NOTEBOOK,
                 scrollBeyondLastLine: false,
+                fixedOverflowWidgets: true,
+                hover: { delay: HOVER_DELAY_MS },
                 bracketPairColorization: { enabled: false },
               }}
             />
@@ -122,10 +133,16 @@ function PracticeEditor({ lesson, exercise }: { lesson: LessonSpec; exercise: Ex
             <button type={BUTTON_TYPE} disabled={busy} onClick={() => void perform(MODE_RUN)}>
               {t(I18N_RUN)}
             </button>
+            {showHint ? (
+              <button type={BUTTON_TYPE} onClick={() => setHintOpen(true)}>
+                {t(I18N_HINT)}
+              </button>
+            ) : null}
             <button type={BUTTON_TYPE} disabled={busy} onClick={() => void perform(MODE_CHECK)}>
               {t(I18N_CHECK)}
             </button>
           </div>
+          {hintOpen && exercise.hint ? <p>{textOf(exercise.hint, locale)}</p> : null}
           <h2>{t(I18N_OUTPUT)}</h2>
           <pre className="output">{output}</pre>
         </section>

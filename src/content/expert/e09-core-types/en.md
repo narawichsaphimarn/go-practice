@@ -1,17 +1,45 @@
 ## explanation
-The spec no longer uses the term core type to explain an operand that is a type parameter. The remaining rule says the operation is allowed when the type parameter's constraint supports that operation.
+The spec no longer uses the term core type as the way it explains the rule. When you say what a type parameter can do, say it from the constraint. If the constraint supports addition, values of that type can be added.
+
+```
+func Add[T ~int | ~float64](a, b T) T {
+	return a + b
+}
+```
+
+Add(1, 2) is 3 because the constraint supports addition for int.
 
 ## apply
-Use it when one run cannot prove the behavior.
+cmp.Ordered is the constraint for types that have an order, such as int and string. A value limited by cmp.Ordered can be compared with <.
+
+```
+func Min[T cmp.Ordered](a, b T) T {
+	if a < b {
+		return a
+	}
+	return b
+}
+```
+
+Import "cmp". Min(3, 1) is 1 because 3 < 1 is false, so it returns b.
 
 ## easy
-The easy case is the choice that matches the definition.
+The spec no longer explains the rule with the term core type. Explain it by the operation the constraint supports.
+
+```
+func Add[T ~int | ~float64](a, b T) T {
+	return a + b
+}
+```
 
 ## hard
-The hard case is the choice people mix up with a neighbor.
+cmp.Ordered lets you compare values with ordering operators. Addition on a type parameter is explained by saying the constraint supports addition.
 
-## steps
-- Read the question
-- Drop the choice that breaks the rule
-- Pick the one that matches the behavior
-- Submit on this page
+```
+func Min[T cmp.Ordered](a, b T) T {
+	if a < b {
+		return a
+	}
+	return b
+}
+```

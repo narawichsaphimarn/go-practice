@@ -1,21 +1,57 @@
 ## explanation
-log/slog ส่งข้อความพร้อมคู่ key และ value handler แบบ text พิมพ์เป็น msg= และ key=value การต่อสตริงเองทำให้เครื่องที่อ่าน log แยกฟิลด์ไม่ได้
+slog เขียน log เป็นข้อความพร้อมคู่ key กับ value ไม่ปนกันในประโยคเดียว Line สร้าง logger ที่เขียนลง Writer แล้วบันทึก msg พร้อมคู่ key value
 
 ```
-logger.Info("hello", "user", "ada")
+func Line(w io.Writer, msg, key, value string) {
+	logger := slog.New(slog.NewTextHandler(w, nil))
+	logger.Info(msg, key, value)
+}
 ```
+
+ต้อง import "log/slog" และ "io" Line(w, "saved", "id", "7") เขียนบรรทัดที่มีข้อความ saved และคู่ id=7
 
 ## apply
-ใช้ใน service ที่ต้องค้น log ตามรหัสผู้ใช้หรือรหัส request
+ระดับ Warn คือคำเตือน ไม่ใช่ข้อมูลทั่วไป With คือการติด attribute ไว้กับ logger แล้วทุกบรรทัดที่ logger นั้นเขียนจะมี attribute นั้น
+
+```
+func Warn(w io.Writer, code int) {
+	logger := slog.New(slog.NewTextHandler(w, nil))
+	logger.Warn("warn", "code", code)
+}
+```
+
+```
+func WithUser(w io.Writer, user, msg string) {
+	logger := slog.New(slog.NewTextHandler(w, nil)).With("user", user)
+	logger.Info(msg)
+}
+```
+
+WithUser(w, "ann", "login") เขียนบรรทัด login ที่มี user=ann ติดไปด้วย
 
 ## easy
-เขียนหนึ่งบรรทัดที่มี msg และ key
+Line บันทึก msg กับคู่ key value ลง Writer
+
+```
+func Line(w io.Writer, msg, key, value string) {
+	logger := slog.New(slog.NewTextHandler(w, nil))
+	logger.Info(msg, key, value)
+}
+```
 
 ## hard
-ส่งค่าคนละชนิดโดยยังเป็นคู่
+WithUser ทำให้ logger มี attribute user ติดไปกับทุกบรรทัด Warn ใช้ระดับ Warn และมี key code
 
-## steps
-- สร้าง logger จาก handler
-- ส่ง key แล้วตามด้วย value
-- อย่าต่อข้อความทั้งก้อนเอง
-- ตรวจว่าผลมีทั้ง msg และ key
+```
+func WithUser(w io.Writer, user, msg string) {
+	logger := slog.New(slog.NewTextHandler(w, nil)).With("user", user)
+	logger.Info(msg)
+}
+```
+
+```
+func Warn(w io.Writer, code int) {
+	logger := slog.New(slog.NewTextHandler(w, nil))
+	logger.Warn("warn", "code", code)
+}
+```

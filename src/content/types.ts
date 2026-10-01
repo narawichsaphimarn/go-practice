@@ -19,6 +19,7 @@ export type ExerciseSpec = {
   kind: string;
   prompt: Localized;
   rule: Localized;
+  hint?: Localized;
   starter: string;
   choices?: ChoiceSet;
   answer?: number;

@@ -1,26 +1,55 @@
 ## explanation
-select รอหลาย channel พร้อมกัน เคสที่พร้อมก่อนจะถูกเลือก ถ้ามี default จะไม่รอ ถ้าใส่ time.After จะออกเมื่อหมดเวลา
+select รอหลาย channel พร้อมกัน แล้วทำกรณีที่พร้อมก่อน ใส่ default ถ้าอยากไปต่อทันทีเมื่อยังไม่มีค่า ใส่ time.After ถ้าอยากเลิกเมื่อหมดเวลา
 
 ```
-select {
-case v := <-ch:
-	return v
-default:
-	return 0
+func FirstReady(a, b <-chan int) int {
+	select {
+	case v := <-a:
+		return v
+	case v := <-b:
+		return v
+	}
 }
 ```
 
 ## apply
-ใช้ใน client ที่ต้องไม่แขวน และในลูปที่รับได้ทั้งงานกับสัญญาณยกเลิก
+รับผลจากงานสองชิ้น ชิ้นไหนเสร็จก่อนใช้ชิ้นนั้น ถ้ายังไม่มีค่าให้ใช้ 0 แทนการรอ และถ้าว่างเกิน 20 มิลลิวินาทีให้คืน -1
 
 ## easy
-เลือก channel ที่พร้อม
+FirstReady คืนค่าจาก channel ที่พร้อมก่อนระหว่าง a กับ b
+
+```
+func FirstReady(a, b <-chan int) int {
+	select {
+	case v := <-a:
+		return v
+	case v := <-b:
+		return v
+	}
+}
+```
 
 ## hard
-คืนค่าทันทีเมื่อยังไม่พร้อม หรือคืนค่าพิเศษเมื่อหมดเวลา
+OrTimeout คืน -1 เมื่อ channel ว่างเกิน 20 มิลลิวินาที OrZero คืนค่าใน channel หรือ 0 ทันทีถ้ายังไม่มีค่า
 
-## steps
-- ใส่ทุก channel ที่รอได้ใน select
-- ใช้ default เมื่อห้ามบล็อก
-- ใช้ time.After เมื่อต้องจำกัดเวลา
-- อย่าลืมว่า After สร้าง timer
+```
+func OrTimeout(ch <-chan int) int {
+	select {
+	case v := <-ch:
+		return v
+	case <-time.After(20 * time.Millisecond):
+		return -1
+	}
+}
+```
+
+```
+func OrZero(ch <-chan int) int {
+	select {
+	case v := <-ch:
+		return v
+	default:
+		return 0
+	}
+}
+```

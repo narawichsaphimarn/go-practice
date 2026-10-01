@@ -1,23 +1,49 @@
 ## explanation
-if has no parentheses around the condition. for is both the counted loop and the while loop. switch matches a value and does not fall through.
+if runs a block when a condition is true. for repeats a block. switch picks one case from the value of a variable.
 
 ```
+score := 80
 if score >= 80 {
 	fmt.Println("pass")
 }
 ```
 
+```
+for i := 1; i <= 3; i++ {
+	fmt.Print(i)
+}
+```
+
+```
+day := 1
+switch day {
+case 1:
+	fmt.Println("monday")
+}
+```
+
 ## apply
-Use it to branch in a handler, filter a list, or map a status code to text.
+Check an exam score and print pass at 80 or above. Print the numbers 1 through 3 as 123. Turn a day code into a day name.
+
+Each snippet above can sit inside main. The loop prints 123 with no spaces because it uses Print, not Println.
 
 ## easy
-One condition that prints pass.
+Set score to 80 and print pass when score is at least 80.
+
+```
+score := 80
+if score >= 80 {
+	fmt.Println("pass")
+}
+```
 
 ## hard
-A loop that builds text, or a switch that picks a weekday name.
+Set day to 1 and use switch to print monday for that case.
 
-## steps
-- Choose if, for, or switch
-- Use the value from the prompt
-- Print the result
-- Do not print extra text
+```
+day := 1
+switch day {
+case 1:
+	fmt.Println("monday")
+}
+```

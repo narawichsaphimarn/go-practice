@@ -1,25 +1,47 @@
 ## explanation
-defer เลื่อนการเรียกไว้ตอนฟังก์ชันคืน ลำดับคือย้อนหลังจากที่ defer ทีหลังสุด ถ้าใช้ named return ค่าที่ defer แก้จะถูกส่งออกไป panic หยุดการทำงานทั้งก้อน recover ใช้ได้ใน defer เท่านั้น และไม่ควรแทน error ปกติ
+defer เก็บงานไว้ทำตอนฟังก์ชันกำลังจะคืนค่า ใช้ปิดของหรือเติมค่าบน named return panic หยุดทั้งก้อนทันที จึงไม่ใช่ทางบอกข้อผิดพลาดปกติ ทางปกติคือคืน error recover ใน defer จับ panic นั้นได้
 
 ```
 func Order() (s string) {
 	defer func() { s += "b" }()
 	s = "a"
-	return
+	return s
 }
 ```
 
+Order คืน ab เพราะ defer เติม b หลังตั้ง s เป็น a แล้วก่อนฟังก์ชันจบจริง
+
 ## apply
-ใช้ปิดไฟล์หรือปลดล็อก และใช้ recover เฉพาะขอบของโปรแกรมที่ต้องไม่ล่มทั้งก้อน
+งานที่ต้องทำตอนจะออกจากฟังก์ชัน ไม่ว่าจะคืนตรงไหน ให้วางใน defer เช่นเติมตัวอักษรท้าย หรือนับว่าปิดแล้ว
 
 ## easy
-เรียงข้อความด้วย defer
+Order คืน ab โดยให้ defer เติม b เข้า named return
+
+```
+func Order() (s string) {
+	defer func() { s += "b" }()
+	s = "a"
+	return s
+}
+```
 
 ## hard
-นับครั้งที่ปิด หรือจับ panic
+Safe เรียก panic แล้ว recover ใน defer และคืน true Closed เพิ่ม named return ใน defer จนได้ 1
 
-## steps
-- วาง defer ก่อนจุดที่อาจคืน
-- ใช้ named return ถ้าต้องแก้ค่าที่คืน
-- เรียก recover ใน defer
-- อย่าใช้ panic แทน error ธรรมดา
+```
+func Safe() (recovered bool) {
+	defer func() {
+		if recover() != nil {
+			recovered = true
+		}
+	}()
+	panic("boom")
+}
+```
+
+```
+func Closed() (n int) {
+	defer func() { n++ }()
+	return 0
+}
+```

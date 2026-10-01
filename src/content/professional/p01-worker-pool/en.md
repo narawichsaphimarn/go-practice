@@ -1,22 +1,75 @@
 ## explanation
-A worker pool caps how much work runs at once, with a token channel or a fixed set of goroutines. The rest waits in a queue. Otherwise the program starts one goroutine per job.
+Concurrent work means several goroutines each do one piece at the same time. If every job starts with no limit, the machine can be overwhelmed. A channel of size limit is a parking slot. A job must take a slot before it starts. When the slots are full, the next job waits.
 
 ```
-slots := make(chan struct{}, limit)
-slots <- struct{}{}
+func SumJobs(values []int) int {
+	total := 0
+	for _, v := range values {
+		total += v
+	}
+	return total
+}
 ```
+
+SumJobs([]int{1, 2, 3}) is 6 because it adds every value in the slice.
 
 ## apply
-Use it when sending many requests or processing files without exceeding a chosen concurrency.
+CountJobs reports how many jobs there are by looking at the length of jobs. Run takes the function list jobs and lets at most limit of them run at once. The channel is the parking slot. The WaitGroup waits until every job finishes.
+
+```
+func Run(limit int, jobs []func()) {
+	sem := make(chan struct{}, limit)
+	var wg sync.WaitGroup
+	for _, job := range jobs {
+		wg.Add(1)
+		sem <- struct{}{}
+		go func(job func()) {
+			defer wg.Done()
+			defer func() { <-sem }()
+			job()
+		}(job)
+	}
+	wg.Wait()
+}
+```
+
+Import "sync". If limit is 2 and there are 5 jobs, at most 2 goroutines are inside job at the same time.
 
 ## easy
-Combine the results of several jobs.
+SumJobs adds every value in the slice and returns the total.
+
+```
+func SumJobs(values []int) int {
+	total := 0
+	for _, v := range values {
+		total += v
+	}
+	return total
+}
+```
 
 ## hard
-Prove that overlapping jobs never exceed the limit.
+Run lets at most limit jobs run at the same time. CountJobs returns how many jobs there are from the length of jobs.
 
-## steps
-- Create capacity equal to the limit
-- Take a slot before starting
-- Release the slot when finished
-- Wait until every job is done
+```
+func Run(limit int, jobs []func()) {
+	sem := make(chan struct{}, limit)
+	var wg sync.WaitGroup
+	for _, job := range jobs {
+		wg.Add(1)
+		sem <- struct{}{}
+		go func(job func()) {
+			defer wg.Done()
+			defer func() { <-sem }()
+			job()
+		}(job)
+	}
+	wg.Wait()
+}
+```
+
+```
+func CountJobs(limit int, jobs []int) int {
+	return len(jobs)
+}
+```

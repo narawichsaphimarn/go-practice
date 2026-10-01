@@ -1,23 +1,45 @@
 ## explanation
-The go line in go.mod is the module's minimum language version. A toolchain line, when present, requests that toolchain. GOTOOLCHAIN=local means use the installed toolchain and do not download another. Go 1.25 still uses this rule.
+The go line in go.mod states the language version this module uses, at least that version. go 1.25 means this module uses at least language version 1.25.
+
+```
+module example.com/app
+
+go 1.25
+```
+
+## apply
+A toolchain line requests that toolset, such as the compiler. The go line states the language version. The two lines are not the same thing. GOTOOLCHAIN=local tells Go to use the installed toolchain and not download another one.
+
+```
+module example.com/app
+
+go 1.25
+
+toolchain go1.25.0
+```
+
+```
+GOTOOLCHAIN=local go test ./...
+```
+
+This command runs the tests with the Go installed on the machine. It does not fetch a new toolset.
+
+## easy
+The line go 1.25 says this module uses at least language version 1.25.
+
+```
+go 1.25
+```
+
+## hard
+GOTOOLCHAIN=local uses the installed toolchain and does not download another one. The toolchain line requests that toolset, while the go line states the language version.
+
+```
+GOTOOLCHAIN=local go test ./...
+```
 
 ```
 go 1.25
 
 toolchain go1.25.0
 ```
-
-## apply
-Use it to pin CI and to stop a developer machine from quietly fetching a different toolchain.
-
-## easy
-What the go line means.
-
-## hard
-toolchain and GOTOOLCHAIN=local.
-
-## steps
-- Separate the go line from the toolchain line
-- Know that local does not download
-- Do not assume the language version always equals the binary version
-- Answer on this page

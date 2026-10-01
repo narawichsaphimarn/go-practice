@@ -1,21 +1,52 @@
 ## explanation
-Joining a host and port with string concatenation breaks for IPv6 because the host needs brackets. net.JoinHostPort handles that. In Go 1.25 an ignore block in go.mod names directories the go command will not look at.
+A network address is a host plus a port. net.JoinHostPort joins those two parts correctly for both IPv4 and IPv6. Host uses it with 127.0.0.1 and port 8080.
 
 ```
-net.JoinHostPort("::1", "80")
+func Host() string {
+	return net.JoinHostPort("127.0.0.1", "8080")
+}
 ```
+
+Host() is "127.0.0.1:8080". Import "net".
 
 ## apply
-Use it when building an address to dial and when keeping a tools folder out of the packages go test walks.
+An IPv6 address needs brackets before the port, or a reader cannot tell where the port starts. V6 calls JoinHostPort with ::1 and 80 and gets "[::1]:80". An ignore block in a Go 1.25 go.mod tells the go command to skip the named directories and not treat them as packages in the module.
+
+```
+func V6() string {
+	return net.JoinHostPort("::1", "80")
+}
+```
+
+```
+ignore (
+	./tmp
+	./scratch
+)
+```
+
+The go command will not compile packages in the tmp and scratch folders.
 
 ## easy
-Join an IPv4 host and port.
+Host returns net.JoinHostPort of 127.0.0.1 and 8080.
+
+```
+func Host() string {
+	return net.JoinHostPort("127.0.0.1", "8080")
+}
+```
 
 ## hard
-Join IPv6 correctly, and answer what ignore does.
+An ignore block in go.mod makes the go command skip the named directories. V6 returns the address of ::1 port 80 with brackets.
 
-## steps
-- Do not concatenate host:port yourself
-- Call JoinHostPort
-- Remember that IPv6 needs brackets
-- Answer the ignore question on the lesson page
+```
+ignore (
+	./tmp
+)
+```
+
+```
+func V6() string {
+	return net.JoinHostPort("::1", "80")
+}
+```

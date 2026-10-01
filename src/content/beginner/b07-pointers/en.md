@@ -1,23 +1,39 @@
 ## explanation
-Passing a struct or an int copies it. A pointer refers to the original value, so a write through *n is visible to the caller.
+An ordinary variable is a value you can copy. A pointer is the address of the original value. Writing through the pointer changes the original, not a copy.
+
+```
+n := 1
+Inc(&n)
+fmt.Println(n)
+```
+
+After Inc, n is 2 because the function wrote over the value at that address.
+
+## apply
+Add one to a click counter in place with Inc. Exchange two scores with Swap. Change the name on a User you were given as a pointer with SetName.
+
+## easy
+Inc adds one to the value the pointer points at.
 
 ```
 func Inc(n *int) {
-	*n++
+	*n = *n + 1
 }
 ```
 
-## apply
-Use it when the caller must observe the change, such as a counter, a swap, or a renamed field.
-
-## easy
-Increment through a pointer.
-
 ## hard
-Swap two values, or set a field through a pointer.
+Swap exchanges the values of two pointers by saving one first. SetName sets Name on the User the pointer points at.
 
-## steps
-- Put * on the parameter type
-- Pass the address with &
-- Check nil when the caller may pass it
-- Write the value the caller can see
+```
+func Swap(a, b *int) {
+	kept := *a
+	*a = *b
+	*b = kept
+}
+```
+
+```
+func SetName(u *User, name string) {
+	u.Name = name
+}
+```

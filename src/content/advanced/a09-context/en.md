@@ -1,23 +1,58 @@
 ## explanation
-context.Context carries cancellation and a deadline. The caller builds it with WithCancel or WithTimeout and passes it as the first argument. Waiting work selects on ctx.Done().
+A context is the caller's signal that the work should continue. After it ends, ctx.Err() is not nil and ctx.Done() is ready to receive.
 
 ```
-if err := ctx.Err(); err != nil {
-	return err
+func Done(ctx context.Context) bool {
+	select {
+	case <-ctx.Done():
+		return true
+	default:
+		return false
+	}
 }
 ```
 
 ## apply
-Use it to stop HTTP work when the user leaves or when the deadline set at the request boundary is reached.
+Pass the context into a function that waits. If the user cancels, the inner work stops and returns ctx.Err() instead of a normal result.
+
+```
+func Wait(ctx context.Context) error {
+	<-ctx.Done()
+	return ctx.Err()
+}
+```
 
 ## easy
-Report whether the context has already ended.
+Done returns true when the context has ended and false while it is still active.
+
+```
+func Done(ctx context.Context) bool {
+	select {
+	case <-ctx.Done():
+		return true
+	default:
+		return false
+	}
+}
+```
 
 ## hard
-Return a default when it is canceled, or wait until Done.
+Wait blocks until the context ends, then returns ctx.Err(). OrDefault returns 0 after it ends and returns value while it is still active.
 
-## steps
-- Take ctx as the first argument
-- Check ctx.Err()
-- Stop on Done
-- Do not store a request context in a struct
+```
+func Wait(ctx context.Context) error {
+	<-ctx.Done()
+	return ctx.Err()
+}
+```
+
+```
+func OrDefault(ctx context.Context, value int) int {
+	select {
+	case <-ctx.Done():
+		return 0
+	default:
+		return value
+	}
+}
+```

@@ -1,21 +1,59 @@
 ## explanation
-fmt.Errorf พร้อม %w ห่อ error เดิมไว้ errors.Is เดินสายห่อเพื่อเทียบค่า sentinel errors.As ดึงชนิดที่ต้องการออกมา การเทียบข้อความ error ทำให้พังเมื่อมีคนแก้ประโยค
+ห่อ error ด้วย %w เพื่อเก็บสาเหตุเดิมไว้ errors.Is ตามหาค่า error ใบนั้นในสายที่ห่อไว้ errors.As ดึงชนิดที่ต้องการออกมา ไม่เทียบข้อความที่พิมพ์
 
 ```
-return fmt.Errorf("open: %w", err)
+var ErrBoom = errors.New("boom")
+
+func Wrap() error {
+	return fmt.Errorf("wrap: %w", ErrBoom)
+}
+
+errors.Is(Wrap(), ErrBoom)
 ```
+
+ได้ true เพราะ Wrap ห่อ ErrBoom ไว้ แม้ข้อความด้านนอกจะเป็น wrap: boom
 
 ## apply
-ใช้เมื่อข้ามชั้นของโปรแกรมแล้วผู้เรียกยังต้องรู้ว่าสาเหตุคือ ErrNotFound หรือชนิดที่มีรหัส
+บริการชั้นนอกห่อความผิดของชั้นใน ผู้เรียกตรวจว่าเป็น ErrBoom หรือไม่โดยไม่สนคำอธิบายที่ถูกต่อไว้ ถ้า error มีรหัสอยู่ใน struct ให้ดึงด้วย errors.As
+
+```
+type CodeError struct{ Code int }
+
+func (e CodeError) Error() string { return "code" }
+
+func AsCode(err error) int {
+	var target CodeError
+	if errors.As(err, &target) {
+		return target.Code
+	}
+	return 0
+}
+```
 
 ## easy
-ห่อแล้วใช้ errors.Is
+Wrap ห่อ ErrBoom ด้วย %w จึงให้ errors.Is เจอ ErrBoom
+
+```
+func Wrap() error {
+	return fmt.Errorf("wrap: %w", ErrBoom)
+}
+```
 
 ## hard
-ใช้ errors.As กับชนิดของตัวเอง
+HasBoom คืน true เมื่อสาย error มียอด ErrBoom แม้จะถูกห่อหลายชั้น AsCode ดึงฟิลด์ Code จาก CodeError ที่ถูกห่อ
 
-## steps
-- ห่อด้วย %w
-- ประกาศ sentinel ด้วย errors.New
-- ตรวจด้วย Is หรือ As
-- อย่าใช้ strings.Contains กับ Error()
+```
+func HasBoom(err error) bool {
+	return errors.Is(err, ErrBoom)
+}
+```
+
+```
+func AsCode(err error) int {
+	var target CodeError
+	if errors.As(err, &target) {
+		return target.Code
+	}
+	return 0
+}
+```

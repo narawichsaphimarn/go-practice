@@ -1,17 +1,51 @@
 ## explanation
-API ที่คนเรียกใช้ต่อได้มี interface เล็กเท่าพฤติกรรมที่ต้องการ ชื่อ package สั้นและเป็นคำนาม error ที่ผู้เรียกต้องแยกแยะควรเป็นค่าที่ errors.Is ตรวจได้ ไม่ใช่ข้อความอย่างเดียว
+interface ที่ดีสำหรับผู้เรียกมีเท่าพฤติกรรมที่ผู้เรียกต้องใช้ ถ้าผู้เรียกแค่ขอข้อความ ก็มี method Read ตัวเดียวพอ
+
+```
+type Reader interface {
+	Read(p []byte) (int, error)
+}
+```
+
+ชื่อ package ควรสั้นและเป็นคำนาม เช่น package http ไม่ใช่ประโยคยาว
+
+```
+package store
+```
 
 ## apply
-ใช้เมื่อต้องอธิบายพฤติกรรมที่การรันครั้งเดียวพิสูจน์ไม่ได้
+error ที่ผู้เรียกต้องแยกเคสต้องเป็นค่าที่ตรวจด้วย errors.Is ได้ ไม่ใช่ข้อความอย่างเดียว ErrNotFound คือค่าที่ผู้เรียกเทียบได้
+
+```
+var ErrNotFound = errors.New("not found")
+
+func Find(id string) error {
+	return fmt.Errorf("find %s: %w", id, ErrNotFound)
+}
+```
+
+ผู้เรียกเขียน errors.Is(err, ErrNotFound) แล้วได้ true เพราะ Find ห่อด้วย %w
 
 ## easy
-เคสง่ายคือตัวเลือกที่ตรงนิยาม
+interface มีเท่าพฤติกรรมที่ผู้เรียกต้องใช้ Reader มีแค่ Read
+
+```
+type Reader interface {
+	Read(p []byte) (int, error)
+}
+```
 
 ## hard
-เคสยากคือตัวเลือกที่คนมักสับสนกับของใกล้เคียง
+error ที่ผู้เรียกต้องแยกเคสเป็นค่าที่ errors.Is มองเห็น ชื่อ package สั้นและเป็นคำนาม
 
-## steps
-- อ่านคำถาม
-- ตัดตัวเลือกที่ขัดกติกา
-- เลือกข้อที่ตรงพฤติกรรม
-- ส่งคำตอบในหน้านี้
+```
+var ErrNotFound = errors.New("not found")
+
+func Find(id string) error {
+	return fmt.Errorf("find %s: %w", id, ErrNotFound)
+}
+```
+
+```
+package store
+```

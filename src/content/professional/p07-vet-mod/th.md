@@ -1,21 +1,52 @@
 ## explanation
-การต่อ host กับ port ด้วยสตริงพังเมื่อ host เป็น IPv6 เพราะต้องมีวงเล็บ net.JoinHostPort จัดการให้ ใน Go 1.25 บล็อก ignore ใน go.mod บอกไดเรกทอรีที่คำสั่ง go จะไม่เข้าไปดู
+ที่อยู่เครือข่ายคือโฮสต์กับพอร์ต net.JoinHostPort ประกอบสองส่วนนั้นให้ถูกทั้ง IPv4 และ IPv6 Host ใช้กับ 127.0.0.1 พอร์ต 8080
 
 ```
-net.JoinHostPort("::1", "80")
+func Host() string {
+	return net.JoinHostPort("127.0.0.1", "8080")
+}
 ```
+
+Host() ได้ "127.0.0.1:8080" ต้อง import "net"
 
 ## apply
-ใช้ตอนประกอบที่อยู่สำหรับ dial และตอนกันโฟลเดอร์เครื่องมือออกจากแพ็กเกจที่ go test เดิน
+ที่อยู่ IPv6 ต้องมีวงเล็บครอบก่อนพอร์ต ไม่งั้นเครื่องอ่านไม่ออกว่าพอร์ตอยู่ตรงไหน V6 ใช้ JoinHostPort กับ ::1 และ 80 แล้วได้ "[::1]:80" บล็อก ignore ใน go.mod ของ Go 1.25 บอกให้คำสั่ง go ข้ามไดเรกทอรีที่ระบุ และไม่ถือว่าเป็นแพ็กเกจในโมดูล
+
+```
+func V6() string {
+	return net.JoinHostPort("::1", "80")
+}
+```
+
+```
+ignore (
+	./tmp
+	./scratch
+)
+```
+
+คำสั่ง go จะไม่คอมไพล์แพ็กเกจในโฟลเดอร์ tmp และ scratch
 
 ## easy
-ต่อ host กับ port ของ IPv4
+Host คืน net.JoinHostPort ของ 127.0.0.1 และ 8080
+
+```
+func Host() string {
+	return net.JoinHostPort("127.0.0.1", "8080")
+}
+```
 
 ## hard
-ต่อ IPv6 ให้ถูก และตอบว่า ignore ทำอะไร
+บล็อก ignore ใน go.mod ทำให้คำสั่ง go ข้ามไดเรกทอรีที่ระบุ V6 คืนที่อยู่ของ ::1 พอร์ต 80 พร้อมวงเล็บ
 
-## steps
-- อย่าต่อ host:port เอง
-- ใช้ JoinHostPort
-- จำว่า IPv6 ต้องมีวงเล็บ
-- ตอบข้อ ignore ในหน้าบท
+```
+ignore (
+	./tmp
+)
+```
+
+```
+func V6() string {
+	return net.JoinHostPort("::1", "80")
+}
+```

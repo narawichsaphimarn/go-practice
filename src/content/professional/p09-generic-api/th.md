@@ -1,5 +1,5 @@
 ## explanation
-ถ้าฟังก์ชันคืนค่าชนิดเดียวกับที่รับมา และไม่ได้เรียก method ของค่านั้น generic ชัดกว่า interface ว่าง ถ้าพฤติกรรมคือ Speak ให้ใช้ interface แทน
+generic คือฟังก์ชันที่ชนิดของข้อมูลไปกับผู้เรียก First[T any] ใช้ได้กับ slice ของชนิดใดก็ได้ เมื่อมีสมาชิก คืนตัวแรกกับ true เมื่อว่าง คืนค่าศูนย์ของชนิดนั้นกับ false
 
 ```
 func First[T any](items []T) (T, bool) {
@@ -11,17 +11,55 @@ func First[T any](items []T) (T, bool) {
 }
 ```
 
+First([]int{4, 5}) ได้ 4 และ true First ของ slice ว่างได้ 0 และ false
+
 ## apply
-ใช้ใน helper ของไลบรารีที่รับ slice ของชนิดที่ผู้เรียกกำหนด
+Last คืนสมาชิกตัวท้าย At คืนสมาชิกที่ index เมื่อ index อยู่ในขอบ 0 ถึง len-1 และคืน false เมื่อ index ติดลบหรือเลยท้าย
+
+```
+func Last[T any](items []T) (T, bool) {
+	if len(items) == 0 {
+		var zero T
+		return zero, false
+	}
+	return items[len(items)-1], true
+}
+```
+
+Last([]string{"a", "b"}) ได้ "b" และ true
 
 ## easy
-คืนสมาชิกตัวแรก
+First คืนสมาชิกแรกและ true หรือค่าศูนย์กับ false เมื่อ items ว่าง
+
+```
+func First[T any](items []T) (T, bool) {
+	if len(items) == 0 {
+		var zero T
+		return zero, false
+	}
+	return items[0], true
+}
+```
 
 ## hard
-คืนตัวสุดท้ายพร้อมบอกว่ามีค่า
+At คืน items[index] และ true เมื่อ index อยู่ในขอบ และคืนค่าศูนย์กับ false เมื่อเกิน Last คืนสมาชิกสุดท้ายและ true
 
-## steps
-- ใช้ type parameter เมื่อต้องคืนชนิดเดิม
-- คืน zero value เมื่อว่าง
-- อย่าใช้ any แล้วให้ผู้เรียก assert
-- ใช้ interface เมื่อต้องการพฤติกรรม
+```
+func At[T any](items []T, index int) (T, bool) {
+	if index < 0 || index >= len(items) {
+		var zero T
+		return zero, false
+	}
+	return items[index], true
+}
+```
+
+```
+func Last[T any](items []T) (T, bool) {
+	if len(items) == 0 {
+		var zero T
+		return zero, false
+	}
+	return items[len(items)-1], true
+}
+```

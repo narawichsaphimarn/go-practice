@@ -1,17 +1,43 @@
 ## explanation
-encoding/json/v2 เป็น API ทดลอง คนละชุดกับ encoding/json ที่ใช้เป็นค่าเริ่มต้น การเปิดใช้ต้องตามกติกา experiment ของรุ่นนั้น ไม่ใช่การแทนที่แบบเงียบในทุกโปรแกรม
+encoding/json คือแพ็กเกจปกติที่ใช้แปลง struct เป็น JSON encoding/json/v2 คือ API ทดลองที่แยกจากตัวนี้ โปรแกรมที่ import encoding/json ไม่เปลี่ยนไปใช้ v2 เอง
+
+```
+type Note struct {
+	Text string `json:"text"`
+}
+
+func toJSON(text string) ([]byte, error) {
+	return json.Marshal(Note{Text: text})
+}
+```
+
+ต้อง import "encoding/json" toJSON("hi") ได้ไบต์ของ {"text":"hi"}
 
 ## apply
-ใช้เมื่อต้องอธิบายพฤติกรรมที่การรันครั้งเดียวพิสูจน์ไม่ได้
+จะทดลอง v2 ต้องเปิดตามกติกา experiment ของรุ่นนั้น เช่น GOEXPERIMENT=jsonv2 ไม่ใช่แค่เปลี่ยน import แล้วคาดว่าเป็นค่าเริ่มต้น
+
+```
+GOEXPERIMENT=jsonv2 go test ./...
+```
+
+คำสั่งนี้เปิด experiment ตามกติกาของรุ่น ตัว encoding/json ปกตียังอยู่
 
 ## easy
-เคสง่ายคือตัวเลือกที่ตรงนิยาม
+encoding/json/v2 คือ API ทดลองที่แยกจาก encoding/json ตัวปกติ โค้ดที่ใช้ได้ทุกวันยังเป็นแบบนี้
+
+```
+func toJSON(text string) ([]byte, error) {
+	return json.Marshal(Note{Text: text})
+}
+```
 
 ## hard
-เคสยากคือตัวเลือกที่คนมักสับสนกับของใกล้เคียง
+ทดลอง v2 โดยเปิดตามกติกา experiment ของรุ่นนั้น โปรแกรมที่ import encoding/json ไม่เปลี่ยนเอง
 
-## steps
-- อ่านคำถาม
-- ตัดตัวเลือกที่ขัดกติกา
-- เลือกข้อที่ตรงพฤติกรรม
-- ส่งคำตอบในหน้านี้
+```
+GOEXPERIMENT=jsonv2 go test ./...
+```
+
+```
+import "encoding/json"
+```

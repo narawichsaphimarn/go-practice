@@ -1,24 +1,40 @@
 ## explanation
-var ประกาศตัวแปรโดยไม่กำหนดค่า จะได้ zero value: int เป็น 0, string เป็นว่าง, bool เป็น false
+ตัวแปรคือชื่อที่เก็บค่าไว้ใช้ทีหลัง ถ้าประกาศชนิดไว้แต่ยังไม่ใส่ค่า Go ให้ค่าศูนย์ของชนิดนั้น int ได้ 0 string ได้ข้อความว่าง bool ได้ false
 
 ```
 var count int
+var name string
+var ready bool
+
 fmt.Println(count)
+fmt.Println(name)
+fmt.Println(ready)
 ```
 
-:= ประกาศพร้อมค่าเริ่มและให้คอมไพเลอร์อนุมานชนิด
+ผลคือ 0 บรรทัดว่าง แล้ว false
 
 ## apply
-ใช้ตอนอ่าน config ที่ยังไม่ถูกตั้ง และตอนออกแบบ struct ที่ฟิลด์ว่างต้องมีความหมายชัด
+เมื่อต้องพิมพ์ค่าที่คำนวณไว้ ไม่พิมพ์ตัวหนังสือตายตัว ให้เก็บในตัวแปรแล้วส่งตัวแปรเข้า Println
+
+```
+lang := "go"
+fmt.Println(lang)
+```
+
+ได้คำว่า go เพราะพิมพ์ค่าใน lang ไม่ใช่เพราะพิมพ์คำว่า lang
 
 ## easy
-พิมพ์ zero value ของ int
+ประกาศ int โดยไม่ใส่ค่า แล้วพิมพ์ตัวแปรนั้น จะได้ 0
+
+```
+var n int
+fmt.Println(n)
+```
 
 ## hard
-พิมพ์ค่าจากตัวแปร string หรือ zero value ของ bool
+bool ที่ยังไม่ใส่ค่าคือ false ไม่ใช่ true และไม่ใช่ข้อความว่าง
 
-## steps
-- ประกาศตัวแปร
-- อย่าใส่ค่าเริ่มถ้าต้องการ zero value
-- พิมพ์ค่า
-- เทียบกับที่โจทย์ขอ
+```
+var ok bool
+fmt.Println(ok)
+```

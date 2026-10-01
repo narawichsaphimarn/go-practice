@@ -1,5 +1,5 @@
 ## explanation
-A type parameter lets one function work for many types and still check them at compile time. Use it when a small interface would not say the same thing, such as returning the same value or finding the lesser value with cmp.Ordered.
+A generic function does not lock the type until the caller passes a value. Use it when the same steps work for many types, such as returning the value unchanged or picking the smaller one.
 
 ```
 func Identity[T any](v T) T {
@@ -7,17 +7,47 @@ func Identity[T any](v T) T {
 }
 ```
 
+Identity(1) is 1 and Identity("go") is go, without a separate function for each type.
+
 ## apply
-Use it in a library that handles a slice of any element type without copying the function for each type.
+Use a type parameter when the caller must choose the type. Min works for ints and for strings that can be ordered, because the constraint is cmp.Ordered. Map converts every item with the function the caller supplies.
+
+```
+func Min[T cmp.Ordered](a, b T) T {
+	if a < b {
+		return a
+	}
+	return b
+}
+```
 
 ## easy
-Return the same value.
+Identity returns exactly the value it received.
+
+```
+func Identity[T any](v T) T {
+	return v
+}
+```
 
 ## hard
-Pick the lesser value, or transform each element.
+Map builds a new slice by calling f on every item. Min returns whichever of a and b is smaller.
 
-## steps
-- Add a type parameter when the type must follow the caller
-- Use any when you call no methods
-- Use a constraint when you compare
-- Skip generics when one type is enough
+```
+func Map[T any, U any](in []T, f func(T) U) []U {
+	out := make([]U, len(in))
+	for i, v := range in {
+		out[i] = f(v)
+	}
+	return out
+}
+```
+
+```
+func Min[T cmp.Ordered](a, b T) T {
+	if a < b {
+		return a
+	}
+	return b
+}
+```

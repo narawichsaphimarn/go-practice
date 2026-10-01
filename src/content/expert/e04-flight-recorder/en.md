@@ -1,17 +1,41 @@
 ## explanation
-runtime/trace.FlightRecorder keeps a short execution trace in memory and writes it out when an event happens. You do not have to leave a full trace running to disk the whole time.
+FlightRecorder in package runtime/trace keeps a short execution trace in memory before an incident. It does not write to disk the whole time.
+
+```
+fr := trace.NewFlightRecorder(trace.FlightRecorderConfig{
+	MinAge:   time.Second,
+	MaxBytes: 1 << 20,
+})
+fr.Start()
+```
+
+Import "runtime/trace" and "time". MinAge and MaxBytes are the size of the window kept in memory.
 
 ## apply
-Use it when one run cannot prove the behavior.
+When the program decides an event is worth saving, it calls WriteTo to write the latest window out. That is different from tracing the whole process, which writes to disk the entire time.
+
+```
+fr.Stop()
+fr.WriteTo(w)
+```
+
+Stop ends collection. WriteTo writes the kept window to w.
 
 ## easy
-The easy case is the choice that matches the definition.
+Before the event, FlightRecorder keeps the data in memory as a short window.
+
+```
+fr := trace.NewFlightRecorder(trace.FlightRecorderConfig{
+	MinAge:   time.Second,
+	MaxBytes: 1 << 20,
+})
+fr.Start()
+```
 
 ## hard
-The hard case is the choice people mix up with a neighbor.
+It does not write a trace to disk the whole time. It writes out when the program decides to save, through WriteTo.
 
-## steps
-- Read the question
-- Drop the choice that breaks the rule
-- Pick the one that matches the behavior
-- Submit on this page
+```
+fr.Stop()
+fr.WriteTo(w)
+```
