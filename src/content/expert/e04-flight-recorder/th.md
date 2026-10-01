@@ -1,17 +1,41 @@
 ## explanation
-runtime/trace.FlightRecorder เก็บบันทึก execution trace ช่วงสั้นไว้ในหน่วยความจำ แล้วค่อยเขียนออกเมื่อเกิดเหตุ จึงไม่ต้องเปิด trace ทั้งกระบวนการไว้บนดิสก์ตลอดเวลา
+FlightRecorder ในแพ็กเกจ runtime/trace เก็บบันทึกการทำงานช่วงสั้นไว้ในหน่วยความจำก่อนเกิดเหตุ ไม่เขียนลงดิสก์ตลอดเวลา
+
+```
+fr := trace.NewFlightRecorder(trace.FlightRecorderConfig{
+	MinAge:   time.Second,
+	MaxBytes: 1 << 20,
+})
+fr.Start()
+```
+
+ต้อง import "runtime/trace" และ "time" MinAge กับ MaxBytes คือขนาดของหน้าต่างที่เก็บไว้ในหน่วยความจำ
 
 ## apply
-ใช้เมื่อต้องอธิบายพฤติกรรมที่การรันครั้งเดียวพิสูจน์ไม่ได้
+เมื่อโปรแกรมตัดสินใจว่าเหตุนี้ควรบันทึก จึงเรียก WriteTo เพื่อเขียนหน้าต่างล่าสุดออก มันต่างจากการเปิด trace ทั้งกระบวนการที่เขียนลงดิสก์ตลอดเวลา
+
+```
+fr.Stop()
+fr.WriteTo(w)
+```
+
+Stop หยุดเก็บ WriteTo เขียนช่วงที่เก็บไว้ลง w
 
 ## easy
-เคสง่ายคือตัวเลือกที่ตรงนิยาม
+ก่อนเกิดเหตุ FlightRecorder เก็บข้อมูลไว้ในหน่วยความจำเป็นช่วงสั้น
+
+```
+fr := trace.NewFlightRecorder(trace.FlightRecorderConfig{
+	MinAge:   time.Second,
+	MaxBytes: 1 << 20,
+})
+fr.Start()
+```
 
 ## hard
-เคสยากคือตัวเลือกที่คนมักสับสนกับของใกล้เคียง
+มันไม่เขียน trace ลงดิสก์ตลอดเวลา เขียนออกเมื่อโปรแกรมตัดสินใจบันทึก ด้วย WriteTo
 
-## steps
-- อ่านคำถาม
-- ตัดตัวเลือกที่ขัดกติกา
-- เลือกข้อที่ตรงพฤติกรรม
-- ส่งคำตอบในหน้านี้
+```
+fr.Stop()
+fr.WriteTo(w)
+```

@@ -1,17 +1,35 @@
 ## explanation
-GOEXPERIMENT=greenteagc turns on an experimental garbage collector in Go 1.25. It is not the default, because it still needs measurement on real workloads before it can replace the ordinary collector.
+greenteagc is an experimental garbage collector. It is not the ordinary collector. You turn it on with the environment variable GOEXPERIMENT=greenteagc.
+
+```
+GOEXPERIMENT=greenteagc go run .
+```
+
+This command runs the program with the experimental collector, following the experiment rules.
 
 ## apply
-Use it when one run cannot prove the behavior.
+It is not the default yet because it still needs measurement on real workloads before it replaces the ordinary collector. A program that does not set the variable still uses the ordinary collector.
+
+```
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("ordinary collector unless GOEXPERIMENT=greenteagc")
+}
+```
 
 ## easy
-The easy case is the choice that matches the definition.
+greenteagc is an experimental collector that you enable with GOEXPERIMENT.
+
+```
+GOEXPERIMENT=greenteagc go run .
+```
 
 ## hard
-The hard case is the choice people mix up with a neighbor.
+Turn it on with GOEXPERIMENT=greenteagc at build or run time. It is not the default because it still needs measurement on real workloads.
 
-## steps
-- Read the question
-- Drop the choice that breaks the rule
-- Pick the one that matches the behavior
-- Submit on this page
+```
+GOEXPERIMENT=greenteagc go test ./...
+```

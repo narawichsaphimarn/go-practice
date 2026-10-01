@@ -1,22 +1,66 @@
 ## explanation
-การใช้ pointer ที่เป็น nil อ่านฟิลด์หรือเรียก method ที่แตะฟิลด์ จะ panic ว่า nil pointer dereference Go 1.25 ยังคงตรวจจุดนี้ตอนรัน แบบฝึกนี้ให้โปรแกรม panic จริงบน runner ไม่ใช่ข้อควิซ
+pointer ที่เป็น nil ไม่ได้ชี้ออบเจ็กต์ การ dereference คือการไปอ่านค่าที่มันชี้ main ด้านล่างตั้งใจ panic เพราะอ่าน *int ที่เป็น nil
 
 ```
-var p *int
-fmt.Println(*p)
+func main() {
+	var p *int
+	fmt.Println(*p)
+}
 ```
+
+p ไม่ได้ชี้ int จริง *p จึง panic ด้วย nil pointer
 
 ## apply
-ใช้เป็นตัวอย่างของบั๊กที่ได้ผลลัพธ์มาก่อนตรวจ error หรือตรวจ nil
+struct ที่เป็น nil ก็อ่านฟิลด์ไม่ได้ และ method ที่อ่านฟิลด์บน receiver ที่เป็น nil ก็ panic เช่นกัน ทั้งสามแบบนี้ตั้งใจให้โปรแกรมล้ม
+
+```
+type Box struct {
+	N int
+}
+
+func main() {
+	var b *Box
+	fmt.Println(b.N)
+}
+```
+
+b ไม่ได้ชี้ Box จริง b.N จึง panic
 
 ## easy
-dereference pointer ที่เป็น nil
+ทำให้ main panic โดย dereference *int ที่เป็น nil
+
+```
+func main() {
+	var p *int
+	fmt.Println(*p)
+}
+```
 
 ## hard
-อ่านฟิลด์หรือเรียก method ผ่าน pointer ที่เป็น nil
+เรียก method Name ที่อ่านฟิลด์บน receiver ที่เป็น nil โปรแกรมต้อง panic การอ่านฟิลด์ผ่าน pointer ของ struct ที่เป็น nil ก็ panic เช่นกัน
 
-## steps
-- ประกาศ pointer โดยไม่ชี้ค่า
-- ใช้ค่านั้นทันที
-- รันแล้วดู panic
-- ส่งคำตอบเมื่อ stderr มี nil pointer
+```
+type User struct {
+	Name string
+}
+
+func (u *User) Label() string {
+	return u.Name
+}
+
+func main() {
+	var u *User
+	fmt.Println(u.Label())
+}
+```
+
+```
+type Box struct {
+	N int
+}
+
+func main() {
+	var b *Box
+	fmt.Println(b.N)
+}
+```

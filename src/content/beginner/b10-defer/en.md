@@ -1,25 +1,47 @@
 ## explanation
-defer runs when the function returns, in reverse order. With a named result, a deferred function can still change the returned value. panic stops the process unless recover runs inside a deferred function. panic is not the normal way to report a mistake.
+defer saves work to run as the function is about to return. Use it to finish a job or to update a named result. panic stops the whole call at once, so it is not the normal way to report a mistake. Return an error for that. recover inside defer catches that panic.
 
 ```
 func Order() (s string) {
 	defer func() { s += "b" }()
 	s = "a"
-	return
+	return s
 }
 ```
 
+Order returns ab because defer appends b after s is set to a and before the function really finishes.
+
 ## apply
-Use it to close a file or unlock, and use recover only at a boundary that must keep the process alive.
+Work that must happen on the way out, no matter which return you hit, belongs in defer. That includes appending a letter or counting that something closed.
 
 ## easy
-Build a string with defer.
+Order returns ab by letting defer append b onto the named result.
+
+```
+func Order() (s string) {
+	defer func() { s += "b" }()
+	s = "a"
+	return s
+}
+```
 
 ## hard
-Count a close, or catch a panic.
+Safe panics, recover runs in defer, and the function returns true. Closed adds one to the named result in defer so the result is 1.
 
-## steps
-- Place defer before the return point
-- Use a named result if you must change it
-- Call recover inside defer
-- Do not replace an ordinary error with panic
+```
+func Safe() (recovered bool) {
+	defer func() {
+		if recover() != nil {
+			recovered = true
+		}
+	}()
+	panic("boom")
+}
+```
+
+```
+func Closed() (n int) {
+	defer func() { n++ }()
+	return 0
+}
+```

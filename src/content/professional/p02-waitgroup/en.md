@@ -1,25 +1,85 @@
 ## explanation
-WaitGroup.Add must run before go, in the goroutine that will Wait, not inside the new goroutine. go vet has a waitgroup check that warns when Add happens inside the goroutine that was just started. Done belongs in defer.
+sync.WaitGroup counts work that has not finished. Add raises the count. Done lowers it. Wait stops until the count is zero. Call Add before the go statement, not inside the goroutine, because Wait can run before that Add happens.
 
 ```
-wg.Add(1)
-go func() {
-	defer wg.Done()
-}()
-wg.Wait()
+func FanIn(n int) int {
+	var wg sync.WaitGroup
+	wg.Add(n)
+	for i := 0; i < n; i++ {
+		go func() {
+			wg.Done()
+		}()
+	}
+	wg.Wait()
+	return n
+}
 ```
+
+FanIn(3) starts three goroutines, waits until all three call Done, then returns 3. Import "sync".
 
 ## apply
-Use it to wait for a batch that does not return one value at a time, such as closing several resources together.
+Total lets each goroutine add 1 to the same variable. A variable that several goroutines write at once must be locked with sync.Mutex, or the writes race.
+
+```
+func Total(n int) int {
+	var wg sync.WaitGroup
+	var mu sync.Mutex
+	total := 0
+	wg.Add(n)
+	for i := 0; i < n; i++ {
+		go func() {
+			mu.Lock()
+			total++
+			mu.Unlock()
+			wg.Done()
+		}()
+	}
+	wg.Wait()
+	return total
+}
+```
+
+Total(3) is 3 because three goroutines each add 1 under mu.
 
 ## easy
-Count finished jobs.
+FanIn returns n after waiting for n goroutines. Call wg.Add(n) before the loop, and let each goroutine call wg.Done.
+
+```
+func FanIn(n int) int {
+	var wg sync.WaitGroup
+	wg.Add(n)
+	for i := 0; i < n; i++ {
+		go func() {
+			wg.Done()
+		}()
+	}
+	wg.Wait()
+	return n
+}
+```
 
 ## hard
-Place Add before go so vet stays quiet.
+The broken code calls wg.Add inside the goroutine. Wait can finish before Add, so the function returns 0 even though FanIn(3) should be 3.
 
-## steps
-- Call Add before go
-- Put Done in defer
-- Call Wait after the jobs are started
-- Keep go vet quiet
+```
+go func() {
+	wg.Add(1)
+	wg.Done()
+}()
+```
+
+Move wg.Add out, before the go statement, and return n after Wait.
+
+```
+func FanIn(n int) int {
+	var wg sync.WaitGroup
+	for i := 0; i < n; i++ {
+		wg.Add(1)
+		go func() {
+			wg.Done()
+		}()
+	}
+	wg.Wait()
+	return n
+}
+```

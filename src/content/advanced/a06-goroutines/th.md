@@ -1,23 +1,47 @@
 ## explanation
-go ข้างหน้าการเรียกฟังก์ชันเริ่ม goroutine งานนั้นไม่ได้แชร์ลำดับกับผู้เรียกโดยอัตโนมัติ ต้องมี channel หรือ sync เพื่อรู้ว่าจบแล้ว ถ้า main จบก่อน งานที่ค้างจะถูกตัด
+go นำหน้าการเรียกฟังก์ชันคือให้ทำงานคู่ไปกับงานปัจจุบัน งานนั้นไม่รอให้กันเอง ถ้าต้องได้ผลกลับ ให้ส่งผ่าน channel แล้วรับใน main
 
 ```
-ch := make(chan int, 1)
-go func() { ch <- a + b }()
-fmt.Println(<-ch)
+func AddAsync(a, b int) int {
+	ch := make(chan int)
+	go func() { ch <- a + b }()
+	return <-ch
+}
 ```
+
+AddAsync(2, 3) คืน 5 หลัง goroutine ส่งผลมา
 
 ## apply
-ใช้แยกงานที่ใช้เวลารอ เช่น เรียก service สองตัวพร้อมกัน แล้วค่อยรวมผล
+แยกงานบวกคนละก้อนแล้วนำมารวม และนับว่ามีกี่งานที่จบแล้ว ต้องรับจาก channel ให้ครบ ไม่งั้น main จบก่อนแล้วผลหาย
 
 ## easy
-บวกเลขใน goroutine แล้วรับผลกลับ
+AddAsync คืน a+b โดยให้ goroutine ส่งผลเข้า channel
+
+```
+func AddAsync(a, b int) int {
+	ch := make(chan int)
+	go func() { ch <- a + b }()
+	return <-ch
+}
+```
 
 ## hard
-รวมผลจากสองงาน
+WaitBoth เริ่มสอง goroutine แล้วรอทั้งคู่ จึงคืน 2 SumParts รวมผลจากสอง goroutine
 
-## steps
-- เริ่ม goroutine ด้วย go
-- ส่งผลกลับทาง channel
-- รับให้ครบก่อนคืน
-- อย่าจบฟังก์ชันทั้งที่ยังไม่มีใครรับ
+```
+func WaitBoth() int {
+	ch := make(chan int)
+	go func() { ch <- 1 }()
+	go func() { ch <- 1 }()
+	return <-ch + <-ch
+}
+```
+
+```
+func SumParts(a, b int) int {
+	ch := make(chan int)
+	go func() { ch <- a }()
+	go func() { ch <- b }()
+	return <-ch + <-ch
+}
+```

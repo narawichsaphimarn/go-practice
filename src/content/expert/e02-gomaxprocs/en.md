@@ -1,17 +1,35 @@
 ## explanation
-On Linux, when the process runs in a cgroup with a CPU limit, Go 1.25 adjusts the default GOMAXPROCS to match that limit. An explicit setting still wins. This behavior is for Linux, not every operating system.
+GOMAXPROCS is how many threads Go uses to run goroutines at once. Starting with Go 1.25 on Linux, when a cgroup CPU limit exists, the default GOMAXPROCS comes from that limit.
+
+```
+func show() int {
+	return runtime.GOMAXPROCS(0)
+}
+```
+
+runtime.GOMAXPROCS(0) returns the current value and does not change it. Import "runtime".
 
 ## apply
-Use it when one run cannot prove the behavior.
+If you set GOMAXPROCS yourself, that value wins over the cgroup adjustment. This behavior applies on Linux when a cgroup limit exists, not on every platform.
+
+```
+runtime.GOMAXPROCS(2)
+```
+
+After this line the program uses 2 even if the cgroup would allow more.
 
 ## easy
-The easy case is the choice that matches the definition.
+On Linux, Go 1.25 uses the cgroup CPU limit as the default GOMAXPROCS when one is set.
+
+```
+func show() int {
+	return runtime.GOMAXPROCS(0)
+}
+```
 
 ## hard
-The hard case is the choice people mix up with a neighbor.
+This behavior applies on Linux when a cgroup limit exists. If you set GOMAXPROCS yourself, the explicit value wins over the cgroup adjustment.
 
-## steps
-- Read the question
-- Drop the choice that breaks the rule
-- Pick the one that matches the behavior
-- Submit on this page
+```
+runtime.GOMAXPROCS(2)
+```

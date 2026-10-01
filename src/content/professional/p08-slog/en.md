@@ -1,21 +1,57 @@
 ## explanation
-log/slog records a message plus key and value pairs. The text handler prints msg= and key=value. Concatenating one string makes it hard for a machine to split the fields.
+slog writes a log as a message plus key and value pairs, instead of mixing them into one sentence. Line builds a logger that writes to a Writer, then records msg with the key value pair.
 
 ```
-logger.Info("hello", "user", "ada")
+func Line(w io.Writer, msg, key, value string) {
+	logger := slog.New(slog.NewTextHandler(w, nil))
+	logger.Info(msg, key, value)
+}
 ```
+
+Import "log/slog" and "io". Line(w, "saved", "id", "7") writes a line with the message saved and the pair id=7.
 
 ## apply
-Use it in a service that searches logs by user id or request id.
+Level Warn is a warning, not ordinary information. With attaches an attribute to a logger, and every line that logger writes carries that attribute.
+
+```
+func Warn(w io.Writer, code int) {
+	logger := slog.New(slog.NewTextHandler(w, nil))
+	logger.Warn("warn", "code", code)
+}
+```
+
+```
+func WithUser(w io.Writer, user, msg string) {
+	logger := slog.New(slog.NewTextHandler(w, nil)).With("user", user)
+	logger.Info(msg)
+}
+```
+
+WithUser(w, "ann", "login") writes a login line that also carries user=ann.
 
 ## easy
-Write one line that has a message and a key.
+Line records msg and a key value pair to a Writer.
+
+```
+func Line(w io.Writer, msg, key, value string) {
+	logger := slog.New(slog.NewTextHandler(w, nil))
+	logger.Info(msg, key, value)
+}
+```
 
 ## hard
-Pass values of different kinds while keeping pairs.
+WithUser makes the logger attach the user attribute to the line. Warn uses level Warn and includes the key code.
 
-## steps
-- Build a logger from a handler
-- Pass a key followed by its value
-- Do not concatenate the whole line yourself
-- Check that the result has both msg and the key
+```
+func WithUser(w io.Writer, user, msg string) {
+	logger := slog.New(slog.NewTextHandler(w, nil)).With("user", user)
+	logger.Info(msg)
+}
+```
+
+```
+func Warn(w io.Writer, code int) {
+	logger := slog.New(slog.NewTextHandler(w, nil))
+	logger.Warn("warn", "code", code)
+}
+```

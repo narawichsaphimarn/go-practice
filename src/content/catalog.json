@@ -25,7 +25,11 @@
             "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
             "en": "Printed output must match every character, including the final newline"
           },
-          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n"
+          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
+          "hint": {
+            "th": "เปลี่ยนข้อความใน Println จาก todo เป็น hello",
+            "en": "Change the Println text from todo to hello"
+          }
         },
         {
           "id": "mid",
@@ -39,7 +43,11 @@
             "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
             "en": "Printed output must match every character, including the final newline"
           },
-          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n"
+          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
+          "hint": {
+            "th": "เรียก Println สองครั้ง คนละบรรทัด",
+            "en": "Call Println twice, once per line"
+          }
         },
         {
           "id": "hard",
@@ -53,7 +61,11 @@
             "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
             "en": "Printed output must match every character, including the final newline"
           },
-          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n"
+          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
+          "hint": {
+            "th": "พิมพ์บรรทัดเดียวที่ประกอบ sum= กับผลของ 1+2",
+            "en": "Print one line that joins sum= with the result of 1+2"
+          }
         }
       ]
     },
@@ -82,7 +94,11 @@
             "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
             "en": "Printed output must match every character, including the final newline"
           },
-          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n"
+          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
+          "hint": {
+            "th": "ประกาศตัวแปร int โดยไม่ใส่ค่า แล้วพิมพ์ตัวแปรนั้น",
+            "en": "Declare an int with no value, then print that variable"
+          }
         },
         {
           "id": "mid",
@@ -96,7 +112,11 @@
             "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
             "en": "Printed output must match every character, including the final newline"
           },
-          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n"
+          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
+          "hint": {
+            "th": "ประกาศตัวแปร string ที่เก็บ go แล้วพิมพ์ตัวแปร ไม่พิมพ์ตัวอักษรตรงๆ",
+            "en": "Declare a string variable that holds go, then print the variable"
+          }
         },
         {
           "id": "hard",
@@ -110,7 +130,11 @@
             "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
             "en": "Printed output must match every character, including the final newline"
           },
-          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n"
+          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
+          "hint": {
+            "th": "ประกาศตัวแปร bool โดยไม่ใส่ค่า แล้วพิมพ์ตัวแปรนั้น",
+            "en": "Declare a bool with no value, then print that variable"
+          }
         }
       ]
     },
@@ -139,7 +163,11 @@
             "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
             "en": "Printed output must match every character, including the final newline"
           },
-          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n"
+          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
+          "hint": {
+            "th": "ใช้ if ตรวจ score >= 80 แล้วพิมพ์ pass",
+            "en": "Use if to test score >= 80, then print pass"
+          }
         },
         {
           "id": "mid",
@@ -153,7 +181,11 @@
             "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
             "en": "Printed output must match every character, including the final newline"
           },
-          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n"
+          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
+          "hint": {
+            "th": "ใช้ for ตั้งแต่ 1 ถึง 3 และพิมพ์ด้วย Print เพื่อไม่ขึ้นบรรทัดใหม่",
+            "en": "Use a for from 1 through 3 and Print so the digits stay on one line"
+          }
         },
         {
           "id": "hard",
@@ -167,7 +199,11 @@
             "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
             "en": "Printed output must match every character, including the final newline"
           },
-          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n"
+          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
+          "hint": {
+            "th": "ใช้ switch ที่ case ของ day เท่ากับ 1 แล้วพิมพ์ monday",
+            "en": "Use a switch whose case is day equal to 1, then print monday"
+          }
         }
       ]
     },
@@ -196,7 +232,11 @@
             "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
             "en": "Printed output must match every character, including the final newline"
           },
-          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n"
+          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
+          "hint": {
+            "th": "เขียนฟังก์ชัน add ที่รับสอง int แล้วเรียกมันจาก main",
+            "en": "Write add that takes two ints, then call it from main"
+          }
         },
         {
           "id": "mid",
@@ -210,7 +250,11 @@
             "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
             "en": "Printed output must match every character, including the final newline"
           },
-          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n"
+          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
+          "hint": {
+            "th": "ให้ div คืนทั้งผลหารและ error และเมื่อหารได้ให้ error เป็น nil",
+            "en": "Have div return both the quotient and an error, and use nil when division works"
+          }
         },
         {
           "id": "hard",
@@ -224,7 +268,11 @@
             "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
             "en": "Printed output must match every character, including the final newline"
           },
-          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n"
+          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
+          "hint": {
+            "th": "เมื่อตัวหารเป็นศูนย์ให้พิมพ์คำว่า error แทนผลหาร",
+            "en": "When the divisor is zero, print the word error instead of a quotient"
+          }
         }
       ]
     },
@@ -253,7 +301,11 @@
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc Sum(values []int) int {\n\treturn 0\n}\n"
+          "starter": "package main\n\nfunc Sum(values []int) int {\n\treturn 0\n}\n",
+          "hint": {
+            "th": "วนสมาชิกใน slice แล้วบวกเข้าตัวสะสม ถ้าไม่มีสมาชิกให้คืน 0",
+            "en": "Loop over the slice and add into a total, and return 0 when it is empty"
+          }
         },
         {
           "id": "mid",
@@ -267,7 +319,11 @@
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc Count(values []int, target int) int {\n\treturn 0\n}\n"
+          "starter": "package main\n\nfunc Count(values []int, target int) int {\n\treturn 0\n}\n",
+          "hint": {
+            "th": "วน slice แล้วนับตัวที่เท่ากับ target",
+            "en": "Loop over the slice and count items equal to target"
+          }
         },
         {
           "id": "hard",
@@ -281,7 +337,11 @@
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc Last(values []int) int {\n\treturn 0\n}\n"
+          "starter": "package main\n\nfunc Last(values []int) int {\n\treturn 0\n}\n",
+          "hint": {
+            "th": "ถ้า slice ว่างให้คืน 0 ไม่เช่นนั้นคืนตัวที่ดัชนีสุดท้าย",
+            "en": "Return 0 when the slice is empty, otherwise return the last index"
+          }
         }
       ]
     },
@@ -310,7 +370,11 @@
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\ntype Rect struct {\n\tW int\n\tH int\n}\n\nfunc Area(r Rect) int {\n\treturn 0\n}\n"
+          "starter": "package main\n\ntype Rect struct {\n\tW int\n\tH int\n}\n\nfunc Area(r Rect) int {\n\treturn 0\n}\n",
+          "hint": {
+            "th": "คืนผลคูณของฟิลด์ W กับ H",
+            "en": "Return the product of the W and H fields"
+          }
         },
         {
           "id": "mid",
@@ -324,7 +388,11 @@
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\ntype Rect struct {\n\tW int\n\tH int\n}\n\nfunc (r *Rect) Grow(n int) {\n}\n"
+          "starter": "package main\n\ntype Rect struct {\n\tW int\n\tH int\n}\n\nfunc (r *Rect) Grow(n int) {\n}\n",
+          "hint": {
+            "th": "ใน method ที่รับ pointer ให้บวก n เข้าทั้ง W และ H",
+            "en": "In the pointer method, add n to both W and H"
+          }
         },
         {
           "id": "hard",
@@ -338,7 +406,11 @@
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\ntype User struct {\n\tName string\n}\n\nfunc (u *User) Rename(name string) {\n}\n"
+          "starter": "package main\n\ntype User struct {\n\tName string\n}\n\nfunc (u *User) Rename(name string) {\n}\n",
+          "hint": {
+            "th": "ตั้งฟิลด์ Name ผ่าน pointer receiver",
+            "en": "Set the Name field through the pointer receiver"
+          }
         }
       ]
     },
@@ -367,7 +439,11 @@
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc Inc(n *int) {\n}\n"
+          "starter": "package main\n\nfunc Inc(n *int) {\n}\n",
+          "hint": {
+            "th": "เขียนค่าใหม่ทับค่าเดิมที่ pointer ชี้อยู่ โดยบวกหนึ่ง",
+            "en": "Assign a new value through the pointer by adding one"
+          }
         },
         {
           "id": "mid",
@@ -381,7 +457,11 @@
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc Swap(a, b *int) {\n}\n"
+          "starter": "package main\n\nfunc Swap(a, b *int) {\n}\n",
+          "hint": {
+            "th": "เก็บค่าที่ pointer ตัวหนึ่งชี้อยู่ไว้ก่อน แล้วสลับกับอีกตัว",
+            "en": "Save the value one pointer points at, then exchange it with the other"
+          }
         },
         {
           "id": "hard",
@@ -395,7 +475,11 @@
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\ntype User struct {\n\tName string\n}\n\nfunc SetName(u *User, name string) {\n}\n"
+          "starter": "package main\n\ntype User struct {\n\tName string\n}\n\nfunc SetName(u *User, name string) {\n}\n",
+          "hint": {
+            "th": "ตั้งฟิลด์ Name บนค่าที่ pointer ชี้อยู่",
+            "en": "Set the Name field on the value the pointer points at"
+          }
         }
       ]
     },
@@ -424,7 +508,11 @@
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc Div(a, b int) (int, error) {\n\treturn 0, nil\n}\n"
+          "starter": "package main\n\nfunc Div(a, b int) (int, error) {\n\treturn 0, nil\n}\n",
+          "hint": {
+            "th": "ถ้า b เป็น 0 ให้คืน error ถ้าไม่ใช่ให้คืนผลหารกับ nil",
+            "en": "If b is 0 return an error, otherwise return the quotient and nil"
+          }
         },
         {
           "id": "mid",
@@ -438,7 +526,11 @@
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc ParsePositive(s string) (int, error) {\n\treturn 0, nil\n}\n"
+          "starter": "package main\n\nfunc ParsePositive(s string) (int, error) {\n\treturn 0, nil\n}\n",
+          "hint": {
+            "th": "แปลงสตริงเป็นจำนวน แล้วคืน error เมื่อแปลงไม่ได้หรือค่าไม่มากกว่า 0",
+            "en": "Convert the string to a number, and return an error when it fails or is not greater than 0"
+          }
         },
         {
           "id": "hard",
@@ -452,7 +544,11 @@
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc MustHave(s string) error {\n\treturn nil\n}\n"
+          "starter": "package main\n\nfunc MustHave(s string) error {\n\treturn nil\n}\n",
+          "hint": {
+            "th": "ถ้าสตริงว่างให้คืน error ถ้าไม่ว่างให้คืน nil",
+            "en": "Return an error when the string is empty, and nil otherwise"
+          }
         }
       ]
     },
@@ -481,7 +577,11 @@
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc Greet(name string) string {\n\treturn \"\"\n}\n"
+          "starter": "package main\n\nfunc Greet(name string) string {\n\treturn \"\"\n}\n",
+          "hint": {
+            "th": "ต่อคำว่า hello ช่องว่างหนึ่งช่อง และชื่อที่รับมา",
+            "en": "Join the word hello, one space, and the given name"
+          }
         },
         {
           "id": "mid",
@@ -495,7 +595,11 @@
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc Join(a, b string) string {\n\treturn \"\"\n}\n"
+          "starter": "package main\n\nfunc Join(a, b string) string {\n\treturn \"\"\n}\n",
+          "hint": {
+            "th": "ต่อ a กับ b โดยคั่นด้วยจุลภาค",
+            "en": "Join a and b with a comma between them"
+          }
         },
         {
           "id": "hard",
@@ -509,7 +613,11 @@
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc Version() string {\n\treturn \"\"\n}\n"
+          "starter": "package main\n\nfunc Version() string {\n\treturn \"\"\n}\n",
+          "hint": {
+            "th": "คืนสตริง 1.25 จากฟังก์ชัน",
+            "en": "Return the string 1.25 from the function"
+          }
         }
       ]
     },
@@ -538,7 +646,11 @@
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc Order() (s string) {\n\treturn \"\"\n}\n"
+          "starter": "package main\n\nfunc Order() (s string) {\n\treturn \"\"\n}\n",
+          "hint": {
+            "th": "ใช้ defer เติม b เข้า named return แล้วคืน a",
+            "en": "Use defer to append b onto the named result, then return a"
+          }
         },
         {
           "id": "mid",
@@ -552,7 +664,11 @@
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc Closed() (n int) {\n\treturn 0\n}\n"
+          "starter": "package main\n\nfunc Closed() (n int) {\n\treturn 0\n}\n",
+          "hint": {
+            "th": "ใช้ defer เพิ่ม named return ทีละหนึ่ง",
+            "en": "Use defer to add one to the named result"
+          }
         },
         {
           "id": "hard",
@@ -566,7 +682,11 @@
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc Safe() (recovered bool) {\n\treturn false\n}\n"
+          "starter": "package main\n\nfunc Safe() (recovered bool) {\n\treturn false\n}\n",
+          "hint": {
+            "th": "ใน defer ให้เรียก recover แล้วตั้งค่าคืนเป็น true จากนั้นค่อย panic",
+            "en": "In defer, call recover and set the result to true, then panic"
+          }
         }
       ]
     },

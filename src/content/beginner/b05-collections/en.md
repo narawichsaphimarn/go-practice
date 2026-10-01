@@ -1,22 +1,57 @@
 ## explanation
-An array has a fixed length. A slice views a range of an array and can grow. A map stores values by key. Reading past the end of a slice panics.
+A slice is a row of values in order. Use it when you walk every item from first to last. A map pairs a name with a value. Use it when you look up by name, not by position.
 
 ```
-items := []int{1, 2, 3}
-fmt.Println(items[0])
+values := []int{1, 2, 3}
+total := 0
+for _, n := range values {
+	total += n
+}
+```
+
+```
+ages := map[string]int{"ann": 20}
+fmt.Println(ages["ann"])
 ```
 
 ## apply
-Use a slice when order matters and a map when you look up by key, such as counting words or finding a record by id.
+Add up a list of scores with a slice, one number at a time. Look up a person's age with a map, using the name as the key.
 
 ## easy
-Sum the numbers in a slice, including an empty slice.
+Sum adds the numbers in a slice. An empty list has nothing to add, so it returns 0.
+
+```
+func Sum(values []int) int {
+	total := 0
+	for _, n := range values {
+		total += n
+	}
+	return total
+}
+```
 
 ## hard
-Count how often a value appears, or return the last element safely.
+Last returns the final item. An empty slice has no final item, so it returns 0.
 
-## steps
-- Choose the collection
-- Walk the slice with range
-- Guard the empty slice
-- Return the value the test calls
+```
+func Last(values []int) int {
+	if len(values) == 0 {
+		return 0
+	}
+	return values[len(values)-1]
+}
+```
+
+Count how often target appears by adding one each time a value matches.
+
+```
+func Count(values []int, target int) int {
+	found := 0
+	for _, n := range values {
+		if n == target {
+			found++
+		}
+	}
+	return found
+}
+```

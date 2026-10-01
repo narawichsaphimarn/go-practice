@@ -1,21 +1,48 @@
 ## explanation
-io.Reader and io.Writer are small interfaces that files, network connections, and bytes.Buffer all implement. io.ReadAll is fine for a small payload. io.Copy to io.Discard counts bytes without keeping the payload.
+An io.Reader is something you can read bytes from, a chunk at a time. An io.Writer is something you can write bytes to. You do not need to know whether the other side is a file, memory, or the network.
 
 ```
-text, err := io.ReadAll(r)
+text, err := ReadAll(strings.NewReader("go"))
 ```
+
+text is go because that Reader holds the text go in memory.
 
 ## apply
-Use it when reading a request body or writing twice to a log without binding the function to a real file.
+Read a short note in one go. Write the same sentence into a log twice. Count the bytes that pass through without keeping the contents.
 
 ## easy
-Read the whole stream into a string.
+ReadAll reads until the end and returns a string.
+
+```
+func ReadAll(r io.Reader) (string, error) {
+	data, err := io.ReadAll(r)
+	if err != nil {
+		return "", err
+	}
+	return string(data), nil
+}
+```
 
 ## hard
-Write twice, or count bytes.
+Count returns how many bytes were read and does not return the contents. WriteTwice writes the same string to the Writer twice.
 
-## steps
-- Accept a Reader or a Writer
-- Check the error from Read or Write
-- Defer a close for what you opened
-- Choose Copy when you do not need the contents
+```
+func Count(r io.Reader) (int, error) {
+	data, err := io.ReadAll(r)
+	if err != nil {
+		return 0, err
+	}
+	return len(data), nil
+}
+```
+
+```
+func WriteTwice(w io.Writer, s string) error {
+	for i := 0; i < 2; i++ {
+		if _, err := io.WriteString(w, s); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+```

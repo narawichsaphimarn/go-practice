@@ -1,23 +1,58 @@
 ## explanation
-context.Context พกสัญญาณยกเลิกและเส้นตาย ผู้เรียกสร้างด้วย WithCancel หรือ WithTimeout แล้วส่งเป็นอาร์กิวเมนต์แรก งานที่รอต้องเลือก ctx.Done()
+context คือสัญญาณว่าผู้เรียกยังอยากให้งานทำต่อหรือไม่ เมื่อจบแล้ว ctx.Err() ไม่เป็น nil และ ctx.Done() พร้อมให้อ่าน
 
 ```
-if err := ctx.Err(); err != nil {
-	return err
+func Done(ctx context.Context) bool {
+	select {
+	case <-ctx.Done():
+		return true
+	default:
+		return false
+	}
 }
 ```
 
 ## apply
-ใช้ตัดงาน HTTP เมื่อผู้ใช้ปิดหน้า หรือเมื่อหมดเวลาที่กำหนดไว้ที่ขอบของ request
+ส่ง context ลงไปในฟังก์ชันที่รอ ถ้าผู้ใช้กดยกเลิก งานข้างในเลิกแล้วคืน ctx.Err() แทนผลปกติ
+
+```
+func Wait(ctx context.Context) error {
+	<-ctx.Done()
+	return ctx.Err()
+}
+```
 
 ## easy
-บอกว่า context จบแล้วหรือยัง
+Done คืน true เมื่อ context จบแล้ว และ false เมื่อยังไม่จบ
+
+```
+func Done(ctx context.Context) bool {
+	select {
+	case <-ctx.Done():
+		return true
+	default:
+		return false
+	}
+}
+```
 
 ## hard
-คืนค่าเริ่มเมื่อถูกยกเลิก หรือรอจน Done
+Wait บล็อกจน context จบแล้วคืน ctx.Err() OrDefault คืน 0 เมื่อจบแล้ว และคืน value เมื่อยังไม่จบ
 
-## steps
-- รับ ctx เป็นอาร์กิวเมนต์แรก
-- ตรวจ ctx.Err()
-- เลิกงานเมื่อ Done
-- อย่าเก็บ context ไว้ใน struct ของ request
+```
+func Wait(ctx context.Context) error {
+	<-ctx.Done()
+	return ctx.Err()
+}
+```
+
+```
+func OrDefault(ctx context.Context, value int) int {
+	select {
+	case <-ctx.Done():
+		return 0
+	default:
+		return value
+	}
+}
+```

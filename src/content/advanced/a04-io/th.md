@@ -1,21 +1,48 @@
 ## explanation
-io.Reader และ io.Writer เป็น interface เล็กที่ไฟล์ เครือข่าย และ bytes.Buffer ทำได้เหมือนกัน io.ReadAll สะดวกเมื่อข้อมูลเล็ก io.Copy กับ io.Discard ใช้นับไบต์โดยไม่เก็บก้อนไว้
+io.Reader คือของที่อ่านไบต์ทีละก้อนได้ io.Writer คือของที่เขียนไบต์ลงไปได้ ไม่ต้องรู้ว่าข้างในเป็นไฟล์ หน่วยความจำ หรือเครือข่าย
 
 ```
-text, err := io.ReadAll(r)
+text, err := ReadAll(strings.NewReader("go"))
 ```
+
+text คือ go เพราะ Reader นี้มีข้อความ go อยู่ในหน่วยความจำ
 
 ## apply
-ใช้ตอนอ่าน body ของ request หรือเขียนซ้ำลง log โดยไม่ผูกกับไฟล์จริง
+อ่านบันทึกทั้งก้อนเมื่อข้อความสั้น เขียนข้อความซ้ำสองครั้งลง log และนับไบต์ที่ไหลผ่านโดยไม่เก็บเนื้อหาไว้
 
 ## easy
-อ่านทั้งก้อนเป็นสตริง
+ReadAll อ่านจนหมดแล้วคืนเป็นสตริง
+
+```
+func ReadAll(r io.Reader) (string, error) {
+	data, err := io.ReadAll(r)
+	if err != nil {
+		return "", err
+	}
+	return string(data), nil
+}
+```
 
 ## hard
-เขียนซ้ำสองครั้ง หรือนับไบต์
+Count คืนจำนวนไบต์ที่อ่านได้โดยไม่คืนเนื้อหา WriteTwice เขียนสตริงเดิมลง Writer สองครั้ง
 
-## steps
-- รับ Reader หรือ Writer
-- ตรวจ error จาก Read หรือ Write
-- ปิดของที่เปิดเองด้วย defer
-- เลือก Copy เมื่อไม่ต้องเก็บเนื้อหา
+```
+func Count(r io.Reader) (int, error) {
+	data, err := io.ReadAll(r)
+	if err != nil {
+		return 0, err
+	}
+	return len(data), nil
+}
+```
+
+```
+func WriteTwice(w io.Writer, s string) error {
+	for i := 0; i < 2; i++ {
+		if _, err := io.WriteString(w, s); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+```

@@ -1,22 +1,58 @@
 ## explanation
-encoding/json matches fields with a json tag. Without a tag it uses the exported field name. A missing JSON field becomes the zero value.
+JSON is text you exchange with another program. A json tag says which name a struct field uses in that text.
 
 ```
-var person Person
-err := json.Unmarshal(data, &person)
+type Person struct {
+	Name string `json:"name"`
+}
+
+func DecodeName(data []byte) (string, error) {
+	var person Person
+	if err := json.Unmarshal(data, &person); err != nil {
+		return "", err
+	}
+	return person.Name, nil
+}
 ```
+
+The bytes []byte(`{"name":"ann"}`) make DecodeName return ann.
 
 ## apply
-Use it for an API body and for config that people edit as text.
+Read a name from text the web side sent, and build JSON when you must send a name back.
+
+```
+func EncodeName(name string) ([]byte, error) {
+	person := Person{Name: name}
+	return json.Marshal(person)
+}
+```
+
+EncodeName("ann") produces {"name":"ann"}.
 
 ## easy
-Read the name field.
+DecodeName reads the name field from JSON.
+
+```
+func DecodeName(data []byte) (string, error) {
+	var person Person
+	if err := json.Unmarshal(data, &person); err != nil {
+		return "", err
+	}
+	return person.Name, nil
+}
+```
 
 ## hard
-Write JSON, or accept a missing field.
+If the JSON has no name field, return an empty string and no error. Missing text is not a broken document.
 
-## steps
-- Set the tag to the JSON name
-- Check errors from Marshal and Unmarshal
-- Expect a missing field to be zero
-- Use a type that matches the value
+```
+func DecodeName(data []byte) (string, error) {
+	var person Person
+	if err := json.Unmarshal(data, &person); err != nil {
+		return "", err
+	}
+	return person.Name, nil
+}
+```
+
+A Person with no name has an empty Name after Unmarshal succeeds.

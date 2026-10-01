@@ -3,7 +3,6 @@ export type LessonBody = {
   apply: string;
   easy: string;
   hard: string;
-  steps: string[];
 };
 
 const HEADING_PREFIX = "## ";
@@ -12,7 +11,6 @@ const HEAD_EXPLANATION = "explanation";
 const HEAD_APPLY = "apply";
 const HEAD_EASY = "easy";
 const HEAD_HARD = "hard";
-const HEAD_STEPS = "steps";
 
 export function parseLesson(markdown: string): LessonBody | null {
   const normalized = markdown.startsWith(HEADING_PREFIX) ? `\n${markdown}` : markdown;
@@ -34,14 +32,37 @@ export function parseLesson(markdown: string): LessonBody | null {
     apply: sections.get(HEAD_APPLY) ?? "",
     easy: sections.get(HEAD_EASY) ?? "",
     hard: sections.get(HEAD_HARD) ?? "",
-    steps: stepLines(sections.get(HEAD_STEPS) ?? ""),
   };
 }
 
-function stepLines(text: string): string[] {
-  return text
-    .split("\n")
-    .map((line) => line.trim())
-    .filter((line) => line.startsWith("- "))
-    .map((line) => line.slice(2));
+export function lessonBlocks(text: string): { code: boolean; body: string }[] {
+  const blocks: { code: boolean; body: string }[] = [];
+  const prose: string[] = [];
+  let code: string[] | null = null;
+  function flushProse() {
+    const body = prose.join("\n").trim();
+    prose.length = 0;
+    if (body.length > 0) {
+      blocks.push({ code: false, body });
+    }
+  }
+  for (const line of text.split("\n")) {
+    if (code !== null) {
+      if (line.startsWith("```")) {
+        blocks.push({ code: true, body: code.join("\n").trim() });
+        code = null;
+      } else {
+        code.push(line);
+      }
+      continue;
+    }
+    if (line.startsWith("```")) {
+      flushProse();
+      code = [];
+      continue;
+    }
+    prose.push(line);
+  }
+  flushProse();
+  return blocks;
 }

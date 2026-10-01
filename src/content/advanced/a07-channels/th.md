@@ -1,23 +1,52 @@
 ## explanation
-channel ที่ไม่มี buffer จะให้ผู้ส่งรอจนกว่าจะมีผู้รับ channel ที่มี buffer รับค่าได้เท่าความจุ การ close บอกว่าจะไม่มีค่าใหม่ และ range จะจบเมื่อ channel ถูกปิด
+channel คือท่อส่งค่าจากงานหนึ่งไปอีกงาน รับจะรอจนกว่าจะมีคนส่ง ถ้าปิดท่อแล้ว range จะจบเมื่อค่าที่ส่งไว้หมด
 
 ```
-ch := make(chan int, 1)
-ch <- 1
-fmt.Println(<-ch)
+func SendRecv(v int) int {
+	ch := make(chan int, 1)
+	ch <- v
+	return <-ch
+}
 ```
+
+SendRecv(7) ได้ 7 เพราะส่งเข้าท่อที่มีที่ว่างหนึ่งช่องแล้วรับกลับทันที
 
 ## apply
-ใช้ส่งงานเข้า worker และส่งผลกลับโดยไม่แชร์ตัวแปรตรงๆ
+ส่งเลขหนึ่งตัวไปกลับ ส่งรายการแล้วปิดท่อเพื่อให้ผู้รับรวมจนจบ และรับค่าแรกจากท่อที่มีค่าอยู่แล้วโดยไม่รอเพิ่ม
 
 ## easy
-ส่งแล้วรับค่าเดียว
+SendRecv ส่ง v เข้า channel แล้วรับค่าเดียวกันกลับ
+
+```
+func SendRecv(v int) int {
+	ch := make(chan int, 1)
+	ch <- v
+	return <-ch
+}
+```
 
 ## hard
-รวมค่าจาก channel ที่ถูกปิด
+First รับค่าแรกจาก channel ที่มี buffer และมีค่าอยู่แล้ว SumClosed ส่งทุกค่า ปิดท่อ แล้ว range รวมจนจบ
 
-## steps
-- เลือก buffer ให้พอ หรือมีผู้รับรออยู่
-- ปิด channel ที่ฝั่งผู้ส่ง
-- ใช้ range หลังปิด
-- อย่าส่งเข้า channel ที่ปิดแล้ว
+```
+func First(ch <-chan int) int {
+	return <-ch
+}
+```
+
+```
+func SumClosed(values []int) int {
+	ch := make(chan int)
+	go func() {
+		for _, v := range values {
+			ch <- v
+		}
+		close(ch)
+	}()
+	total := 0
+	for v := range ch {
+		total += v
+	}
+	return total
+}
+```

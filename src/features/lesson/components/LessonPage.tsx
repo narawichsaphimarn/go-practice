@@ -22,8 +22,7 @@ import { CLASS_PAGE } from "../../../shared/constants/content.ts";
 import { exercisePath } from "../../../shared/helpers/routes.ts";
 import { usePreferences } from "../../preferences/components/usePreferences.ts";
 import { useProgress } from "../../progress/components/useProgress.ts";
-import { parseLesson } from "../helpers/parse-markdown.ts";
-import { AnimationPlayer } from "./AnimationPlayer.tsx";
+import { lessonBlocks, parseLesson } from "../helpers/parse-markdown.ts";
 import type { ExerciseSpec } from "../../../content/types.ts";
 
 export function LessonPage() {
@@ -90,7 +89,6 @@ export function LessonPage() {
           <RichText text={body.hard} />
         </section>
       </div>
-      {body.steps.length > 0 ? <AnimationPlayer steps={body.steps} /> : null}
       {next ? <NextExercise lessonId={lesson.id} exercise={next} label={t(I18N_TO_EXERCISE)} /> : null}
       <QuizList
         lessonId={lesson.id}
@@ -116,12 +114,8 @@ function NextExercise({ lessonId, exercise, label }: { lessonId: string; exercis
 function RichText({ text }: { text: string }) {
   return (
     <>
-      {text.split("\n\n").map((block) =>
-        block.startsWith("```") ? (
-          <pre key={block}>{block.replaceAll("```", "").trim()}</pre>
-        ) : (
-          <p key={block}>{block}</p>
-        ),
+      {lessonBlocks(text).map((block, index) =>
+        block.code ? <pre key={index}>{block.body}</pre> : <p key={index}>{block.body}</p>,
       )}
     </>
   );

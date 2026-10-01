@@ -1,26 +1,55 @@
 ## explanation
-select waits on several channels. The case that is ready first runs. default does not wait. time.After leaves when the time is up.
+select waits on several channels and runs the case that is ready first. Add default when you want to continue at once if nothing is ready. Add time.After when you want to stop after a deadline.
 
 ```
-select {
-case v := <-ch:
-	return v
-default:
-	return 0
+func FirstReady(a, b <-chan int) int {
+	select {
+	case v := <-a:
+		return v
+	case v := <-b:
+		return v
+	}
 }
 ```
 
 ## apply
-Use it in a client that must not hang and in a loop that accepts either work or a cancel signal.
+Take the result from whichever of two jobs finishes first. Use 0 instead of waiting when nothing is ready. Return -1 if the channel stays empty for more than 20 milliseconds.
 
 ## easy
-Pick the channel that is ready.
+FirstReady returns the value from whichever of a and b is ready first.
+
+```
+func FirstReady(a, b <-chan int) int {
+	select {
+	case v := <-a:
+		return v
+	case v := <-b:
+		return v
+	}
+}
+```
 
 ## hard
-Return immediately when nothing is ready, or return a sentinel when time runs out.
+OrTimeout returns -1 when the channel stays empty for more than 20 milliseconds. OrZero returns the value in the channel, or 0 at once if nothing is there yet.
 
-## steps
-- Put every channel you can wait on in the select
-- Use default when you must not block
-- Use time.After when you must bound the wait
-- Remember that After starts a timer
+```
+func OrTimeout(ch <-chan int) int {
+	select {
+	case v := <-ch:
+		return v
+	case <-time.After(20 * time.Millisecond):
+		return -1
+	}
+}
+```
+
+```
+func OrZero(ch <-chan int) int {
+	select {
+	case v := <-ch:
+		return v
+	default:
+		return 0
+	}
+}
+```

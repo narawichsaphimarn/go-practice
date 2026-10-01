@@ -6,3 +6,4 @@ export const MONACO_DARK = "notebook-dark";
 export const MONACO_LIGHT = "notebook-light";
 export const FONT_NOTEBOOK = "Itim, cursive";
 export const EDITOR_LANG = "go";
+export const RUN_FAILS_BEFORE_HINT = 3;
