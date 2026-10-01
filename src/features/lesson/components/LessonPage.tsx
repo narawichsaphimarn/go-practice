@@ -11,8 +11,11 @@ import {
   I18N_GOAL,
   I18N_HARD_CASE,
   I18N_NOT_FOUND,
+  I18N_NOT_PASSED,
   I18N_NOT_READY,
   I18N_NO_RUN,
+  I18N_PASSED,
+  I18N_QUESTION,
   I18N_QUIZ_WRONG,
   I18N_SUBMIT,
   I18N_TO_EXERCISE,
@@ -21,6 +24,7 @@ import { I18N_STATUS_IN_PROGRESS, LOCALE_TH, ROUTE_HOME } from "../../../shared/
 import { CLASS_PAGE } from "../../../shared/constants/content.ts";
 import { exercisePath } from "../../../shared/helpers/routes.ts";
 import { usePreferences } from "../../preferences/components/usePreferences.ts";
+import { readDraft, writeDraft } from "../../progress/helpers/drafts.ts";
 import { useProgress } from "../../progress/components/useProgress.ts";
 import { lessonBlocks, parseLesson } from "../helpers/parse-markdown.ts";
 import type { ExerciseSpec } from "../../../content/types.ts";
@@ -59,7 +63,7 @@ export function LessonPage() {
   }
 
   const done = passedCount(lesson.id);
-  const next = lesson.exercises.find((exercise) => !isPassed(lesson.id, exercise.id)) ?? lesson.exercises[lesson.exercises.length - 1];
+  const next = lesson.exercises.find((exercise) => !isPassed(lesson.id, exercise.id));
 
   return (
     <div className={CLASS_PAGE}>
@@ -90,6 +94,14 @@ export function LessonPage() {
         </section>
       </div>
       {next ? <NextExercise lessonId={lesson.id} exercise={next} label={t(I18N_TO_EXERCISE)} /> : null}
+      <CodingList
+        lessonId={lesson.id}
+        exercises={lesson.exercises}
+        questionLabel={t(I18N_QUESTION)}
+        passedLabel={t(I18N_PASSED)}
+        notPassedLabel={t(I18N_NOT_PASSED)}
+        isPassed={isPassed}
+      />
       <QuizList
         lessonId={lesson.id}
         exercises={lesson.exercises.filter((exercise) => exercise.kind === KIND_QUIZ)}
@@ -100,6 +112,32 @@ export function LessonPage() {
         isPassed={isPassed}
         markPassed={markPassed}
       />
+    </div>
+  );
+}
+
+function CodingList(props: {
+  lessonId: string;
+  exercises: ExerciseSpec[];
+  questionLabel: string;
+  passedLabel: string;
+  notPassedLabel: string;
+  isPassed: (lessonId: string, exerciseId: string) => boolean;
+}) {
+  const coding = props.exercises.filter((exercise) => exercise.kind !== KIND_QUIZ);
+  if (coding.length === 0) {
+    return null;
+  }
+  return (
+    <div className="level">
+      {coding.map((exercise) => (
+        <Link key={exercise.id} className="row" to={exercisePath(props.lessonId, exercise.id)}>
+          <span>
+            {props.questionLabel} {exercise.id}
+          </span>
+          <span>{props.isPassed(props.lessonId, exercise.id) ? props.passedLabel : props.notPassedLabel}</span>
+        </Link>
+      ))}
     </div>
   );
 }
@@ -162,7 +200,7 @@ function QuizCard(props: {
   passed: boolean;
   markPassed: (lessonId: string, exerciseId: string) => Promise<boolean>;
 }) {
-  const [pick, setPick] = useState(-1);
+  const [pick, setPick] = useState(() => readDraft(props.lessonId, props.exercise.id)?.pick ?? -1);
   const [note, setNote] = useState("");
   const choices = props.locale === LOCALE_TH ? (props.exercise.choices?.th ?? []) : (props.exercise.choices?.en ?? []);
 
@@ -171,6 +209,7 @@ function QuizCard(props: {
       setNote(props.wrongLabel);
       return;
     }
+    writeDraft(props.lessonId, props.exercise.id, { pick });
     void props.markPassed(props.lessonId, props.exercise.id);
     setNote("");
   }
@@ -183,7 +222,7 @@ function QuizCard(props: {
           {choice}
         </button>
       ))}
-      <button type={BUTTON_TYPE} onClick={submit} disabled={props.passed}>
+      <button type={BUTTON_TYPE} onClick={submit}>
         {props.submitLabel}
       </button>
       {props.passed ? <p>{textOf(props.exercise.rule, props.locale)}</p> : null}
