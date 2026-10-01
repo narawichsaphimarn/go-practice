@@ -17,7 +17,9 @@ export const KIND_QUIZ = "quiz";
 export const ROUTE_LESSONS = "/lessons/";
 export const ROUTE_EXERCISES = "/exercises/";
 
-export const API_BASE_URL = "http://localhost:8080";
+const API_BASE_URL_DEV = "http://localhost:8080";
+
+export const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || API_BASE_URL_DEV).replace(/\/$/, "");
 export const API_FORMAT = "/v1/golang-practice/format";
 export const API_VET = "/v1/golang-practice/vet";
 export const API_RUN = "/v1/golang-practice/run";
