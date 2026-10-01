@@ -28,7 +28,7 @@ import { exercisePath } from "../../../shared/helpers/routes.ts";
 import { usePreferences } from "../../preferences/components/usePreferences.ts";
 import { readDraft, writeDraft } from "../../progress/helpers/drafts.ts";
 import { useProgress } from "../../progress/components/useProgress.ts";
-import { lessonBlocks, parseLesson } from "../helpers/parse-markdown.ts";
+import { BLOCK_CODE, BLOCK_LIST, inlineSpans, lessonBlocks, parseLesson } from "../helpers/parse-markdown.ts";
 import type { ExerciseSpec } from "../../../content/types.ts";
 
 export function LessonPage() {
@@ -156,11 +156,33 @@ function NextExercise({ lessonId, exercise, label }: { lessonId: string; exercis
 function RichText({ text }: { text: string }) {
   return (
     <>
-      {lessonBlocks(text).map((block, index) =>
-        block.code ? <pre key={index}>{block.body}</pre> : <p key={index}>{block.body}</p>,
-      )}
+      {lessonBlocks(text).map((block, index) => {
+        if (block.kind === BLOCK_CODE) {
+          return <pre key={index}>{block.body}</pre>;
+        }
+        if (block.kind === BLOCK_LIST) {
+          return (
+            <ul key={index}>
+              {block.items.map((item, itemIndex) => (
+                <li key={itemIndex}>
+                  <InlineText text={item} />
+                </li>
+              ))}
+            </ul>
+          );
+        }
+        return (
+          <p key={index}>
+            <InlineText text={block.body} />
+          </p>
+        );
+      })}
     </>
   );
+}
+
+function InlineText({ text }: { text: string }) {
+  return <>{inlineSpans(text).map((span, index) => (span.code ? <code key={index}>{span.body}</code> : span.body))}</>;
 }
 
 function QuizList(props: {

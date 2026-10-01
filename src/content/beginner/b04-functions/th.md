@@ -1,63 +1,74 @@
 ## explanation
-ฟังก์ชันรับค่าเข้าไป แล้วคืนผลออกมา บางฟังก์ชันคืนสองอย่างพร้อมกัน คือผลกับ error ถ้าทำงานได้ error เป็น nil
+ฟังก์ชันคือสูตรที่ตั้งชื่อไว้ รับค่าเข้าไป แล้วคืนผลออกมา คล้ายสูตร `=SUM()` ใน Excel ที่เรียกซ้ำได้ทุกที่
 
 ```
 func add(a, b int) int {
 	return a + b
 }
-
-fmt.Println(add(2, 3))
 ```
 
-```
-func div(a, b int) (int, error) {
-	if b == 0 {
-		return 0, fmt.Errorf("divide by zero")
-	}
-	return a / b, nil
-}
-```
+- `add` คือชื่อฟังก์ชัน
+- `(a, b int)` คือค่าที่รับเข้า (พารามิเตอร์) สองตัว ชนิด int ทั้งคู่
+- `int` ที่อยู่หลังวงเล็บคือชนิดของผลที่คืน
+- `return` ส่งผลกลับไปให้คนที่เรียก
+
+ฟังก์ชันเขียนไว้นอก `func main` แล้วเรียกจากใน main ได้ เช่น `fmt.Println(add(2, 3))` พิมพ์ 5
 
 ## apply
-เครื่องคิดเลขเล็กๆ เรียก add(2, 3) แล้วพิมพ์ 5 ถ้าหาร 4 ด้วย 2 ได้ 2 และ error เป็น nil
+ฟังก์ชัน Go คืนได้หลายค่าพร้อมกัน แค่ใส่ชนิดของผลไว้ในวงเล็บ
 
 ```
-n, err := div(4, 2)
-if err != nil {
-	fmt.Println("error")
-	return
+func minMax(a, b int) (int, int) {
+	if a < b {
+		return a, b
+	}
+	return b, a
 }
-fmt.Println(n)
+
+low, high := minMax(9, 4)
 ```
+
+ได้ low เป็น 4 และ high เป็น 9 ถ้าไม่ต้องการค่าไหน ให้ใช้ `_` รับไว้ เช่น `_, high := minMax(9, 4)` ต้องทำแบบนี้เพราะ Go ไม่ยอมให้มีตัวแปรที่ไม่ได้ใช้
+
+ข้อควรรู้เรื่องการหาร: `7 / 2` ของ int ได้ 3 เพราะ Go ตัดเศษทิ้ง และ `7 % 2` ได้เศษคือ 1
+
+ฟังก์ชันเป็นค่าได้ด้วย จึงส่งฟังก์ชันเข้าไปให้อีกฟังก์ชันได้ ชนิดของฟังก์ชันที่รับ int แล้วคืน int เขียนว่า `func(int) int`
+
+```
+square := func(x int) int { return x * x }
+fmt.Println(square(4))
+```
+
+ได้ 16 ฟังก์ชันที่ไม่มีชื่อแบบนี้เรียกว่าฟังก์ชันนิรนาม (anonymous function)
 
 ## easy
-เขียน add แล้วพิมพ์ผลของ add(2, 3) ซึ่งคือ 5
+ตัวอย่าง: ฟังก์ชันคืนค่าที่มากกว่าระหว่างสองค่า
 
 ```
-func add(a, b int) int {
-	return a + b
-}
-
-func main() {
-	fmt.Println(add(2, 3))
+func bigger(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
 }
 ```
+
+`bigger(3, 8)` ได้ 8 พอเจอ `return` ฟังก์ชันจะจบทันที บรรทัดที่เหลือจึงไม่ทำ
 
 ## hard
-เมื่อตัวหารเป็นศูนย์ อย่าพิมพ์ผลหาร ให้พิมพ์คำว่า error
+ตัวอย่าง: ฟังก์ชันที่รับฟังก์ชันอื่นมาใช้กับตัวเลขทุกตัวจาก 1 ถึง n แล้วรวมผล
 
 ```
-func div(a, b int) (int, error) {
-	if b == 0 {
-		return 0, fmt.Errorf("divide by zero")
+func sumWith(f func(int) int, n int) int {
+	total := 0
+	for i := 1; i <= n; i++ {
+		total += f(i)
 	}
-	return a / b, nil
+	return total
 }
 
-func main() {
-	_, err := div(4, 0)
-	if err != nil {
-		fmt.Println("error")
-	}
-}
+square := func(x int) int { return x * x }
+fmt.Println(sumWith(square, 3))
 ```
+
+ได้ 14 เพราะ 1 + 4 + 9 ส่วน `total += f(i)` คือ `total = total + f(i)`

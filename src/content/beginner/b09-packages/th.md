@@ -1,45 +1,61 @@
 ## explanation
-ฟังก์ชันในแพ็กเกจเดียวกันเรียกกันได้โดยใช้ชื่อฟังก์ชันตรงๆ go.mod ของโมดูลบอกชื่อโมดูลกับรุ่น Go
+แพ็กเกจคือแฟ้มที่รวมไฟล์ `.go` เรื่องเดียวกันไว้ในโฟลเดอร์เดียว ทุกไฟล์ในโฟลเดอร์นั้นขึ้นต้นด้วย `package ชื่อเดียวกัน` ส่วนโมดูลคือทั้งโปรเจกต์ มีไฟล์ `go.mod` อยู่ที่โฟลเดอร์บนสุด
 
 ```
-module example.com/app
+module example.com/shop
 
 go 1.25
 ```
 
-```
-package main
+- `module example.com/shop` คือชื่อโมดูล ใช้เป็นต้นทางของ path ตอน import
+- `go 1.25` คือรุ่นของภาษา Go ที่โปรเจกต์นี้ใช้
 
-func Greet(name string) string {
-	return "hello " + name
-}
-```
-
-ผู้เรียกในแพ็กเกจ main เขียน Greet("ann") แล้วได้ hello ann
+ถ้ามีแพ็กเกจอยู่ในโฟลเดอร์ `price` ของโมดูลนี้ จะ import ด้วย path `"example.com/shop/price"` แล้วเรียกด้วยชื่อแพ็กเกจนำหน้า เช่น `price.Total(...)`
 
 ## apply
-ข้อความทักทาย ข้อความที่ต่อสองชิ้นด้วยจุลภาค และข้อความรุ่นโปรแกรม เป็นฟังก์ชันคนละตัวในแพ็กเกจเดียวกัน จึงเรียกซ้ำได้โดยไม่ก็อปข้อความ
+ชื่อที่ขึ้นต้นด้วยตัวพิมพ์ใหญ่ถูก export หมายถึงแพ็กเกจอื่นเรียกใช้ได้ ส่วนชื่อที่ขึ้นต้นด้วยตัวพิมพ์เล็กใช้ได้แค่ในแพ็กเกจเดียวกัน
+
+```
+package price
+
+func Total(a, b int) int {
+	return a + b + fee()
+}
+
+func fee() int {
+	return 5
+}
+```
+
+แพ็กเกจอื่นเรียก `price.Total(10, 20)` ได้ แต่เรียก `price.fee()` ไม่ได้ เพราะ fee ขึ้นต้นด้วยตัวพิมพ์เล็ก
+
+แพ็กเกจมาตรฐานที่มากับ Go ก็ใช้แบบเดียวกัน เช่น `fmt.Println` ขึ้นต้นด้วย P ใหญ่ และ import ด้วยชื่อสั้น ๆ อย่าง `"fmt"` หรือ `"strings"` โดยไม่ต้องมีชื่อโมดูลนำหน้า
 
 ## easy
-Greet คืนคำว่า hello เว้นวรรค แล้วตามด้วยชื่อ
+ตัวอย่าง: ใช้แพ็กเกจ strings เช็กว่าข้อความขึ้นต้นด้วยคำที่ต้องการไหม
 
 ```
-func Greet(name string) string {
-	return "hello " + name
+import "strings"
+
+func IsGreeting(s string) bool {
+	return strings.HasPrefix(s, "hello")
 }
 ```
+
+`IsGreeting("hello there")` ได้ true ไม่ต้องเขียนลูปเทียบตัวอักษรเอง เพราะแพ็กเกจ strings มีฟังก์ชันนี้อยู่แล้ว
 
 ## hard
-Version คืนสตริง 1.25 Join ต่อ a กับ b โดยคั่นด้วยจุลภาค
+ตัวอย่าง: import สองแพ็กเกจพร้อมกัน ใส่ไว้ในวงเล็บเดียวกัน
 
 ```
-func Version() string {
-	return "1.25"
+import (
+	"strconv"
+	"strings"
+)
+
+func Tag(name string, n int) string {
+	return strings.ToLower(name) + "-" + strconv.Itoa(n)
 }
 ```
 
-```
-func Join(a, b string) string {
-	return a + "," + b
-}
-```
+`Tag("Tea", 3)` ได้ `tea-3` โดย `strconv.Itoa` แปลงตัวเลขเป็นข้อความ ซึ่งเป็นงานกลับด้านของ `strconv.Atoi`

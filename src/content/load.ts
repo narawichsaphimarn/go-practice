@@ -1,6 +1,7 @@
 import catalogFile from "./catalog.json";
 import { LOCALE_EN, LOCALE_TH } from "../shared/constants/preference.ts";
 import type { CatalogFile, LessonSpec, Localized } from "./types.ts";
+import { currentLessonId } from "./renames.ts";
 
 const markdownFiles = import.meta.glob("./**/*.md", {
   query: "?raw",
@@ -15,7 +16,8 @@ export function lessons(): LessonSpec[] {
 }
 
 export function lessonById(id: string): LessonSpec | undefined {
-  return catalog.lessons.find((lesson) => lesson.id === id);
+  const current = currentLessonId(id);
+  return catalog.lessons.find((lesson) => lesson.id === current);
 }
 
 export function textOf(value: Localized, locale: string): string {

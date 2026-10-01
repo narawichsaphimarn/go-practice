@@ -3,7 +3,7 @@ A benchmark measures how long a function takes for one operation. The result has
 
 ```
 func BenchmarkSum(b *testing.B) {
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		SumJobs([]int{1, 2, 3})
 	}
 }
@@ -12,7 +12,7 @@ func BenchmarkSum(b *testing.B) {
 A result of 40 ns/op means one SumJobs call takes 40 nanoseconds on average. Import "testing".
 
 ## apply
-allocs/op is how many times one operation allocates on the heap. A lower number means fewer allocations. A fuzz target is a function named Fuzz that takes *testing.F and calls f.Fuzz so the tool can feed random inputs.
+allocs/op is how many times one operation allocates on the heap. A lower number means fewer allocations. A fuzz target is a function whose name starts with Fuzz. It takes *testing.F and calls f.Fuzz so the tool can feed random inputs.
 
 ```
 func FuzzSign(f *testing.F) {
@@ -33,7 +33,7 @@ ns/op is the average time in nanoseconds for one operation. You read it from a B
 
 ```
 func BenchmarkSum(b *testing.B) {
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		SumJobs([]int{1, 2, 3})
 	}
 }

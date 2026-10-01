@@ -35,34 +35,61 @@ export function parseLesson(markdown: string): LessonBody | null {
   };
 }
 
-export function lessonBlocks(text: string): { code: boolean; body: string }[] {
-  const blocks: { code: boolean; body: string }[] = [];
+export const BLOCK_TEXT = "text";
+export const BLOCK_LIST = "list";
+export const BLOCK_CODE = "code";
+
+const FENCE = "```";
+const LIST_PREFIX = "- ";
+const INLINE_CODE = "`";
+
+export type LessonBlock = { kind: string; body: string; items: string[] };
+
+export function lessonBlocks(text: string): LessonBlock[] {
+  const blocks: LessonBlock[] = [];
   const prose: string[] = [];
   let code: string[] | null = null;
   function flushProse() {
-    const body = prose.join("\n").trim();
+    const lines = prose.map((line) => line.trim()).filter((line) => line.length > 0);
     prose.length = 0;
-    if (body.length > 0) {
-      blocks.push({ code: false, body });
+    if (lines.length === 0) {
+      return;
     }
+    if (lines.every((line) => line.startsWith(LIST_PREFIX))) {
+      blocks.push({ kind: BLOCK_LIST, body: "", items: lines.map((line) => line.slice(LIST_PREFIX.length)) });
+      return;
+    }
+    blocks.push({ kind: BLOCK_TEXT, body: lines.join(" "), items: [] });
   }
   for (const line of text.split("\n")) {
     if (code !== null) {
-      if (line.startsWith("```")) {
-        blocks.push({ code: true, body: code.join("\n").trim() });
+      if (line.startsWith(FENCE)) {
+        blocks.push({ kind: BLOCK_CODE, body: code.join("\n").trim(), items: [] });
         code = null;
       } else {
         code.push(line);
       }
       continue;
     }
-    if (line.startsWith("```")) {
+    if (line.startsWith(FENCE)) {
       flushProse();
       code = [];
+      continue;
+    }
+    if (line.trim().length === 0) {
+      flushProse();
       continue;
     }
     prose.push(line);
   }
   flushProse();
   return blocks;
+}
+
+// Odd-numbered pieces sat between backticks.
+export function inlineSpans(text: string): { code: boolean; body: string }[] {
+  return text
+    .split(INLINE_CODE)
+    .map((body, index) => ({ code: index % 2 === 1, body }))
+    .filter((span) => span.body.length > 0);
 }

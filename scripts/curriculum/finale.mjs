@@ -15,7 +15,6 @@ function task(id, th, en, starter, test, hintTh, hintEn) {
 export const finale = lesson({
   id: "z01-finale",
   level: "expert",
-  order: 42,
   title: text("โจทย์ปิดท้าย", "Final problems"),
   goal: text(
     "แก้ห้าปัญหาที่แต่ละข้อต้องประกอบความรู้จากหลายบท",

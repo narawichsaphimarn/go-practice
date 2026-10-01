@@ -59,27 +59,32 @@ func FanIn(n int) int {
 ```
 
 ## hard
-โค้ดที่พังเรียก wg.Add ข้างใน goroutine แล้ว Wait อาจจบก่อน Add จึงคืน 0 แม้ FanIn(3) ควรได้ 3
+โค้ดที่พังเรียก wg.Add ข้างใน goroutine ถ้า Wait ทำงานก่อนที่ goroutine ตัวไหนจะทันเรียก Add ตัวนับยังเป็นศูนย์ Wait จึงคืนทันที ผลคืองานบางชิ้นยังไม่ได้นับ
 
 ```
 go func() {
 	wg.Add(1)
-	wg.Done()
+	defer wg.Done()
+	done.Add(1)
 }()
 ```
 
-ย้าย wg.Add ออกมาก่อนคำสั่ง go แล้วคืน n หลัง Wait
+ย้าย wg.Add ออกมาไว้ก่อนคำสั่ง go ตัวนับจึงครบก่อน Wait เริ่มรอ
 
 ```
 func FanIn(n int) int {
 	var wg sync.WaitGroup
+	var done atomic.Int64
 	for i := 0; i < n; i++ {
 		wg.Add(1)
 		go func() {
-			wg.Done()
+			defer wg.Done()
+			done.Add(1)
 		}()
 	}
 	wg.Wait()
-	return n
+	return int(done.Load())
 }
 ```
+
+ต้อง import "sync" และ "sync/atomic" ตั้งแต่ Go 1.25 มี wg.Go(f) ที่เรียก Add ก่อนเริ่ม goroutine และเรียก Done เมื่อ f จบให้เอง จึงเลี่ยงบั๊กนี้ได้ตั้งแต่ต้น

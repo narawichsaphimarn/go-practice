@@ -1,16 +1,16 @@
 {
   "lessons": [
     {
-      "id": "b01-hello",
+      "id": "b00-start",
       "level": "beginner",
       "order": 1,
       "title": {
-        "th": "โปรแกรมแรกและ toolchain",
-        "en": "First program and the toolchain"
+        "th": "เริ่มต้น: หน้าโจทย์ทำงานอย่างไร",
+        "en": "Start here: how the exercise page works"
       },
       "goal": {
-        "th": "เขียน package main แล้วรันด้วย Go 1.25",
-        "en": "Write package main and run it with Go 1.25"
+        "th": "รู้จักโจทย์สามแบบ และส่งคำตอบข้อแรก",
+        "en": "Know the three kinds of exercise and submit your first answer"
       },
       "exercises": [
         {
@@ -18,17 +18,126 @@
           "difficulty": "easy",
           "kind": "stdout",
           "prompt": {
-            "th": "พิมพ์ hello",
-            "en": "Print hello"
+            "th": "โค้ดเริ่มต้นพิมพ์คำว่า todo ให้แก้เป็น ready แล้วกดส่งคำตอบ",
+            "en": "The starter prints todo. Change it to ready, then press Check"
           },
           "rule": {
-            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
-            "en": "Printed output must match every character, including the final newline"
+            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมการขึ้นบรรทัดใหม่ท้ายสุด (Println ขึ้นบรรทัดใหม่ให้เอง)",
+            "en": "Printed output must match every character, including the final newline (Println adds it for you)"
           },
           "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
           "hint": {
-            "th": "เปลี่ยนข้อความใน Println จาก todo เป็น hello",
-            "en": "Change the Println text from todo to hello"
+            "th": "แก้แค่ข้อความในเครื่องหมายคำพูด จาก todo เป็น ready โดยไม่ลบเครื่องหมายคำพูด",
+            "en": "Change only the text inside the quotes, from todo to ready. Keep the quotes"
+          }
+        },
+        {
+          "id": "mid",
+          "difficulty": "mid",
+          "kind": "quiz",
+          "prompt": {
+            "th": "โจทย์แบบ test ไม่มี func main แล้วใครเป็นคนเรียกฟังก์ชันที่เราเขียน",
+            "en": "A test exercise has no func main. Who calls the function you write?"
+          },
+          "rule": {
+            "th": "โค้ดทดสอบที่ซ่อนอยู่ในเว็บจะเรียกฟังก์ชันของเราด้วยค่าหลายชุด แล้วเทียบผลกับคำตอบที่ถูก",
+            "en": "Hidden test code on the site calls your function with several inputs and compares the results"
+          },
+          "starter": "",
+          "choices": {
+            "th": [
+              "เราต้องเขียน func main เรียกเอง",
+              "โค้ดทดสอบที่ซ่อนอยู่ในเว็บ",
+              "ไม่มีใครเรียก แค่ต้องคอมไพล์ผ่าน",
+              "ปุ่มรันเป็นคนเรียก"
+            ],
+            "en": [
+              "You must write func main to call it",
+              "Hidden test code on the site",
+              "Nobody calls it; it only has to compile",
+              "The Run button calls it"
+            ]
+          },
+          "answer": 1
+        },
+        {
+          "id": "hard",
+          "difficulty": "hard",
+          "kind": "test",
+          "prompt": {
+            "th": "แก้ Double ให้คืนค่าสองเท่าของ n เช่น Double(4) ได้ 8 และ Double(-3) ได้ -6",
+            "en": "Fix Double to return twice n. Double(4) is 8 and Double(-3) is -6"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nfunc Double(n int) int {\n\treturn n\n}\n",
+          "hint": {
+            "th": "เปลี่ยนบรรทัด return n ให้คืน n คูณ 2 เครื่องหมายคูณคือ *",
+            "en": "Change the line return n so it returns n times 2. The multiply sign is *"
+          }
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "quiz",
+          "prompt": {
+            "th": "ปุ่มรันกับปุ่มส่งคำตอบต่างกันอย่างไร",
+            "en": "How is the Run button different from the Check button?"
+          },
+          "rule": {
+            "th": "รันใช้ดูผลของโปรแกรมที่มี func main ส่วนส่งคำตอบจะตรวจตามกติกาของโจทย์และบันทึกว่าผ่าน",
+            "en": "Run shows what a program with func main prints. Check tests the exercise rule and records a pass"
+          },
+          "starter": "",
+          "choices": {
+            "th": [
+              "ส่งคำตอบใช้ได้กับโจทย์ปรนัยเท่านั้น",
+              "เหมือนกันทุกอย่าง",
+              "รันบันทึกคะแนน ส่วนส่งคำตอบไม่บันทึก",
+              "รันแค่แสดงผล ส่วนส่งคำตอบตรวจว่าผ่านหรือไม่"
+            ],
+            "en": [
+              "Check only works for multiple choice",
+              "They do the same thing",
+              "Run records points and Check does not",
+              "Run only shows output; Check tests whether you passed"
+            ]
+          },
+          "answer": 3
+        }
+      ]
+    },
+    {
+      "id": "b01-hello",
+      "level": "beginner",
+      "order": 2,
+      "title": {
+        "th": "โปรแกรมแรก: พิมพ์ข้อความ",
+        "en": "First program: printing text"
+      },
+      "goal": {
+        "th": "อ่านโครงของโปรแกรม Go ออก และพิมพ์ข้อความกับตัวเลขได้",
+        "en": "Read the shape of a Go program and print text and numbers"
+      },
+      "exercises": [
+        {
+          "id": "easy",
+          "difficulty": "easy",
+          "kind": "stdout",
+          "prompt": {
+            "th": "พิมพ์คำว่า hello หนึ่งบรรทัด",
+            "en": "Print hello on one line"
+          },
+          "rule": {
+            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมการขึ้นบรรทัดใหม่ท้ายสุด (Println ขึ้นบรรทัดใหม่ให้เอง)",
+            "en": "Printed output must match every character, including the final newline (Println adds it for you)"
+          },
+          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
+          "hint": {
+            "th": "เปลี่ยน todo เป็น hello",
+            "en": "Change todo to hello"
           }
         },
         {
@@ -36,17 +145,17 @@
           "difficulty": "mid",
           "kind": "stdout",
           "prompt": {
-            "th": "พิมพ์สองบรรทัด go แล้ว 1.25",
-            "en": "Print go and then 1.25 on separate lines"
+            "th": "พิมพ์ go ในบรรทัดแรก และ 1.25 ในบรรทัดที่สอง",
+            "en": "Print go on the first line and 1.25 on the second"
           },
           "rule": {
-            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
-            "en": "Printed output must match every character, including the final newline"
+            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมการขึ้นบรรทัดใหม่ท้ายสุด (Println ขึ้นบรรทัดใหม่ให้เอง)",
+            "en": "Printed output must match every character, including the final newline (Println adds it for you)"
           },
           "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
           "hint": {
-            "th": "เรียก Println สองครั้ง คนละบรรทัด",
-            "en": "Call Println twice, once per line"
+            "th": "เรียก fmt.Println สองครั้ง ครั้งละหนึ่งบรรทัด",
+            "en": "Call fmt.Println twice, once per line"
           }
         },
         {
@@ -54,17 +163,17 @@
           "difficulty": "hard",
           "kind": "stdout",
           "prompt": {
-            "th": "พิมพ์ sum=3 จาก 1+2",
-            "en": "Print sum=3 from 1+2"
+            "th": "พิมพ์ sum=3 โดยให้ Go บวก 1+2 เอง ด้วย fmt.Printf และ %d",
+            "en": "Print sum=3 and let Go add 1+2, using fmt.Printf and %d"
           },
           "rule": {
-            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
-            "en": "Printed output must match every character, including the final newline"
+            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมการขึ้นบรรทัดใหม่ท้ายสุด (Println ขึ้นบรรทัดใหม่ให้เอง)",
+            "en": "Printed output must match every character, including the final newline (Println adds it for you)"
           },
           "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
           "hint": {
-            "th": "พิมพ์บรรทัดเดียวที่ประกอบ sum= กับผลของ 1+2",
-            "en": "Print one line that joins sum= with the result of 1+2"
+            "th": "Printf แทน %d ด้วยตัวเลขที่ส่งตามมา และไม่ขึ้นบรรทัดใหม่ให้ ต้องใส่ \\n ท้ายข้อความเอง",
+            "en": "Printf puts the next number where %d is. It does not add a newline, so end the text with \\n"
           }
         },
         {
@@ -72,17 +181,17 @@
           "difficulty": "twist",
           "kind": "stdout",
           "prompt": {
-            "th": "ต่อข้อความ go กับ 1.25 ด้วยขีดกลาง แล้วพิมพ์บรรทัดเดียว",
-            "en": "Join the text go and 1.25 with a hyphen and print one line"
+            "th": "ต่อข้อความ \"go\" กับ \"1.25\" โดยมีขีดกลางคั่น แล้วพิมพ์ ผลต้องเป็น go-1.25",
+            "en": "Join the text \"go\" and \"1.25\" with a hyphen between them and print it. The result is go-1.25"
           },
           "rule": {
-            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
-            "en": "Printed output must match every character, including the final newline"
+            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมการขึ้นบรรทัดใหม่ท้ายสุด (Println ขึ้นบรรทัดใหม่ให้เอง)",
+            "en": "Printed output must match every character, including the final newline (Println adds it for you)"
           },
           "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
           "hint": {
-            "th": "ต่อข้อความสองค่าด้วยขีดกลาง แล้วพิมพ์บรรทัดเดียว",
-            "en": "Join two text values with a hyphen and print one line"
+            "th": "เครื่องหมาย + ต่อข้อความสองชิ้นเข้าด้วยกัน เช่น \"a\" + \"b\" ได้ \"ab\"",
+            "en": "The + sign joins two pieces of text. \"a\" + \"b\" gives \"ab\""
           }
         }
       ]
@@ -90,14 +199,14 @@
     {
       "id": "b02-variables",
       "level": "beginner",
-      "order": 2,
+      "order": 3,
       "title": {
-        "th": "ตัวแปรและ zero value",
+        "th": "ตัวแปรและค่าศูนย์",
         "en": "Variables and zero values"
       },
       "goal": {
-        "th": "ประกาศตัวแปรและคาด zero value ได้",
-        "en": "Declare variables and predict zero values"
+        "th": "เก็บค่าไว้ในตัวแปร และบอกได้ว่าตัวแปรที่ยังไม่ใส่ค่ามีค่าอะไร",
+        "en": "Keep values in variables and say what an unset variable holds"
       },
       "exercises": [
         {
@@ -105,17 +214,17 @@
           "difficulty": "easy",
           "kind": "stdout",
           "prompt": {
-            "th": "พิมพ์ zero value ของ int",
-            "en": "Print the zero value of an int"
+            "th": "ประกาศ var n int โดยไม่ใส่ค่า แล้วพิมพ์ n",
+            "en": "Declare var n int without a value, then print n"
           },
           "rule": {
-            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
-            "en": "Printed output must match every character, including the final newline"
+            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมการขึ้นบรรทัดใหม่ท้ายสุด (Println ขึ้นบรรทัดใหม่ให้เอง)",
+            "en": "Printed output must match every character, including the final newline (Println adds it for you)"
           },
           "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
           "hint": {
-            "th": "ประกาศตัวแปร int โดยไม่ใส่ค่า แล้วพิมพ์ตัวแปรนั้น",
-            "en": "Declare an int with no value, then print that variable"
+            "th": "ค่าศูนย์ของ int คือ 0",
+            "en": "The zero value of an int is 0"
           }
         },
         {
@@ -123,17 +232,17 @@
           "difficulty": "mid",
           "kind": "stdout",
           "prompt": {
-            "th": "เก็บ go ไว้ในตัวแปร string แล้วพิมพ์",
-            "en": "Store go in a string variable and print it"
+            "th": "เก็บคำว่า go ไว้ในตัวแปรชื่อ lang แล้วพิมพ์ lang",
+            "en": "Store go in a variable named lang, then print lang"
           },
           "rule": {
-            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
-            "en": "Printed output must match every character, including the final newline"
+            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมการขึ้นบรรทัดใหม่ท้ายสุด (Println ขึ้นบรรทัดใหม่ให้เอง)",
+            "en": "Printed output must match every character, including the final newline (Println adds it for you)"
           },
           "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
           "hint": {
-            "th": "ประกาศตัวแปร string ที่เก็บ go แล้วพิมพ์ตัวแปร ไม่พิมพ์ตัวอักษรตรงๆ",
-            "en": "Declare a string variable that holds go, then print the variable"
+            "th": "lang := \"go\" ประกาศตัวแปรพร้อมใส่ค่า แล้วส่ง lang เข้า Println โดยไม่ใส่เครื่องหมายคำพูด",
+            "en": "lang := \"go\" declares the variable with a value. Pass lang to Println without quotes"
           }
         },
         {
@@ -141,17 +250,17 @@
           "difficulty": "hard",
           "kind": "stdout",
           "prompt": {
-            "th": "พิมพ์ zero value ของ bool",
-            "en": "Print the zero value of a bool"
+            "th": "ประกาศ var ready bool แล้วพิมพ์ ready จากนั้นตั้ง ready เป็น true แล้วพิมพ์อีกครั้ง",
+            "en": "Declare var ready bool and print it. Then set ready to true and print it again"
           },
           "rule": {
-            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
-            "en": "Printed output must match every character, including the final newline"
+            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมการขึ้นบรรทัดใหม่ท้ายสุด (Println ขึ้นบรรทัดใหม่ให้เอง)",
+            "en": "Printed output must match every character, including the final newline (Println adds it for you)"
           },
           "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
           "hint": {
-            "th": "ประกาศตัวแปร bool โดยไม่ใส่ค่า แล้วพิมพ์ตัวแปรนั้น",
-            "en": "Declare a bool with no value, then print that variable"
+            "th": "ครั้งแรกได้ค่าศูนย์ของ bool คือ false แล้วใช้ ready = true เปลี่ยนค่า (ใช้ = ไม่ใช่ := เพราะตัวแปรมีอยู่แล้ว)",
+            "en": "The first print shows the zero value, false. Then change it with ready = true (use =, not :=, because the variable exists)"
           }
         },
         {
@@ -159,17 +268,17 @@
           "difficulty": "twist",
           "kind": "stdout",
           "prompt": {
-            "th": "พิมพ์ zero value ของ int ติดกับสตริง go เป็น 0go",
-            "en": "Print the zero value of an int next to the string go as 0go"
+            "th": "ประกาศ var n int แล้วพิมพ์ n ติดกับคำว่า go ในบรรทัดเดียว ผลต้องเป็น 0go",
+            "en": "Declare var n int and print n right next to go on one line. The result is 0go"
           },
           "rule": {
-            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
-            "en": "Printed output must match every character, including the final newline"
+            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมการขึ้นบรรทัดใหม่ท้ายสุด (Println ขึ้นบรรทัดใหม่ให้เอง)",
+            "en": "Printed output must match every character, including the final newline (Println adds it for you)"
           },
           "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
           "hint": {
-            "th": "พิมพ์ตัวเลขศูนย์กับสตริงในบรรทัดเดียวกัน",
-            "en": "Print the zero and the string on the same line"
+            "th": "fmt.Print ไม่ขึ้นบรรทัดใหม่ ให้ Print(n) ก่อน แล้วค่อย Println(\"go\")",
+            "en": "fmt.Print does not add a newline. Call Print(n) first, then Println(\"go\")"
           }
         }
       ]
@@ -177,14 +286,14 @@
     {
       "id": "b03-control-flow",
       "level": "beginner",
-      "order": 3,
+      "order": 4,
       "title": {
-        "th": "ตัวดำเนินการและ control flow",
-        "en": "Operators and control flow"
+        "th": "เงื่อนไขและการวนซ้ำ",
+        "en": "Conditions and loops"
       },
       "goal": {
-        "th": "ใช้ if, for และ switch",
-        "en": "Use if, for, and switch"
+        "th": "ใช้ if เลือกทาง ใช้ for ทำซ้ำ และใช้ switch เลือกตามค่า",
+        "en": "Use if to choose, for to repeat, and switch to choose by value"
       },
       "exercises": [
         {
@@ -192,17 +301,17 @@
           "difficulty": "easy",
           "kind": "stdout",
           "prompt": {
-            "th": "ให้ score เป็น 80 แล้วพิมพ์ pass เมื่อ score >= 80",
-            "en": "Set score to 80 and print pass when score >= 80"
+            "th": "ให้ score เป็น 80 แล้วพิมพ์ pass เมื่อ score มากกว่าหรือเท่ากับ 80",
+            "en": "Set score to 80 and print pass when score is at least 80"
           },
           "rule": {
-            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
-            "en": "Printed output must match every character, including the final newline"
+            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมการขึ้นบรรทัดใหม่ท้ายสุด (Println ขึ้นบรรทัดใหม่ให้เอง)",
+            "en": "Printed output must match every character, including the final newline (Println adds it for you)"
           },
           "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
           "hint": {
-            "th": "ใช้ if ตรวจ score >= 80 แล้วพิมพ์ pass",
-            "en": "Use if to test score >= 80, then print pass"
+            "th": "มากกว่าหรือเท่ากับเขียนว่า >=",
+            "en": "At least is written >="
           }
         },
         {
@@ -210,17 +319,17 @@
           "difficulty": "mid",
           "kind": "stdout",
           "prompt": {
-            "th": "พิมพ์ 123 โดยไม่มีช่องว่าง จากลูป 1 ถึง 3",
-            "en": "Print 123 with no spaces from a loop over 1 through 3"
+            "th": "ใช้ for วน i จาก 1 ถึง 3 แล้วพิมพ์ i ติดกันเป็น 123",
+            "en": "Loop i from 1 to 3 with for and print the numbers together as 123"
           },
           "rule": {
-            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
-            "en": "Printed output must match every character, including the final newline"
+            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมการขึ้นบรรทัดใหม่ท้ายสุด (Println ขึ้นบรรทัดใหม่ให้เอง)",
+            "en": "Printed output must match every character, including the final newline (Println adds it for you)"
           },
           "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
           "hint": {
-            "th": "ใช้ for ตั้งแต่ 1 ถึง 3 และพิมพ์ด้วย Print เพื่อไม่ขึ้นบรรทัดใหม่",
-            "en": "Use a for from 1 through 3 and Print so the digits stay on one line"
+            "th": "ใช้ fmt.Print(i) ในลูปเพื่อไม่ให้ขึ้นบรรทัดใหม่ แล้ว fmt.Println() หลังลูปหนึ่งครั้ง",
+            "en": "Use fmt.Print(i) inside the loop so it stays on one line, then call fmt.Println() once after the loop"
           }
         },
         {
@@ -228,17 +337,17 @@
           "difficulty": "hard",
           "kind": "stdout",
           "prompt": {
-            "th": "ให้ day เป็น 1 แล้ว switch พิมพ์ monday",
-            "en": "Set day to 1 and switch to print monday"
+            "th": "วน day จาก 1 ถึง 3 แล้วใช้ switch พิมพ์ mon, tue, wed บรรทัดละคำ",
+            "en": "Loop day from 1 to 3 and use switch to print mon, tue, wed, one per line"
           },
           "rule": {
-            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
-            "en": "Printed output must match every character, including the final newline"
+            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมการขึ้นบรรทัดใหม่ท้ายสุด (Println ขึ้นบรรทัดใหม่ให้เอง)",
+            "en": "Printed output must match every character, including the final newline (Println adds it for you)"
           },
           "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
           "hint": {
-            "th": "ใช้ switch ที่ case ของ day เท่ากับ 1 แล้วพิมพ์ monday",
-            "en": "Use a switch whose case is day equal to 1, then print monday"
+            "th": "วาง switch day ไว้ในลูป แล้วเขียน case 1, case 2, case 3",
+            "en": "Put switch day inside the loop and write case 1, case 2, case 3"
           }
         },
         {
@@ -246,17 +355,17 @@
           "difficulty": "twist",
           "kind": "stdout",
           "prompt": {
-            "th": "วนจาก 3 ลงมา 1 แล้วพิมพ์ 321 โดยไม่มีช่องว่าง",
-            "en": "Loop from 3 down to 1 and print 321 with no spaces"
+            "th": "วนนับถอยหลังจาก 3 ลงมา 1 แล้วพิมพ์ติดกันเป็น 321",
+            "en": "Count down from 3 to 1 and print the numbers together as 321"
           },
           "rule": {
-            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
-            "en": "Printed output must match every character, including the final newline"
+            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมการขึ้นบรรทัดใหม่ท้ายสุด (Println ขึ้นบรรทัดใหม่ให้เอง)",
+            "en": "Printed output must match every character, including the final newline (Println adds it for you)"
           },
           "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
           "hint": {
-            "th": "ให้ลูปนับถอยหลัง และใช้ Print เพื่อไม่เว้นบรรทัด",
-            "en": "Count downward and use Print so the digits stay on one line"
+            "th": "เริ่ม i ที่ 3 วนตราบที่ i >= 1 และใช้ i-- ลด i ลงหนึ่งทุกรอบ",
+            "en": "Start i at 3, loop while i >= 1, and use i-- to lower i by one each round"
           }
         }
       ]
@@ -264,86 +373,86 @@
     {
       "id": "b04-functions",
       "level": "beginner",
-      "order": 4,
+      "order": 5,
       "title": {
-        "th": "ฟังก์ชันและค่าคืนหลายตัว",
-        "en": "Functions and multiple results"
+        "th": "ฟังก์ชัน",
+        "en": "Functions"
       },
       "goal": {
-        "th": "เขียนฟังก์ชันที่คืนค่ากับ error แล้วเรียกใช้",
-        "en": "Write a function that returns a value and an error, then call it"
+        "th": "เขียนฟังก์ชันที่รับค่าและคืนผล รวมถึงฟังก์ชันที่คืนหลายค่า",
+        "en": "Write functions that take values and return results, including more than one result"
       },
       "exercises": [
         {
           "id": "easy",
           "difficulty": "easy",
-          "kind": "stdout",
+          "kind": "test",
           "prompt": {
-            "th": "เขียน add แล้วพิมพ์ผลของ add(2, 3)",
-            "en": "Write add and print the result of add(2, 3)"
+            "th": "เขียน Add ให้คืนผลบวกของ a กับ b เช่น Add(2, 3) ได้ 5",
+            "en": "Write Add to return a plus b. Add(2, 3) is 5"
           },
           "rule": {
-            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
-            "en": "Printed output must match every character, including the final newline"
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
+          "starter": "package main\n\nfunc Add(a, b int) int {\n\treturn 0\n}\n",
           "hint": {
-            "th": "เขียนฟังก์ชัน add ที่รับสอง int แล้วเรียกมันจาก main",
-            "en": "Write add that takes two ints, then call it from main"
+            "th": "คืน a + b",
+            "en": "Return a + b"
           }
         },
         {
           "id": "mid",
           "difficulty": "mid",
-          "kind": "stdout",
+          "kind": "test",
           "prompt": {
-            "th": "เขียน div ที่คืน int กับ error แล้วพิมพ์ผลของ 4/2",
-            "en": "Write div that returns an int and an error, then print the result of 4/2"
+            "th": "เขียน DivMod ให้คืนผลหารกับเศษ เช่น DivMod(7, 2) ได้ 3 กับ 1",
+            "en": "Write DivMod to return the quotient and the remainder. DivMod(7, 2) gives 3 and 1"
           },
           "rule": {
-            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
-            "en": "Printed output must match every character, including the final newline"
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
+          "starter": "package main\n\nfunc DivMod(a, b int) (int, int) {\n\treturn 0, 0\n}\n",
           "hint": {
-            "th": "ให้ div คืนทั้งผลหารและ error และเมื่อหารได้ให้ error เป็น nil",
-            "en": "Have div return both the quotient and an error, and use nil when division works"
+            "th": "a / b ของ int ตัดเศษทิ้ง ส่วน a % b ให้เศษ คืนทั้งสองค่าด้วย return a / b, a % b",
+            "en": "a / b on ints drops the remainder and a % b gives it. Return both with return a / b, a % b"
           }
         },
         {
           "id": "hard",
           "difficulty": "hard",
-          "kind": "stdout",
+          "kind": "test",
           "prompt": {
-            "th": "เมื่อหารด้วยศูนย์ให้พิมพ์ error",
-            "en": "When dividing by zero, print error"
+            "th": "เขียน Clamp ให้บีบ v ให้อยู่ระหว่าง low กับ high เช่น Clamp(10, 0, 3) ได้ 3 และ Clamp(-5, 0, 3) ได้ 0",
+            "en": "Write Clamp to keep v between low and high. Clamp(10, 0, 3) is 3 and Clamp(-5, 0, 3) is 0"
           },
           "rule": {
-            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
-            "en": "Printed output must match every character, including the final newline"
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
+          "starter": "package main\n\nfunc Clamp(v, low, high int) int {\n\treturn v\n}\n",
           "hint": {
-            "th": "เมื่อตัวหารเป็นศูนย์ให้พิมพ์คำว่า error แทนผลหาร",
-            "en": "When the divisor is zero, print the word error instead of a quotient"
+            "th": "ถ้า v มากกว่า high ให้คืน high ถ้า v น้อยกว่า low ให้คืน low นอกนั้นคืน v",
+            "en": "If v is above high, return high. If it is below low, return low. Otherwise return v"
           }
         },
         {
           "id": "twist",
           "difficulty": "twist",
-          "kind": "stdout",
+          "kind": "test",
           "prompt": {
-            "th": "เขียน clamp แล้วพิมพ์ผลของ clamp(10, 0, 3)",
-            "en": "Write clamp and print the result of clamp(10, 0, 3)"
+            "th": "เขียน Twice ให้เรียกฟังก์ชัน f สองรอบต่อกัน เช่น ถ้า f บวก 1 แล้ว Twice(f, 5) ได้ 7",
+            "en": "Write Twice to call the function f two times in a row. If f adds 1, Twice(f, 5) is 7"
           },
           "rule": {
-            "th": "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
-            "en": "Printed output must match every character, including the final newline"
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
+          "starter": "package main\n\nfunc Twice(f func(int) int, n int) int {\n\treturn n\n}\n",
           "hint": {
-            "th": "ถ้าค่าสูงกว่าเพดานให้คืนเพดาน ถ้าต่ำกว่าพื้นให้คืนพื้น",
-            "en": "Return the ceiling when the value is above it, and the floor when it is below"
+            "th": "เรียก f(n) ได้ผลแรก แล้วเรียก f กับผลแรกอีกครั้ง",
+            "en": "Call f(n) for a first result, then call f again on that result"
           }
         }
       ]
@@ -351,14 +460,14 @@
     {
       "id": "b05-collections",
       "level": "beginner",
-      "order": 5,
+      "order": 6,
       "title": {
         "th": "slice และ map",
         "en": "Slices and maps"
       },
       "goal": {
-        "th": "เลือก slice หรือ map ให้ตรงงาน",
-        "en": "Pick a slice or a map for the job"
+        "th": "เก็บหลายค่าใน slice แล้วไล่ทีละตัว และค้นค่าจาก map ด้วยชื่อ",
+        "en": "Keep many values in a slice and walk through them, and look values up in a map by name"
       },
       "exercises": [
         {
@@ -366,8 +475,8 @@
           "difficulty": "easy",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Sum ให้รวมตัวเลข และคืน 0 เมื่อ slice ว่าง",
-            "en": "Write Sum to add the numbers and return 0 for an empty slice"
+            "th": "เขียน Sum ให้คืนผลรวมของตัวเลขใน values เช่น Sum([]int{1, 2, 3}) ได้ 6 และ slice ว่างได้ 0",
+            "en": "Write Sum to return the total of values. Sum([]int{1, 2, 3}) is 6 and an empty slice gives 0"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
@@ -375,8 +484,8 @@
           },
           "starter": "package main\n\nfunc Sum(values []int) int {\n\treturn 0\n}\n",
           "hint": {
-            "th": "วนสมาชิกใน slice แล้วบวกเข้าตัวสะสม ถ้าไม่มีสมาชิกให้คืน 0",
-            "en": "Loop over the slice and add into a total, and return 0 when it is empty"
+            "th": "ตั้ง total := 0 แล้วใช้ for _, v := range values บวก v เข้า total",
+            "en": "Start with total := 0, then use for _, v := range values to add each v"
           }
         },
         {
@@ -384,8 +493,8 @@
           "difficulty": "mid",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Count ให้นับว่าค่า target โผล่กี่ครั้ง",
-            "en": "Write Count to count how often target appears"
+            "th": "เขียน Count ให้นับว่า target อยู่ใน values กี่ครั้ง เช่น Count([]int{4, 7, 7}, 7) ได้ 2",
+            "en": "Write Count to count how many times target is in values. Count([]int{4, 7, 7}, 7) is 2"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
@@ -393,8 +502,8 @@
           },
           "starter": "package main\n\nfunc Count(values []int, target int) int {\n\treturn 0\n}\n",
           "hint": {
-            "th": "วน slice แล้วนับตัวที่เท่ากับ target",
-            "en": "Loop over the slice and count items equal to target"
+            "th": "ไล่ทุกตัวด้วย range และบวก 1 เมื่อค่าเท่ากับ target",
+            "en": "Walk every item with range and add 1 when the item equals target"
           }
         },
         {
@@ -402,26 +511,8 @@
           "difficulty": "hard",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Last ให้คืนตัวสุดท้าย และคืน 0 เมื่อว่าง",
-            "en": "Write Last to return the last item, or 0 when empty"
-          },
-          "rule": {
-            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
-            "en": "The function must pass the hidden tests"
-          },
-          "starter": "package main\n\nfunc Last(values []int) int {\n\treturn 0\n}\n",
-          "hint": {
-            "th": "ถ้า slice ว่างให้คืน 0 ไม่เช่นนั้นคืนตัวที่ดัชนีสุดท้าย",
-            "en": "Return 0 when the slice is empty, otherwise return the last index"
-          }
-        },
-        {
-          "id": "twist",
-          "difficulty": "twist",
-          "kind": "test",
-          "prompt": {
-            "th": "เขียน Index ให้คืนตำแหน่งแรกของค่า หรือ -1 เมื่อไม่มี",
-            "en": "Write Index to return the first position of the value, or -1 when it is missing"
+            "th": "เขียน Index ให้คืนตำแหน่งแรกที่เจอ target (นับจาก 0) หรือ -1 เมื่อไม่เจอ เช่น Index([]int{4, 7, 7}, 7) ได้ 1",
+            "en": "Write Index to return the first position of target, counting from 0, or -1 when it is missing. Index([]int{4, 7, 7}, 7) is 1"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
@@ -429,23 +520,41 @@
           },
           "starter": "package main\n\nfunc Index(values []int, target int) int {\n\treturn 0\n}\n",
           "hint": {
-            "th": "เดิน slice จนเจอค่า ถ้าไม่เจอหรือว่างให้คืน -1",
-            "en": "Walk the slice until you find the value. Return -1 when it is missing or the slice is empty"
+            "th": "ใช้ for i, v := range values แล้ว return i ทันทีที่ v เท่ากับ target ถ้าวนจบแล้วยังไม่เจอให้ return -1",
+            "en": "Use for i, v := range values and return i as soon as v equals target. If the loop ends, return -1"
+          }
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน CountWords ให้คืน map ที่บอกว่าแต่ละคำโผล่กี่ครั้ง เช่น go, is, go ได้ go เป็น 2 และ is เป็น 1",
+            "en": "Write CountWords to return a map of how often each word appears. go, is, go gives go: 2 and is: 1"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nfunc CountWords(words []string) map[string]int {\n\treturn nil\n}\n",
+          "hint": {
+            "th": "สร้าง counts := make(map[string]int) แล้วทำ counts[w]++ ทุกคำ คำที่ยังไม่มีใน map เริ่มที่ 0 เอง",
+            "en": "Make counts := make(map[string]int) and do counts[w]++ for every word. A missing word starts at 0"
           }
         }
       ]
     },
     {
-      "id": "b06-structs",
+      "id": "b06-pointers",
       "level": "beginner",
-      "order": 6,
+      "order": 7,
       "title": {
-        "th": "struct และ method",
-        "en": "Structs and methods"
+        "th": "pointer",
+        "en": "Pointers"
       },
       "goal": {
-        "th": "รวมข้อมูลเป็น struct และผูก method",
-        "en": "Group data in a struct and attach methods"
+        "th": "ส่งที่อยู่ของตัวแปรให้ฟังก์ชัน เพื่อให้ฟังก์ชันแก้ค่าตัวจริงได้",
+        "en": "Pass a variable's address so a function can change the real value"
       },
       "exercises": [
         {
@@ -453,17 +562,104 @@
           "difficulty": "easy",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Area ให้คืน W*H ของ Rect",
-            "en": "Write Area to return W*H of a Rect"
+            "th": "เขียน Inc ให้เพิ่มค่าที่ n ชี้อยู่ขึ้นหนึ่ง เช่น x เป็น 1 หลัง Inc(&x) ต้องเป็น 2",
+            "en": "Write Inc to add one to the value n points at. If x is 1, after Inc(&x) it is 2"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\ntype Rect struct {\n\tW int\n\tH int\n}\n\nfunc Area(r Rect) int {\n\treturn 0\n}\n",
+          "starter": "package main\n\nfunc Inc(n *int) {\n}\n",
           "hint": {
-            "th": "คืนผลคูณของฟิลด์ W กับ H",
-            "en": "Return the product of the W and H fields"
+            "th": "*n คือค่าที่ n ชี้อยู่ เขียน *n = *n + 1 หรือ *n++",
+            "en": "*n is the value n points at. Write *n = *n + 1 or *n++"
+          }
+        },
+        {
+          "id": "mid",
+          "difficulty": "mid",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน Swap ให้สลับค่าที่ a กับ b ชี้อยู่",
+            "en": "Write Swap to exchange the values a and b point at"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nfunc Swap(a, b *int) {\n}\n",
+          "hint": {
+            "th": "เก็บ *a ไว้ในตัวแปรชั่วคราวก่อน แล้วค่อยเขียนทับ หรือใช้ *a, *b = *b, *a",
+            "en": "Keep *a in a temporary variable before you overwrite it, or use *a, *b = *b, *a"
+          }
+        },
+        {
+          "id": "hard",
+          "difficulty": "hard",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน SafeInc ให้คืน false เมื่อ n เป็น nil ถ้าไม่ใช่ให้เพิ่มค่าขึ้นหนึ่งแล้วคืน true",
+            "en": "Write SafeInc to return false when n is nil. Otherwise add one and return true"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nfunc SafeInc(n *int) bool {\n\treturn false\n}\n",
+          "hint": {
+            "th": "เช็ก if n == nil ก่อนอ่าน *n เพราะการอ่านผ่าน pointer ที่เป็น nil ทำให้โปรแกรม panic",
+            "en": "Check if n == nil before reading *n, because reading through a nil pointer makes the program panic"
+          }
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน Add ให้บวก delta เข้ากับค่าที่ n ชี้อยู่ delta ติดลบได้",
+            "en": "Write Add to add delta to the value n points at. delta may be negative"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nfunc Add(n *int, delta int) {\n}\n",
+          "hint": {
+            "th": "*n += delta ใช้ได้ทั้ง delta บวกและลบ",
+            "en": "*n += delta works for both positive and negative delta"
+          }
+        }
+      ]
+    },
+    {
+      "id": "b07-structs",
+      "level": "beginner",
+      "order": 8,
+      "title": {
+        "th": "struct และ method",
+        "en": "Structs and methods"
+      },
+      "goal": {
+        "th": "รวมข้อมูลที่เกี่ยวกันเป็น struct และเขียน method ให้มัน",
+        "en": "Group related data in a struct and write methods for it"
+      },
+      "exercises": [
+        {
+          "id": "easy",
+          "difficulty": "easy",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน method Area ของ Rect ให้คืน W คูณ H เช่น Rect{W: 3, H: 4}.Area() ได้ 12",
+            "en": "Write the Area method of Rect to return W times H. Rect{W: 3, H: 4}.Area() is 12"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\ntype Rect struct {\n\tW int\n\tH int\n}\n\nfunc (r Rect) Area() int {\n\treturn 0\n}\n",
+          "hint": {
+            "th": "ใน method ใช้ r.W กับ r.H อ่านฟิลด์",
+            "en": "Inside the method, read the fields with r.W and r.H"
           }
         },
         {
@@ -472,7 +668,7 @@
           "kind": "test",
           "prompt": {
             "th": "เขียน method Grow บน *Rect ให้บวก n ทั้ง W และ H",
-            "en": "Write Grow on *Rect to add n to both W and H"
+            "en": "Write the Grow method on *Rect to add n to both W and H"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
@@ -480,8 +676,8 @@
           },
           "starter": "package main\n\ntype Rect struct {\n\tW int\n\tH int\n}\n\nfunc (r *Rect) Grow(n int) {\n}\n",
           "hint": {
-            "th": "ใน method ที่รับ pointer ให้บวก n เข้าทั้ง W และ H",
-            "en": "In the pointer method, add n to both W and H"
+            "th": "receiver เป็น pointer จึงแก้ r.W += n กับ r.H += n แล้วค่าของตัวจริงเปลี่ยน",
+            "en": "The receiver is a pointer, so r.W += n and r.H += n change the real value"
           }
         },
         {
@@ -489,17 +685,17 @@
           "difficulty": "hard",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Rename บน *User ให้เปลี่ยน Name",
-            "en": "Write Rename on *User to change Name"
+            "th": "เขียน method Add บน *Cart ให้ต่อราคาเข้า Items และ method Total บน Cart ให้คืนผลรวมราคา",
+            "en": "Write Add on *Cart to append a price to Items, and Total on Cart to return the sum of the prices"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\ntype User struct {\n\tName string\n}\n\nfunc (u *User) Rename(name string) {\n}\n",
+          "starter": "package main\n\ntype Cart struct {\n\tItems []int\n}\n\nfunc (c *Cart) Add(price int) {\n}\n\nfunc (c Cart) Total() int {\n\treturn 0\n}\n",
           "hint": {
-            "th": "ตั้งฟิลด์ Name ผ่าน pointer receiver",
-            "en": "Set the Name field through the pointer receiver"
+            "th": "Add ต้องแก้ตะกร้าตัวจริง จึงใช้ c.Items = append(c.Items, price) ส่วน Total แค่อ่าน จึงไล่ c.Items แล้วบวก",
+            "en": "Add must change the real cart, so use c.Items = append(c.Items, price). Total only reads, so it walks c.Items and adds"
           }
         },
         {
@@ -507,8 +703,8 @@
           "difficulty": "twist",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Shrink บน *Rect ให้ลบ n จาก W และ H แต่ไม่ต่ำกว่า 0",
-            "en": "Write Shrink on *Rect to subtract n from W and H, but not below 0"
+            "th": "เขียน method Shrink บน *Rect ให้ลบ n จาก W และ H แต่ไม่ให้ต่ำกว่า 0",
+            "en": "Write the Shrink method on *Rect to subtract n from W and H, never going below 0"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
@@ -516,95 +712,8 @@
           },
           "starter": "package main\n\ntype Rect struct {\n\tW int\n\tH int\n}\n\nfunc (r *Rect) Shrink(n int) {\n}\n",
           "hint": {
-            "th": "ลบ n ออกจากทั้งสองฟิลด์ แล้วกันไม่ให้ติดลบ",
-            "en": "Subtract n from both fields and keep them from going below zero"
-          }
-        }
-      ]
-    },
-    {
-      "id": "b07-pointers",
-      "level": "beginner",
-      "order": 7,
-      "title": {
-        "th": "pointer",
-        "en": "Pointers"
-      },
-      "goal": {
-        "th": "แยกการก็อปค่าออกจากการแก้ค่าผ่าน pointer",
-        "en": "Tell a copied value from a value changed through a pointer"
-      },
-      "exercises": [
-        {
-          "id": "easy",
-          "difficulty": "easy",
-          "kind": "test",
-          "prompt": {
-            "th": "เขียน Inc ให้เพิ่มค่าที่ pointer ชี้อยู่หนึ่ง",
-            "en": "Write Inc to add one to the pointed-to value"
-          },
-          "rule": {
-            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
-            "en": "The function must pass the hidden tests"
-          },
-          "starter": "package main\n\nfunc Inc(n *int) {\n}\n",
-          "hint": {
-            "th": "เขียนค่าใหม่ทับค่าเดิมที่ pointer ชี้อยู่ โดยบวกหนึ่ง",
-            "en": "Assign a new value through the pointer by adding one"
-          }
-        },
-        {
-          "id": "mid",
-          "difficulty": "mid",
-          "kind": "test",
-          "prompt": {
-            "th": "เขียน Swap ให้สลับค่าของสอง pointer",
-            "en": "Write Swap to exchange the values of two pointers"
-          },
-          "rule": {
-            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
-            "en": "The function must pass the hidden tests"
-          },
-          "starter": "package main\n\nfunc Swap(a, b *int) {\n}\n",
-          "hint": {
-            "th": "เก็บค่าที่ pointer ตัวหนึ่งชี้อยู่ไว้ก่อน แล้วสลับกับอีกตัว",
-            "en": "Save the value one pointer points at, then exchange it with the other"
-          }
-        },
-        {
-          "id": "hard",
-          "difficulty": "hard",
-          "kind": "test",
-          "prompt": {
-            "th": "เขียน SetName ให้ตั้ง Name ผ่าน pointer",
-            "en": "Write SetName to set Name through a pointer"
-          },
-          "rule": {
-            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
-            "en": "The function must pass the hidden tests"
-          },
-          "starter": "package main\n\ntype User struct {\n\tName string\n}\n\nfunc SetName(u *User, name string) {\n}\n",
-          "hint": {
-            "th": "ตั้งฟิลด์ Name บนค่าที่ pointer ชี้อยู่",
-            "en": "Set the Name field on the value the pointer points at"
-          }
-        },
-        {
-          "id": "twist",
-          "difficulty": "twist",
-          "kind": "test",
-          "prompt": {
-            "th": "เขียน Add ให้บวก delta ผ่าน pointer รวมกรณีที่ delta ติดลบ",
-            "en": "Write Add to add delta through a pointer, including a negative delta"
-          },
-          "rule": {
-            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
-            "en": "The function must pass the hidden tests"
-          },
-          "starter": "package main\n\nfunc Add(n *int, delta int) {\n}\n",
-          "hint": {
-            "th": "บวก delta เข้าค่าที่ pointer ชี้อยู่ delta ติดลบได้",
-            "en": "Add delta through the pointer. Delta may be negative"
+            "th": "ลบก่อน แล้วถ้าผลน้อยกว่า 0 ให้ตั้งเป็น 0 ทำแยกกันทั้ง W และ H",
+            "en": "Subtract first, then set the field to 0 if it went below 0. Do W and H separately"
           }
         }
       ]
@@ -612,14 +721,14 @@
     {
       "id": "b08-errors",
       "level": "beginner",
-      "order": 8,
+      "order": 9,
       "title": {
-        "th": "error พื้นฐาน",
-        "en": "Basic errors"
+        "th": "error",
+        "en": "Errors"
       },
       "goal": {
-        "th": "คืน error และหยุดเมื่อทำงานไม่สำเร็จ",
-        "en": "Return an error and stop when the work failed"
+        "th": "บอกผู้เรียกว่าทำงานไม่สำเร็จด้วย error และหยุดเมื่อเจอ error",
+        "en": "Tell the caller that the work failed with an error, and stop when you get one"
       },
       "exercises": [
         {
@@ -627,8 +736,8 @@
           "difficulty": "easy",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Div ให้คืน error เมื่อ b เป็น 0 และคืน a/b เมื่อสำเร็จ",
-            "en": "Write Div to return an error when b is 0 and a/b on success"
+            "th": "เขียน Div ให้คืน 0 กับ error เมื่อ b เป็น 0 และคืน a / b กับ nil เมื่อหารได้",
+            "en": "Write Div to return 0 and an error when b is 0, and a / b with nil when it can divide"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
@@ -636,8 +745,8 @@
           },
           "starter": "package main\n\nfunc Div(a, b int) (int, error) {\n\treturn 0, nil\n}\n",
           "hint": {
-            "th": "ถ้า b เป็น 0 ให้คืน error ถ้าไม่ใช่ให้คืนผลหารกับ nil",
-            "en": "If b is 0 return an error, otherwise return the quotient and nil"
+            "th": "import \"errors\" แล้วคืน 0, errors.New(\"divide by zero\") เมื่อ b == 0",
+            "en": "Import \"errors\" and return 0, errors.New(\"divide by zero\") when b == 0"
           }
         },
         {
@@ -645,26 +754,8 @@
           "difficulty": "mid",
           "kind": "test",
           "prompt": {
-            "th": "เขียน ParsePositive ให้รับสตริงที่เป็นจำนวนมากกว่า 0",
-            "en": "Write ParsePositive to accept a string that is a number greater than 0"
-          },
-          "rule": {
-            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
-            "en": "The function must pass the hidden tests"
-          },
-          "starter": "package main\n\nfunc ParsePositive(s string) (int, error) {\n\treturn 0, nil\n}\n",
-          "hint": {
-            "th": "แปลงสตริงเป็นจำนวน แล้วคืน error เมื่อแปลงไม่ได้หรือค่าไม่มากกว่า 0",
-            "en": "Convert the string to a number, and return an error when it fails or is not greater than 0"
-          }
-        },
-        {
-          "id": "hard",
-          "difficulty": "hard",
-          "kind": "test",
-          "prompt": {
-            "th": "เขียน MustHave ให้คืน error เมื่อสตริงว่าง",
-            "en": "Write MustHave to return an error for an empty string"
+            "th": "เขียน MustHave ให้คืน error เมื่อ s เป็นข้อความว่าง และคืน nil เมื่อมีข้อความ",
+            "en": "Write MustHave to return an error when s is empty, and nil when it has text"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
@@ -672,8 +763,26 @@
           },
           "starter": "package main\n\nfunc MustHave(s string) error {\n\treturn nil\n}\n",
           "hint": {
-            "th": "ถ้าสตริงว่างให้คืน error ถ้าไม่ว่างให้คืน nil",
-            "en": "Return an error when the string is empty, and nil otherwise"
+            "th": "เทียบ s == \"\" แล้วคืน errors.New(\"empty\")",
+            "en": "Compare s == \"\" and return errors.New(\"empty\")"
+          }
+        },
+        {
+          "id": "hard",
+          "difficulty": "hard",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน ParsePositive ให้แปลงข้อความเป็นตัวเลขที่มากกว่า 0 เช่น \"12\" ได้ 12 ส่วน \"abc\" กับ \"-3\" ต้องได้ error",
+            "en": "Write ParsePositive to turn text into a number above 0. \"12\" gives 12, while \"abc\" and \"-3\" give an error"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nfunc ParsePositive(s string) (int, error) {\n\treturn 0, nil\n}\n",
+          "hint": {
+            "th": "import \"strconv\" แล้วใช้ n, err := strconv.Atoi(s) ถ้า err != nil หรือ n <= 0 ให้คืน error",
+            "en": "Import \"strconv\" and use n, err := strconv.Atoi(s). If err != nil or n <= 0, return an error"
           }
         },
         {
@@ -681,8 +790,8 @@
           "difficulty": "twist",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Between ให้คืน error เมื่อค่านอกช่วงปิด และคืนตัวเลขเมื่ออยู่ในช่วง",
-            "en": "Write Between to return an error when the value is outside the closed range, and the number when it is inside"
+            "th": "เขียน Between ให้คืน n กับ nil เมื่อ low ≤ n ≤ high (รวมค่าที่ขอบ) และคืน 0 กับ error เมื่ออยู่นอกช่วง เช่น Between(10, 1, 10) ได้ 10",
+            "en": "Write Between to return n and nil when low ≤ n ≤ high (edges included), and 0 with an error otherwise. Between(10, 1, 10) gives 10"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
@@ -690,8 +799,8 @@
           },
           "starter": "package main\n\nfunc Between(n, low, high int) (int, error) {\n\treturn 0, nil\n}\n",
           "hint": {
-            "th": "คืน error เมื่อค่าต่ำกว่า low หรือสูงกว่า high และคืนตัวเลขเมื่ออยู่ในช่วง",
-            "en": "Return an error when the value is below low or above high, and return the number when it is inside"
+            "th": "นอกช่วงคือ n < low || n > high (|| แปลว่า หรือ)",
+            "en": "Outside the range means n < low || n > high (|| means or)"
           }
         }
       ]
@@ -699,50 +808,65 @@
     {
       "id": "b09-packages",
       "level": "beginner",
-      "order": 9,
+      "order": 10,
       "title": {
-        "th": "package และ go.mod",
-        "en": "Packages and go.mod"
+        "th": "package และ import",
+        "en": "Packages and imports"
       },
       "goal": {
-        "th": "จัดฟังก์ชันใน package เดียวกันให้นำไปเรียกต่อได้",
-        "en": "Organize functions in one package so callers can use them"
+        "th": "เรียกใช้ฟังก์ชันจากแพ็กเกจอื่น และรู้ว่าชื่อที่ขึ้นต้นด้วยตัวพิมพ์ใหญ่คือชื่อที่แพ็กเกจอื่นใช้ได้",
+        "en": "Call functions from other packages, and know that a name starting with a capital letter is usable from other packages"
       },
       "exercises": [
         {
           "id": "easy",
           "difficulty": "easy",
-          "kind": "test",
+          "kind": "quiz",
           "prompt": {
-            "th": "เขียน Greet ให้คืน hello ตามด้วยช่องว่างและชื่อ",
-            "en": "Write Greet to return hello, a space, and the name"
+            "th": "ในแพ็กเกจ greet มีชื่อเหล่านี้ ชื่อไหนที่แพ็กเกจอื่นเรียกใช้ได้",
+            "en": "Package greet has these names. Which one can other packages use?"
           },
           "rule": {
-            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
-            "en": "The function must pass the hidden tests"
+            "th": "ชื่อที่ขึ้นต้นด้วยตัวพิมพ์ใหญ่ถูก export จึงเรียกจากแพ็กเกจอื่นได้ เช่น greet.Hello",
+            "en": "A name that starts with a capital letter is exported, so other packages can call it, such as greet.Hello"
           },
-          "starter": "package main\n\nfunc Greet(name string) string {\n\treturn \"\"\n}\n",
+          "starter": "",
           "hint": {
             "th": "ต่อคำว่า hello ช่องว่างหนึ่งช่อง และชื่อที่รับมา",
             "en": "Join the word hello, one space, and the given name"
-          }
+          },
+          "choices": {
+            "th": [
+              "_hello",
+              "hELLO",
+              "hello",
+              "Hello"
+            ],
+            "en": [
+              "_hello",
+              "hELLO",
+              "hello",
+              "Hello"
+            ]
+          },
+          "answer": 3
         },
         {
           "id": "mid",
           "difficulty": "mid",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Join ให้ต่อ a กับ b ด้วยจุลภาค",
-            "en": "Write Join to join a and b with a comma"
+            "th": "เขียน Shout ให้คืนข้อความเป็นตัวพิมพ์ใหญ่แล้วต่อด้วย ! เช่น Shout(\"go\") ได้ GO!",
+            "en": "Write Shout to return the text in capitals followed by !. Shout(\"go\") is GO!"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc Join(a, b string) string {\n\treturn \"\"\n}\n",
+          "starter": "package main\n\nfunc Shout(s string) string {\n\treturn s\n}\n",
           "hint": {
-            "th": "ต่อ a กับ b โดยคั่นด้วยจุลภาค",
-            "en": "Join a and b with a comma between them"
+            "th": "import \"strings\" แล้วใช้ strings.ToUpper(s) + \"!\"",
+            "en": "Import \"strings\" and use strings.ToUpper(s) + \"!\""
           }
         },
         {
@@ -750,50 +874,65 @@
           "difficulty": "hard",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Version ให้คืน 1.25",
-            "en": "Write Version to return 1.25"
+            "th": "เขียน JoinAll ให้ต่อทุกคำใน parts โดยคั่นด้วยจุลภาคและช่องว่าง เช่น a, b ได้ \"a, b\" และ slice ว่างได้ข้อความว่าง",
+            "en": "Write JoinAll to join every word in parts with a comma and a space. a, b gives \"a, b\" and an empty slice gives empty text"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc Version() string {\n\treturn \"\"\n}\n",
+          "starter": "package main\n\nfunc JoinAll(parts []string) string {\n\treturn \"\"\n}\n",
           "hint": {
-            "th": "คืนสตริง 1.25 จากฟังก์ชัน",
-            "en": "Return the string 1.25 from the function"
+            "th": "แพ็กเกจ strings มีฟังก์ชัน Join ที่รับ slice กับตัวคั่น",
+            "en": "Package strings has a Join function that takes a slice and a separator"
           }
         },
         {
           "id": "twist",
           "difficulty": "twist",
-          "kind": "test",
+          "kind": "quiz",
           "prompt": {
-            "th": "เขียน Label ให้คืนภาษา เว้นวรรค แล้วรุ่น เช่น go 1.25",
-            "en": "Write Label to return the language, a space, then the version, such as go 1.25"
+            "th": "go.mod เขียนว่า module example.com/app และแพ็กเกจอยู่ในโฟลเดอร์ greet ต้อง import ด้วย path ไหน",
+            "en": "go.mod says module example.com/app and the package is in the folder greet. Which import path do you use?"
           },
           "rule": {
-            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
-            "en": "The function must pass the hidden tests"
+            "th": "path ของแพ็กเกจคือชื่อโมดูลต่อด้วยโฟลเดอร์ของแพ็กเกจ",
+            "en": "A package path is the module name followed by the package folder"
           },
-          "starter": "package main\n\nfunc Label(lang, version string) string {\n\treturn \"\"\n}\n",
+          "starter": "",
           "hint": {
             "th": "คืนภาษา เว้นวรรค แล้วรุ่น",
             "en": "Return the language, a space, then the version"
-          }
+          },
+          "choices": {
+            "th": [
+              "\"./greet\"",
+              "\"greet\"",
+              "\"example.com/app/greet\"",
+              "\"app/greet\""
+            ],
+            "en": [
+              "\"./greet\"",
+              "\"greet\"",
+              "\"example.com/app/greet\"",
+              "\"app/greet\""
+            ]
+          },
+          "answer": 2
         }
       ]
     },
     {
       "id": "b10-defer",
       "level": "beginner",
-      "order": 10,
+      "order": 11,
       "title": {
-        "th": "defer, panic และ recover",
-        "en": "defer, panic, and recover"
+        "th": "defer",
+        "en": "defer"
       },
       "goal": {
-        "th": "ใช้ defer ปิดงาน และรู้ว่า panic ไม่ใช่ทางจัดการ error ปกติ",
-        "en": "Use defer to finish work, and know panic is not the normal error path"
+        "th": "สั่งงานให้ทำตอนฟังก์ชันกำลังจะจบ และรู้ลำดับเมื่อมี defer หลายตัว",
+        "en": "Schedule work for when a function is about to return, and know the order when there are several defers"
       },
       "exercises": [
         {
@@ -801,8 +940,8 @@
           "difficulty": "easy",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Order ให้คืน ab โดยใช้ defer เติม b",
-            "en": "Write Order to return ab by appending b in defer"
+            "th": "เขียน Order ให้คืน ab โดย return \"a\" แล้วให้ defer เติม b",
+            "en": "Write Order to return ab by returning \"a\" and letting a defer append b"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
@@ -810,8 +949,8 @@
           },
           "starter": "package main\n\nfunc Order() (s string) {\n\treturn \"\"\n}\n",
           "hint": {
-            "th": "ใช้ defer เติม b เข้า named return แล้วคืน a",
-            "en": "Use defer to append b onto the named result, then return a"
+            "th": "ในตัวฟังก์ชันให้ return \"a\" แล้วให้ defer เติม b ต่อท้าย s ผลจึงเป็น ab",
+            "en": "Return \"a\" in the body and let a defer append b to s, so the result is ab"
           }
         },
         {
@@ -819,8 +958,8 @@
           "difficulty": "mid",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Closed ให้คืน 1 โดยเพิ่มตัวนับใน defer ผ่าน named return",
-            "en": "Write Closed to return 1 by incrementing a named result in defer"
+            "th": "เขียน Closed ให้คืน 1 โดย return 0 แล้วให้ defer เพิ่ม n ขึ้นหนึ่ง",
+            "en": "Write Closed to return 1 by returning 0 and letting a defer add one to n"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
@@ -828,13 +967,82 @@
           },
           "starter": "package main\n\nfunc Closed() (n int) {\n\treturn 0\n}\n",
           "hint": {
-            "th": "ใช้ defer เพิ่ม named return ทีละหนึ่ง",
-            "en": "Use defer to add one to the named result"
+            "th": "defer func() { n++ }() ทำงานหลัง return 0 ตั้ง n แล้ว จึงได้ 1",
+            "en": "defer func() { n++ }() runs after return 0 sets n, so the result is 1"
           }
         },
         {
           "id": "hard",
           "difficulty": "hard",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน Mark ให้คืน abc โดย return \"a\" แล้วใช้ defer สองตัวเติม b และ c",
+            "en": "Write Mark to return abc by returning \"a\" and using two defers to append b and c"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nfunc Mark() (s string) {\n\treturn \"\"\n}\n",
+          "hint": {
+            "th": "defer ตัวที่ลงทะเบียนทีหลังทำงานก่อน จึงต้องเขียน defer ที่เติม c ไว้ก่อน defer ที่เติม b",
+            "en": "The defer registered last runs first, so write the defer that appends c before the one that appends b"
+          }
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "เขียน Countdown ให้คืน 321 โดยวน i จาก 1 ถึง 3 และ defer เติมเลข i ในแต่ละรอบ",
+            "en": "Write Countdown to return 321 by looping i from 1 to 3 and deferring an append of i each round"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nfunc Countdown() (s string) {\n\treturn \"\"\n}\n",
+          "hint": {
+            "th": "ใน defer ใช้ s += fmt.Sprint(i) ตัวที่ลงทะเบียนตอน i เป็น 3 ทำงานก่อน",
+            "en": "Inside the defer, use s += fmt.Sprint(i). The one registered when i is 3 runs first"
+          }
+        }
+      ]
+    },
+    {
+      "id": "b11-panic",
+      "level": "beginner",
+      "order": 12,
+      "title": {
+        "th": "panic และ recover",
+        "en": "panic and recover"
+      },
+      "goal": {
+        "th": "แยกให้ออกว่าเมื่อไรใช้ error เมื่อไรเกิด panic และกู้โปรแกรมด้วย recover",
+        "en": "Tell when to use an error and when a panic happens, and recover from a panic"
+      },
+      "exercises": [
+        {
+          "id": "easy",
+          "difficulty": "easy",
+          "kind": "stdout",
+          "prompt": {
+            "th": "เขียนโปรแกรมที่เรียก panic ด้วยข้อความ boom",
+            "en": "Write a program that calls panic with the message boom"
+          },
+          "rule": {
+            "th": "โปรแกรมต้อง panic และข้อความ panic ต้องมีคำว่า boom",
+            "en": "The program must panic, and the panic message must contain boom"
+          },
+          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"todo\")\n}\n",
+          "hint": {
+            "th": "ใน main เขียน panic(\"boom\")",
+            "en": "Write panic(\"boom\") in main"
+          }
+        },
+        {
+          "id": "mid",
+          "difficulty": "mid",
           "kind": "test",
           "prompt": {
             "th": "เขียน Safe ให้ panic แล้ว recover ใน defer และคืน true",
@@ -846,34 +1054,63 @@
           },
           "starter": "package main\n\nfunc Safe() (recovered bool) {\n\treturn false\n}\n",
           "hint": {
-            "th": "ใน defer ให้เรียก recover แล้วตั้งค่าคืนเป็น true จากนั้นค่อย panic",
-            "en": "In defer, call recover and set the result to true, then panic"
+            "th": "วาง defer ที่เรียก recover และตั้ง recovered = true ไว้ก่อน แล้วจึงเรียก panic",
+            "en": "Register a defer that calls recover and sets recovered = true first, then call panic"
           }
         },
         {
-          "id": "twist",
-          "difficulty": "twist",
+          "id": "hard",
+          "difficulty": "hard",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Mark ให้ใช้ defer สองตัวเติมตัวอักษร แล้วคืน abc",
-            "en": "Write Mark to use two defers to append letters and return abc"
+            "th": "เขียน SafeDiv ให้คืน a / b และถ้าการหารทำให้ panic (b เป็น 0) ให้ใช้ recover แล้วคืน error แทน",
+            "en": "Write SafeDiv to return a / b. If the division panics (b is 0), use recover and return an error instead"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc Mark() (s string) {\n\treturn \"\"\n}\n",
+          "starter": "package main\n\nfunc SafeDiv(a, b int) (q int, err error) {\n\treturn a / b, nil\n}\n",
           "hint": {
-            "th": "defer ที่ประกาศทีหลังทำงานก่อน เลยได้ a แล้ว b แล้ว c",
-            "en": "The defer you register later runs first, so the letters come out a, then b, then c"
+            "th": "ใน defer ถ้า r := recover() ไม่เป็น nil ให้ตั้ง err = fmt.Errorf(\"divide: %v\", r) ค่าคืนแบบมีชื่อ (q, err) ทำให้ defer แก้ผลได้",
+            "en": "In the defer, if r := recover() is not nil, set err = fmt.Errorf(\"divide: %v\", r). Named results (q, err) let the defer change the result"
           }
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "quiz",
+          "prompt": {
+            "th": "เหตุการณ์ไหนควรคืน error มากกว่า panic",
+            "en": "Which situation should return an error rather than panic?"
+          },
+          "rule": {
+            "th": "ข้อมูลผิดจากผู้ใช้เป็นเรื่องที่คาดไว้ได้ จึงคืน error ให้ผู้เรียกจัดการ ส่วน panic ใช้กับบั๊กที่ไม่ควรเกิด",
+            "en": "Bad input from a user is expected, so return an error for the caller to handle. panic is for bugs that should never happen"
+          },
+          "starter": "",
+          "choices": {
+            "th": [
+              "ผู้ใช้กรอกอายุเป็นตัวอักษร",
+              "โค้ดอ่าน slice เกินขนาดเพราะเขียนลูปผิด",
+              "โปรแกรมเริ่มทำงานไม่ได้เพราะค่าคงที่ในโค้ดผิด",
+              "ไม่มีข้อไหนควรคืน error"
+            ],
+            "en": [
+              "A user types letters for their age",
+              "Code reads past the end of a slice because of a loop bug",
+              "The program cannot start because a constant in the code is wrong",
+              "None of these should return an error"
+            ]
+          },
+          "answer": 0
         }
       ]
     },
     {
       "id": "a01-interfaces",
       "level": "advanced",
-      "order": 11,
+      "order": 13,
       "title": {
         "th": "interface",
         "en": "Interfaces"
@@ -948,7 +1185,7 @@
     {
       "id": "a02-generics",
       "level": "advanced",
-      "order": 12,
+      "order": 14,
       "title": {
         "th": "generics",
         "en": "Generics"
@@ -1023,7 +1260,7 @@
     {
       "id": "a03-error-wrapping",
       "level": "advanced",
-      "order": 13,
+      "order": 15,
       "title": {
         "th": "errors.Is และ errors.As",
         "en": "errors.Is and errors.As"
@@ -1098,7 +1335,7 @@
     {
       "id": "a04-io",
       "level": "advanced",
-      "order": 14,
+      "order": 16,
       "title": {
         "th": "io.Reader และ io.Writer",
         "en": "io.Reader and io.Writer"
@@ -1173,7 +1410,7 @@
     {
       "id": "a05-json",
       "level": "advanced",
-      "order": 15,
+      "order": 17,
       "title": {
         "th": "encoding/json",
         "en": "encoding/json"
@@ -1248,7 +1485,7 @@
     {
       "id": "a06-goroutines",
       "level": "advanced",
-      "order": 16,
+      "order": 18,
       "title": {
         "th": "goroutine",
         "en": "Goroutines"
@@ -1323,7 +1560,7 @@
     {
       "id": "a07-channels",
       "level": "advanced",
-      "order": 17,
+      "order": 19,
       "title": {
         "th": "channel",
         "en": "Channels"
@@ -1398,7 +1635,7 @@
     {
       "id": "a08-select",
       "level": "advanced",
-      "order": 18,
+      "order": 20,
       "title": {
         "th": "select และ timeout",
         "en": "select and timeout"
@@ -1473,7 +1710,7 @@
     {
       "id": "a09-context",
       "level": "advanced",
-      "order": 19,
+      "order": 21,
       "title": {
         "th": "context",
         "en": "context"
@@ -1548,7 +1785,7 @@
     {
       "id": "a10-testing",
       "level": "advanced",
-      "order": 20,
+      "order": 22,
       "title": {
         "th": "table test",
         "en": "Table tests"
@@ -1623,7 +1860,7 @@
     {
       "id": "a11-modules",
       "level": "advanced",
-      "order": 21,
+      "order": 23,
       "title": {
         "th": "module และ workspace",
         "en": "Modules and workspaces"
@@ -1648,19 +1885,19 @@
           "starter": "",
           "choices": {
             "th": [
-              "สั่งให้ลบโฟลเดอร์นั้นตอน build",
-              "บันทึกว่าโมดูลนี้ต้องการโมดูลนั้นที่รุ่นที่ระบุ",
               "ตั้งค่า GOPROXY",
-              "ปิดการตรวจ checksum"
+              "ปิดการตรวจ checksum",
+              "สั่งให้ลบโฟลเดอร์นั้นตอน build",
+              "บันทึกว่าโมดูลนี้ต้องการโมดูลนั้นที่รุ่นที่ระบุ"
             ],
             "en": [
-              "It deletes that folder during the build",
-              "It records that this module needs that module at the given version",
               "It sets GOPROXY",
-              "It turns off checksum checks"
+              "It turns off checksum checks",
+              "It deletes that folder during the build",
+              "It records that this module needs that module at the given version"
             ]
           },
-          "answer": 1
+          "answer": 3
         },
         {
           "id": "mid",
@@ -1679,13 +1916,13 @@
             "th": [
               "example.com/app/internal/web",
               "example.com/app",
-              "golang.org/x/mod",
+              "golang.org/x/mod/semver",
               "example.com/app/cmd/api"
             ],
             "en": [
               "example.com/app/internal/web",
               "example.com/app",
-              "golang.org/x/mod",
+              "golang.org/x/mod/semver",
               "example.com/app/cmd/api"
             ]
           },
@@ -1706,26 +1943,26 @@
           "starter": "",
           "choices": {
             "th": [
+              "ตั้ง GOMAXPROCS",
               "แทนที่ go.mod ทั้งไฟล์",
               "ปิด checksum database",
-              "จัดหลายโมดูลบนดิสก์ให้พัฒนาพร้อมกัน",
-              "ตั้ง GOMAXPROCS"
+              "จัดหลายโมดูลบนดิสก์ให้พัฒนาพร้อมกัน"
             ],
             "en": [
+              "It sets GOMAXPROCS",
               "It replaces go.mod",
               "It disables the checksum database",
-              "It groups modules on disk for local development",
-              "It sets GOMAXPROCS"
+              "It groups modules on disk for local development"
             ]
           },
-          "answer": 2
+          "answer": 3
         }
       ]
     },
     {
       "id": "p01-worker-pool",
       "level": "professional",
-      "order": 22,
+      "order": 24,
       "title": {
         "th": "รูปแบบงานคู่ขนาน",
         "en": "Concurrent work patterns"
@@ -1800,7 +2037,7 @@
     {
       "id": "p02-waitgroup",
       "level": "professional",
-      "order": 23,
+      "order": 25,
       "title": {
         "th": "sync.WaitGroup และ vet",
         "en": "sync.WaitGroup and vet"
@@ -1843,14 +2080,14 @@
           "difficulty": "hard",
           "kind": "test",
           "prompt": {
-            "th": "ย้าย wg.Add ออกจากใน goroutine แล้วให้ FanIn(3) คืน 3",
-            "en": "Move wg.Add out of the goroutine and make FanIn(3) return 3"
+            "th": "ย้าย wg.Add ไปไว้ก่อนคำสั่ง go ให้ FanIn(50) นับงานครบ 50 ทุกครั้ง",
+            "en": "Move wg.Add before the go statement so FanIn(50) counts all 50 jobs every time"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nimport \"sync\"\n\nfunc FanIn(n int) int {\n\tvar wg sync.WaitGroup\n\tfor i := 0; i < n; i++ {\n\t\tgo func() {\n\t\t\twg.Add(1)\n\t\t\twg.Done()\n\t\t}()\n\t}\n\twg.Wait()\n\treturn 0\n}\n"
+          "starter": "package main\n\nimport (\n\t\"sync\"\n\t\"sync/atomic\"\n)\n\nfunc FanIn(n int) int {\n\tvar wg sync.WaitGroup\n\tvar done atomic.Int64\n\tfor i := 0; i < n; i++ {\n\t\tgo func() {\n\t\t\twg.Add(1)\n\t\t\tdefer wg.Done()\n\t\t\tdone.Add(1)\n\t\t}()\n\t}\n\twg.Wait()\n\treturn int(done.Load())\n}\n"
         },
         {
           "id": "twist",
@@ -1875,7 +2112,7 @@
     {
       "id": "p03-cancel",
       "level": "professional",
-      "order": 24,
+      "order": 26,
       "title": {
         "th": "ยกเลิกงานด้วย context",
         "en": "Cancel work with context"
@@ -1932,8 +2169,8 @@
           "difficulty": "twist",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Remain ให้นับรอบที่ทำได้ก่อน context จบ context ที่จบแล้วได้ 0",
-            "en": "Write Remain to count rounds finished before the context ends. An ended context returns 0"
+            "th": "เขียน Remain ให้วน n รอบ ก่อนเริ่มแต่ละรอบให้เช็กว่า context จบหรือยัง แล้วคืนจำนวนรอบที่ได้ทำ context ที่จบแล้วได้ 0",
+            "en": "Write Remain to loop n rounds, checking before each round whether the context has ended, and return how many rounds ran. An ended context returns 0"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
@@ -1950,7 +2187,7 @@
     {
       "id": "p04-http",
       "level": "professional",
-      "order": 25,
+      "order": 27,
       "title": {
         "th": "net/http",
         "en": "net/http"
@@ -2025,7 +2262,7 @@
     {
       "id": "p05-synctest",
       "level": "professional",
-      "order": 26,
+      "order": 28,
       "title": {
         "th": "testing/synctest",
         "en": "testing/synctest"
@@ -2100,7 +2337,7 @@
     {
       "id": "p06-bench-fuzz",
       "level": "professional",
-      "order": 27,
+      "order": 29,
       "title": {
         "th": "benchmark และ fuzz",
         "en": "Benchmarks and fuzzing"
@@ -2125,19 +2362,19 @@
           "starter": "",
           "choices": {
             "th": [
-              "จำนวน goroutine",
-              "เวลาเฉลี่ยเป็นนาโนวินาทีต่องานหนึ่งครั้ง",
               "ขนาดไบนารี",
-              "จำนวนเทสต์ที่พัง"
+              "จำนวนเทสต์ที่พัง",
+              "จำนวน goroutine",
+              "เวลาเฉลี่ยเป็นนาโนวินาทีต่องานหนึ่งครั้ง"
             ],
             "en": [
-              "The goroutine count",
-              "The average time in nanoseconds for one operation",
               "The binary size",
-              "The number of failing tests"
+              "The number of failing tests",
+              "The goroutine count",
+              "The average time in nanoseconds for one operation"
             ]
           },
-          "answer": 1
+          "answer": 3
         },
         {
           "id": "mid",
@@ -2183,26 +2420,26 @@
           "starter": "",
           "choices": {
             "th": [
+              "คำสั่ง go vet",
               "ฟังก์ชัน main ที่เรียก rand",
               "ไฟล์ go.mod เท่านั้น",
-              "ฟังก์ชัน Fuzz ที่รับ *testing.F แล้วเรียก f.Fuzz",
-              "คำสั่ง go vet"
+              "ฟังก์ชัน Fuzz ที่รับ *testing.F แล้วเรียก f.Fuzz"
             ],
             "en": [
+              "The go vet command",
               "A main function that calls rand",
               "Only a go.mod file",
-              "A Fuzz function that takes *testing.F and calls f.Fuzz",
-              "The go vet command"
+              "A Fuzz function that takes *testing.F and calls f.Fuzz"
             ]
           },
-          "answer": 2
+          "answer": 3
         }
       ]
     },
     {
       "id": "p07-vet-mod",
       "level": "professional",
-      "order": 28,
+      "order": 30,
       "title": {
         "th": "hostport และ go.mod ignore",
         "en": "hostport and go.mod ignore"
@@ -2273,26 +2510,26 @@
           "starter": "",
           "choices": {
             "th": [
-              "ลบไฟล์ตอน build",
-              "คำสั่ง go ข้ามไดเรกทอรีที่ระบุ",
               "ปิด go vet ทั้งโมดูล",
-              "เปลี่ยนรุ่นภาษา"
+              "เปลี่ยนรุ่นภาษา",
+              "ลบไฟล์ตอน build",
+              "คำสั่ง go ข้ามไดเรกทอรีที่ระบุ"
             ],
             "en": [
-              "It deletes files during the build",
-              "The go command skips the named directories",
               "It disables go vet for the whole module",
-              "It changes the language version"
+              "It changes the language version",
+              "It deletes files during the build",
+              "The go command skips the named directories"
             ]
           },
-          "answer": 1
+          "answer": 3
         }
       ]
     },
     {
       "id": "p08-slog",
       "level": "professional",
-      "order": 29,
+      "order": 31,
       "title": {
         "th": "log/slog",
         "en": "log/slog"
@@ -2336,7 +2573,7 @@
           "kind": "test",
           "prompt": {
             "th": "เขียน WithUser ให้ logger มี attribute user ติดไปกับทุกบรรทัด",
-            "en": "Write WithUser so the logger attaches the user attribute to the line"
+            "en": "Write WithUser so the logger attaches the user attribute to every line"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
@@ -2367,7 +2604,7 @@
     {
       "id": "p09-generic-api",
       "level": "professional",
-      "order": 30,
+      "order": 32,
       "title": {
         "th": "generics ใน API จริง",
         "en": "Generics in a real API"
@@ -2410,8 +2647,8 @@
           "difficulty": "hard",
           "kind": "test",
           "prompt": {
-            "th": "เขียน At ให้คืนสมาชิกที่ index เมื่ออยู่ในขอบ และ false เมื่อเกิน",
-            "en": "Write At to return the element at index when it is in range, and false otherwise"
+            "th": "เขียน At ให้คืนสมาชิกที่ index เมื่ออยู่ในขอบ และ false เมื่ออยู่นอกขอบ (รวม index ติดลบ)",
+            "en": "Write At to return the element at index when it is in range, and false otherwise (including a negative index)"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
@@ -2442,7 +2679,7 @@
     {
       "id": "p10-mod-prod",
       "level": "professional",
-      "order": 31,
+      "order": 33,
       "title": {
         "th": "module ในงานจริง",
         "en": "Modules in production"
@@ -2467,19 +2704,19 @@
           "starter": "",
           "choices": {
             "th": [
-              "ต้องมีไฟล์ 25 ไฟล์",
               "โมดูลนี้ใช้ภาษาอย่างน้อยรุ่น 1.25",
               "ปิด module",
-              "ตั้งพอร์ต 25"
+              "ตั้งพอร์ต 25",
+              "ต้องมีไฟล์ 25 ไฟล์"
             ],
             "en": [
-              "The module must contain 25 files",
               "This module uses at least language version 1.25",
               "It disables modules",
-              "It sets port 25"
+              "It sets port 25",
+              "The module must contain 25 files"
             ]
           },
-          "answer": 1
+          "answer": 0
         },
         {
           "id": "mid",
@@ -2496,19 +2733,19 @@
           "starter": "",
           "choices": {
             "th": [
-              "ทั้งสองบรรทัดคือสิ่งเดียวกัน",
               "toolchain ขอชุดเครื่องมือรุ่นนั้น ส่วน go บอกรุ่นภาษา",
               "toolchain ลบ dependency",
-              "go ตั้ง GOPROXY"
+              "go ตั้ง GOPROXY",
+              "ทั้งสองบรรทัดคือสิ่งเดียวกัน"
             ],
             "en": [
-              "The two lines are the same thing",
               "toolchain requests that toolset, while go states the language version",
               "toolchain deletes dependencies",
-              "go sets GOPROXY"
+              "go sets GOPROXY",
+              "The two lines are the same thing"
             ]
           },
-          "answer": 1
+          "answer": 0
         },
         {
           "id": "hard",
@@ -2525,26 +2762,26 @@
           "starter": "",
           "choices": {
             "th": [
-              "ใช้ toolchain ที่ติดตั้งอยู่ และไม่ดาวน์โหลด toolchain อื่น",
-              "ดาวน์โหลด toolchain ล่าสุดทุกครั้ง",
               "ปิด go test",
-              "เปลี่ยนชื่อโมดูล"
+              "เปลี่ยนชื่อโมดูล",
+              "ใช้ toolchain ที่ติดตั้งอยู่ และไม่ดาวน์โหลด toolchain อื่น",
+              "ดาวน์โหลด toolchain ล่าสุดทุกครั้ง"
             ],
             "en": [
-              "Use the installed toolchain and do not download another one",
-              "Download the newest toolchain every time",
               "Disable go test",
-              "Rename the module"
+              "Rename the module",
+              "Use the installed toolchain and do not download another one",
+              "Download the newest toolchain every time"
             ]
           },
-          "answer": 0
+          "answer": 2
         }
       ]
     },
     {
       "id": "e01-memory-model",
       "level": "expert",
-      "order": 32,
+      "order": 34,
       "title": {
         "th": "memory model",
         "en": "Memory model"
@@ -2569,19 +2806,19 @@
           "starter": "",
           "choices": {
             "th": [
-              "การรับมาก่อนการส่งเสมอ",
               "การส่ง happens-before การรับที่คู่กัน",
               "ไม่มีลำดับใดๆ",
-              "ขึ้นกับความเร็วของ CPU เท่านั้น"
+              "ขึ้นกับความเร็วของ CPU เท่านั้น",
+              "การรับมาก่อนการส่งเสมอ"
             ],
             "en": [
-              "The receive always happens first",
               "The send happens before the matching receive",
               "There is no order",
-              "It depends only on CPU speed"
+              "It depends only on CPU speed",
+              "The receive always happens first"
             ]
           },
-          "answer": 1
+          "answer": 0
         },
         {
           "id": "mid",
@@ -2598,19 +2835,19 @@
           "starter": "",
           "choices": {
             "th": [
-              "ได้เสมอ",
               "ไม่ได้ ต้องมี happens-before จาก channel หรือ sync",
               "ได้ถ้ารันบนเครื่องเดียว",
-              "ได้ถ้าใช้ fmt.Println"
+              "ได้ถ้าใช้ fmt.Println",
+              "ได้เสมอ"
             ],
             "en": [
-              "Yes, always",
               "No. You need happens-before from a channel or from sync",
               "Yes on one machine",
-              "Yes if you use fmt.Println"
+              "Yes if you use fmt.Println",
+              "Yes, always"
             ]
           },
-          "answer": 1
+          "answer": 0
         },
         {
           "id": "hard",
@@ -2627,26 +2864,26 @@
           "starter": "",
           "choices": {
             "th": [
-              "เร่งความเร็วเสมอ",
-              "happens-before ระหว่าง Unlock กับ Lock ถัดไป",
               "ปิด garbage collector",
-              "ทำให้ channel ไม่ต้องใช้"
+              "ทำให้ channel ไม่ต้องใช้",
+              "เร่งความเร็วเสมอ",
+              "happens-before ระหว่าง Unlock กับ Lock ถัดไป"
             ],
             "en": [
-              "It always makes the program faster",
-              "Happens-before between Unlock and the next Lock",
               "It disables the garbage collector",
-              "It removes the need for channels"
+              "It removes the need for channels",
+              "It always makes the program faster",
+              "Happens-before between Unlock and the next Lock"
             ]
           },
-          "answer": 1
+          "answer": 3
         }
       ]
     },
     {
       "id": "e02-gomaxprocs",
       "level": "expert",
-      "order": 33,
+      "order": 35,
       "title": {
         "th": "GOMAXPROCS ใน container",
         "en": "GOMAXPROCS in a container"
@@ -2671,19 +2908,19 @@
           "starter": "",
           "choices": {
             "th": [
-              "จำนวนไฟล์ในโมดูล",
-              "ลิมิต CPU ของ cgroup เมื่อมีลิมิตนั้น",
               "พอร์ตของ HTTP",
-              "ขนาดของ go.mod"
+              "ขนาดของ go.mod",
+              "จำนวนไฟล์ในโมดูล",
+              "ลิมิต CPU ของ cgroup เมื่อมีลิมิตนั้น"
             ],
             "en": [
-              "The number of files in the module",
-              "The cgroup CPU limit when one is set",
               "The HTTP port",
-              "The size of go.mod"
+              "The size of go.mod",
+              "The number of files in the module",
+              "The cgroup CPU limit when one is set"
             ]
           },
-          "answer": 1
+          "answer": 3
         },
         {
           "id": "mid",
@@ -2729,26 +2966,26 @@
           "starter": "",
           "choices": {
             "th": [
+              "เฉพาะตอน go test",
               "ทุกแพลตฟอร์มเหมือนกัน",
               "บน Linux เมื่อมีลิมิตของ cgroup",
-              "เฉพาะ Windows",
-              "เฉพาะตอน go test"
+              "เฉพาะ Windows"
             ],
             "en": [
+              "Only during go test",
               "On every platform the same way",
               "On Linux when a cgroup limit exists",
-              "Only on Windows",
-              "Only during go test"
+              "Only on Windows"
             ]
           },
-          "answer": 1
+          "answer": 2
         }
       ]
     },
     {
       "id": "e03-greenteagc",
       "level": "expert",
-      "order": 34,
+      "order": 36,
       "title": {
         "th": "GC ทดลอง",
         "en": "Experimental GC"
@@ -2773,19 +3010,19 @@
           "starter": "",
           "choices": {
             "th": [
+              "รูปแบบของ JSON",
               "ชนิดของ channel",
               "ตัวเก็บขยะแบบทดลองที่ต้องเปิดด้วย GOEXPERIMENT",
-              "คำสั่งใน go.mod",
-              "รูปแบบของ JSON"
+              "คำสั่งใน go.mod"
             ],
             "en": [
+              "A JSON format",
               "A channel type",
               "An experimental collector that you enable with GOEXPERIMENT",
-              "A go.mod directive",
-              "A JSON format"
+              "A go.mod directive"
             ]
           },
-          "answer": 1
+          "answer": 2
         },
         {
           "id": "mid",
@@ -2802,19 +3039,19 @@
           "starter": "",
           "choices": {
             "th": [
+              "เพราะต้องมี cgo",
               "เพราะใช้ไม่ได้บน Linux",
               "ยังต้องวัดผลในงานจริงก่อน",
-              "เพราะเลิกใช้แล้วใน 1.25",
-              "เพราะต้องมี cgo"
+              "เพราะเลิกใช้แล้วใน 1.25"
             ],
             "en": [
+              "Because it requires cgo",
               "Because it cannot run on Linux",
               "It still needs measurement on real workloads",
-              "Because Go 1.25 removed it",
-              "Because it requires cgo"
+              "Because Go 1.25 removed it"
             ]
           },
-          "answer": 1
+          "answer": 2
         },
         {
           "id": "hard",
@@ -2850,7 +3087,7 @@
     {
       "id": "e04-flight-recorder",
       "level": "expert",
-      "order": 35,
+      "order": 37,
       "title": {
         "th": "FlightRecorder",
         "en": "FlightRecorder"
@@ -2875,19 +3112,19 @@
           "starter": "",
           "choices": {
             "th": [
-              "ในฐานข้อมูล",
-              "ไว้ในหน่วยความจำเป็นช่วงสั้น",
               "ใน go.mod",
-              "ในไฟล์ทุก request"
+              "ในไฟล์ทุก request",
+              "ในฐานข้อมูล",
+              "ไว้ในหน่วยความจำเป็นช่วงสั้น"
             ],
             "en": [
-              "In a database",
-              "In memory, as a short window",
               "In go.mod",
-              "In a file for every request"
+              "In a file for every request",
+              "In a database",
+              "In memory, as a short window"
             ]
           },
-          "answer": 1
+          "answer": 3
         },
         {
           "id": "mid",
@@ -2933,26 +3170,26 @@
           "starter": "",
           "choices": {
             "th": [
+              "มันใช้ได้เฉพาะ quiz",
               "มันปิด scheduler",
               "ไม่ต้องเขียน trace ลงดิสก์ตลอดเวลา",
-              "มันแทนที่ testing",
-              "มันใช้ได้เฉพาะ quiz"
+              "มันแทนที่ testing"
             ],
             "en": [
+              "It works only in quizzes",
               "It disables the scheduler",
               "It does not write a trace to disk the whole time",
-              "It replaces testing",
-              "It works only in quizzes"
+              "It replaces testing"
             ]
           },
-          "answer": 1
+          "answer": 2
         }
       ]
     },
     {
       "id": "e05-nil-check",
       "level": "expert",
-      "order": 36,
+      "order": 38,
       "title": {
         "th": "nil-check ของ Go 1.25",
         "en": "Go 1.25 nil check"
@@ -2971,8 +3208,8 @@
             "en": "Make main panic by dereferencing a nil *int"
           },
           "rule": {
-            "th": "โปรแกรมต้อง panic เพราะ nil pointer และยังอยู่หน้า editor",
-            "en": "The program must panic on a nil pointer. It still runs from the editor"
+            "th": "โปรแกรมต้อง panic เพราะ nil pointer ตอนรันจากหน้า editor",
+            "en": "The program must panic on a nil pointer when run from the editor"
           },
           "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"ok\")\n}\n"
         },
@@ -2985,8 +3222,8 @@
             "en": "Panic by reading a field through a nil struct pointer"
           },
           "rule": {
-            "th": "โปรแกรมต้อง panic เพราะ nil pointer และยังอยู่หน้า editor",
-            "en": "The program must panic on a nil pointer. It still runs from the editor"
+            "th": "โปรแกรมต้อง panic เพราะ nil pointer ตอนรันจากหน้า editor",
+            "en": "The program must panic on a nil pointer when run from the editor"
           },
           "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"ok\")\n}\n"
         },
@@ -2999,8 +3236,8 @@
             "en": "Panic by calling a method that reads a field on a nil receiver"
           },
           "rule": {
-            "th": "โปรแกรมต้อง panic เพราะ nil pointer และยังอยู่หน้า editor",
-            "en": "The program must panic on a nil pointer. It still runs from the editor"
+            "th": "โปรแกรมต้อง panic เพราะ nil pointer ตอนรันจากหน้า editor",
+            "en": "The program must panic on a nil pointer when run from the editor"
           },
           "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"ok\")\n}\n"
         },
@@ -3013,8 +3250,8 @@
             "en": "Call load and use the *int before checking the error so the program panics"
           },
           "rule": {
-            "th": "โปรแกรมต้อง panic เพราะ nil pointer และยังอยู่หน้า editor",
-            "en": "The program must panic on a nil pointer. It still runs from the editor"
+            "th": "โปรแกรมต้อง panic เพราะ nil pointer ตอนรันจากหน้า editor",
+            "en": "The program must panic on a nil pointer when run from the editor"
           },
           "starter": "package main\n\nimport \"fmt\"\n\nfunc load() (*int, error) {\n\treturn nil, nil\n}\n\nfunc main() {\n\tfmt.Println(\"ok\")\n}\n",
           "hint": {
@@ -3027,7 +3264,7 @@
     {
       "id": "e06-escape",
       "level": "expert",
-      "order": 37,
+      "order": 39,
       "title": {
         "th": "escape analysis",
         "en": "Escape analysis"
@@ -3052,19 +3289,19 @@
           "starter": "",
           "choices": {
             "th": [
-              "ชื่อแพ็กเกจ",
-              "ค่าต้องไป heap หรืออยู่บน stack ได้",
               "รุ่นของ go.mod",
-              "พอร์ตของ HTTP"
+              "พอร์ตของ HTTP",
+              "ชื่อแพ็กเกจ",
+              "ค่าต้องไป heap หรืออยู่บน stack ได้"
             ],
             "en": [
-              "The package name",
-              "Whether a value must go to the heap or can stay on the stack",
               "The go.mod version",
-              "The HTTP port"
+              "The HTTP port",
+              "The package name",
+              "Whether a value must go to the heap or can stay on the stack"
             ]
           },
-          "answer": 1
+          "answer": 3
         },
         {
           "id": "mid",
@@ -3110,26 +3347,26 @@
           "starter": "",
           "choices": {
             "th": [
+              "เพราะ vet ปิดเอง",
               "เพราะ gofmt ลบมัน",
               "มันอาจชี้เข้า stack ที่ถูกใช้ซ้ำ",
-              "เพราะ JSON เปลี่ยน",
-              "เพราะ vet ปิดเอง"
+              "เพราะ JSON เปลี่ยน"
             ],
             "en": [
+              "Because vet turns itself off",
               "Because gofmt deletes it",
               "It can point into a stack that is reused",
-              "Because JSON changed",
-              "Because vet turns itself off"
+              "Because JSON changed"
             ]
           },
-          "answer": 1
+          "answer": 2
         }
       ]
     },
     {
       "id": "e07-unsafe",
       "level": "expert",
-      "order": 38,
+      "order": 40,
       "title": {
         "th": "กับดักของ unsafe",
         "en": "unsafe traps"
@@ -3154,19 +3391,19 @@
           "starter": "",
           "choices": {
             "th": [
-              "เพราะ Go 1.25 ลบ unsafe",
-              "เพราะตัวตรวจไม่รับโค้ดที่ข้ามชนิดแบบนั้น",
               "เพราะไม่มี package main",
-              "เพราะใช้ได้เฉพาะ Windows"
+              "เพราะใช้ได้เฉพาะ Windows",
+              "เพราะ Go 1.25 ลบ unsafe",
+              "เพราะตัวตรวจไม่รับโค้ดที่ข้ามชนิดแบบนั้น"
             ],
             "en": [
-              "Because Go 1.25 removed unsafe",
-              "Because the checker does not accept code that bypasses the type system that way",
               "Because there is no package main",
-              "Because it works only on Windows"
+              "Because it works only on Windows",
+              "Because Go 1.25 removed unsafe",
+              "Because the checker does not accept code that bypasses the type system that way"
             ]
           },
-          "answer": 1
+          "answer": 3
         },
         {
           "id": "mid",
@@ -3212,26 +3449,26 @@
           "starter": "",
           "choices": {
             "th": [
+              "เขียนลง stack ของคนเรียก",
               "เก็บ pointer ไว้ในตัวแปร global",
               "ใช้การแปลง []byte(s) หรือ API ที่มีอยู่",
-              "ปิด garbage collector",
-              "เขียนลง stack ของคนเรียก"
+              "ปิด garbage collector"
             ],
             "en": [
+              "Write into the caller's stack",
               "Store the pointer in a global",
               "Use a []byte(s) conversion or an existing API",
-              "Disable the garbage collector",
-              "Write into the caller's stack"
+              "Disable the garbage collector"
             ]
           },
-          "answer": 1
+          "answer": 2
         }
       ]
     },
     {
       "id": "e08-json-v2",
       "level": "expert",
-      "order": 39,
+      "order": 41,
       "title": {
         "th": "encoding/json/v2",
         "en": "encoding/json/v2"
@@ -3285,19 +3522,19 @@
           "starter": "",
           "choices": {
             "th": [
-              "เปลี่ยนทุกไฟล์",
-              "ไม่เปลี่ยน ตัวปกติยังเป็น encoding/json",
               "ลบ tag ทั้งหมด",
-              "ต้องใช้ cgo"
+              "ต้องใช้ cgo",
+              "เปลี่ยนทุกไฟล์",
+              "ไม่เปลี่ยน ตัวปกติยังเป็น encoding/json"
             ],
             "en": [
-              "Every file changes",
-              "No. The default stays encoding/json",
               "All tags are removed",
-              "It requires cgo"
+              "It requires cgo",
+              "Every file changes",
+              "No. The default stays encoding/json"
             ]
           },
-          "answer": 1
+          "answer": 3
         },
         {
           "id": "hard",
@@ -3314,26 +3551,26 @@
           "starter": "",
           "choices": {
             "th": [
-              "ลบ go.mod",
               "เปิดตามกติกา experiment ของรุ่นนั้น",
               "ตั้ง GOPROXY=off เท่านั้น",
-              "เรียก gofmt"
+              "เรียก gofmt",
+              "ลบ go.mod"
             ],
             "en": [
-              "Delete go.mod",
               "Enable it under that release's experiment rules",
               "Only set GOPROXY=off",
-              "Run gofmt"
+              "Run gofmt",
+              "Delete go.mod"
             ]
           },
-          "answer": 1
+          "answer": 0
         }
       ]
     },
     {
       "id": "e09-core-types",
       "level": "expert",
-      "order": 40,
+      "order": 42,
       "title": {
         "th": "core types ออกจากสเปก",
         "en": "Core types leave the spec"
@@ -3358,19 +3595,19 @@
           "starter": "",
           "choices": {
             "th": [
+              "เป็นคำสั่ง go",
               "กลายเป็นคีย์เวิร์ด",
               "ไม่ใช้เป็นทางอธิบายหลักแล้ว",
-              "เป็นชื่อแพ็กเกจ",
-              "เป็นคำสั่ง go"
+              "เป็นชื่อแพ็กเกจ"
             ],
             "en": [
+              "It is a go command",
               "It became a keyword",
               "It is no longer the way the spec explains the rule",
-              "It is a package name",
-              "It is a go command"
+              "It is a package name"
             ]
           },
-          "answer": 1
+          "answer": 2
         },
         {
           "id": "mid",
@@ -3387,19 +3624,19 @@
           "starter": "",
           "choices": {
             "th": [
+              "บอกว่า gofmt อนุญาต",
               "บอกว่ามันเป็น interface ว่าง",
               "บอกว่า constraint รองรับการบวก",
-              "บอกว่ามันเป็น channel",
-              "บอกว่า gofmt อนุญาต"
+              "บอกว่ามันเป็น channel"
             ],
             "en": [
+              "Say gofmt allows it",
               "Say it is the empty interface",
               "Say that the constraint supports addition",
-              "Say it is a channel",
-              "Say gofmt allows it"
+              "Say it is a channel"
             ]
           },
-          "answer": 1
+          "answer": 2
         },
         {
           "id": "hard",
@@ -3435,7 +3672,7 @@
     {
       "id": "e10-api-design",
       "level": "expert",
-      "order": 41,
+      "order": 43,
       "title": {
         "th": "ออกแบบ API",
         "en": "API design"
@@ -3460,19 +3697,19 @@
           "starter": "",
           "choices": {
             "th": [
+              "มีอย่างน้อยสิบ method",
               "มีทุก method ของ struct",
               "เท่าพฤติกรรมที่ผู้เรียกต้องใช้",
-              "ว่างเสมอ",
-              "มีอย่างน้อยสิบ method"
+              "ว่างเสมอ"
             ],
             "en": [
+              "At least ten methods",
               "Every method of the struct",
               "Only as wide as the behavior the caller needs",
-              "Always empty",
-              "At least ten methods"
+              "Always empty"
             ]
           },
-          "answer": 1
+          "answer": 2
         },
         {
           "id": "mid",
@@ -3489,19 +3726,19 @@
           "starter": "",
           "choices": {
             "th": [
+              "เป็นชื่อไฟล์เทสต์",
               "เป็นประโยคยาว",
               "สั้น เป็นคำนาม",
-              "ขึ้นต้นด้วยตัวเลข",
-              "เป็นชื่อไฟล์เทสต์"
+              "ขึ้นต้นด้วยตัวเลข"
             ],
             "en": [
+              "The name of the test file",
               "A long sentence",
               "Short, a noun",
-              "Starting with a digit",
-              "The name of the test file"
+              "Starting with a digit"
             ]
           },
-          "answer": 1
+          "answer": 2
         },
         {
           "id": "hard",
@@ -3537,7 +3774,7 @@
     {
       "id": "z01-finale",
       "level": "expert",
-      "order": 42,
+      "order": 44,
       "title": {
         "th": "โจทย์ปิดท้าย",
         "en": "Final problems"

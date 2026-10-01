@@ -3,6 +3,7 @@ import { PROGRESS_DB, STORAGE_KEY_LAST_LESSON } from "../../../shared/constants/
 import { writeStorage } from "../../preferences/helpers/preference.ts";
 import { lessonById, lessons } from "../../../content/load.ts";
 import { pointsFor } from "../../../content/types.ts";
+import { currentLessonId, pendingRenames } from "../../../content/renames.ts";
 import { currentLevel, emptyScores, lessonPoints, totals, type LevelId, type LevelScore } from "./level.ts";
 
 export type ProgressRow = {
@@ -31,7 +32,7 @@ let snapshot: ProgressSnapshot = {
 
 function readLastLesson(): string {
   try {
-    return localStorage.getItem(STORAGE_KEY_LAST_LESSON) ?? "";
+    return currentLessonId(localStorage.getItem(STORAGE_KEY_LAST_LESSON) ?? "");
   } catch {
     return "";
   }
@@ -83,6 +84,32 @@ async function readRows(): Promise<ProgressRow[]> {
     request.onsuccess = () => resolve(request.result as ProgressRow[]);
     request.onerror = () => reject(request.error);
   });
+}
+
+async function renameRows(rows: ProgressRow[]): Promise<ProgressRow[]> {
+  const pending = pendingRenames(PROGRESS_FEATURE_ID);
+  if (!pending) {
+    return rows;
+  }
+  const renamed = new Map<string, ProgressRow>();
+  for (const row of rows) {
+    const id = pending.rename(row.id);
+    const [lessonId, exerciseId] = id.split("/");
+    renamed.set(id, { ...row, id, lessonId, exerciseId });
+  }
+  const db = await openDb();
+  await new Promise<void>((resolve, reject) => {
+    const transaction = db.transaction(PROGRESS_FEATURE_ID, "readwrite");
+    const store = transaction.objectStore(PROGRESS_FEATURE_ID);
+    store.clear();
+    for (const row of renamed.values()) {
+      store.put(row);
+    }
+    transaction.oncomplete = () => resolve();
+    transaction.onerror = () => reject(transaction.error);
+  });
+  pending.done();
+  return [...renamed.values()];
 }
 
 export function subscribeProgress(listener: () => void): () => void {
@@ -138,5 +165,6 @@ export function isPassed(lessonId: string, exerciseId: string): boolean {
 }
 
 void readRows()
+  .then(renameRows)
   .then((rows) => emit(rows))
   .catch(() => undefined);

@@ -59,27 +59,32 @@ func FanIn(n int) int {
 ```
 
 ## hard
-The broken code calls wg.Add inside the goroutine. Wait can finish before Add, so the function returns 0 even though FanIn(3) should be 3.
+The broken code calls wg.Add inside the goroutine. If Wait runs before any goroutine reaches Add, the counter is still zero, so Wait returns at once and some jobs are not counted yet.
 
 ```
 go func() {
 	wg.Add(1)
-	wg.Done()
+	defer wg.Done()
+	done.Add(1)
 }()
 ```
 
-Move wg.Add out, before the go statement, and return n after Wait.
+Move wg.Add before the go statement so the counter is complete before Wait starts waiting.
 
 ```
 func FanIn(n int) int {
 	var wg sync.WaitGroup
+	var done atomic.Int64
 	for i := 0; i < n; i++ {
 		wg.Add(1)
 		go func() {
-			wg.Done()
+			defer wg.Done()
+			done.Add(1)
 		}()
 	}
 	wg.Wait()
-	return n
+	return int(done.Load())
 }
 ```
+
+Import "sync" and "sync/atomic". Since Go 1.25, wg.Go(f) calls Add before starting the goroutine and Done when f returns, which avoids this bug from the start.
