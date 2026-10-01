@@ -76,9 +76,14 @@ export function withHint(exercise, th, en) {
   return { ...exercise, hint: text(th, en) };
 }
 
+// A reference answer for scripts/verify-solutions.mjs. It is never published.
+export function solved(exercise, solution) {
+  return { ...exercise, solution };
+}
+
 export const exact = {
-  th: "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
-  en: "Printed output must match every character, including the final newline",
+  th: "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมการขึ้นบรรทัดใหม่ท้ายสุด (Println ขึ้นบรรทัดใหม่ให้เอง)",
+  en: "Printed output must match every character, including the final newline (Println adds it for you)",
 };
 
 export const tests = {
@@ -87,6 +92,6 @@ export const tests = {
 };
 
 export const panicRule = {
-  th: "โปรแกรมต้อง panic เพราะ nil pointer และยังอยู่หน้า editor",
-  en: "The program must panic on a nil pointer. It still runs from the editor",
+  th: "โปรแกรมต้อง panic เพราะ nil pointer ตอนรันจากหน้า editor",
+  en: "The program must panic on a nil pointer when run from the editor",
 };

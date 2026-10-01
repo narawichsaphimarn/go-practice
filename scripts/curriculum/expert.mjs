@@ -6,11 +6,10 @@ function say(id, th, en) {
 
 const quiet = 'package main\n\nimport "fmt"\n\nfunc main() {\n\tfmt.Println("ok")\n}\n';
 
-function quizLesson(id, order, title, goal, bodyTh, bodyEn, questions) {
+function quizLesson(id, title, goal, bodyTh, bodyEn, questions) {
   return lesson({
     id,
     level: "expert",
-    order,
     title: text(title[0], title[1]),
     goal: text(goal[0], goal[1]),
     copy: copy(bodyTh, bodyEn),
@@ -39,7 +38,6 @@ const answerHereEn = [
 export const expert = [
   quizLesson(
     "e01-memory-model",
-    32,
     ["memory model", "Memory model"],
     ["อธิบาย happens-before ของ channel และ sync", "Explain happens-before for channels and sync"],
     [
@@ -58,7 +56,6 @@ export const expert = [
   ),
   quizLesson(
     "e02-gomaxprocs",
-    33,
     ["GOMAXPROCS ใน container", "GOMAXPROCS in a container"],
     ["อธิบายว่า Go 1.25 ปรับค่าเริ่มต้นจาก cgroup เมื่อใด", "Explain when Go 1.25 sets the default from a cgroup"],
     [
@@ -77,7 +74,6 @@ export const expert = [
   ),
   quizLesson(
     "e03-greenteagc",
-    34,
     ["GC ทดลอง", "Experimental GC"],
     ["อธิบายว่า GOEXPERIMENT=greenteagc เปลี่ยนอะไร", "Explain what GOEXPERIMENT=greenteagc changes"],
     [
@@ -96,7 +92,6 @@ export const expert = [
   ),
   quizLesson(
     "e04-flight-recorder",
-    35,
     ["FlightRecorder", "FlightRecorder"],
     ["อธิบายการเก็บบันทึกช่วงสั้นไว้ในหน่วยความจำ", "Explain keeping a short trace in memory"],
     [
@@ -116,7 +111,6 @@ export const expert = [
   lesson({
     id: "e05-nil-check",
     level: "expert",
-    order: 36,
     title: text("nil-check ของ Go 1.25", "Go 1.25 nil check"),
     goal: text("ชี้โปรแกรมที่ใช้ค่าก่อนตรวจความพร้อม แล้วคาดว่าต้อง panic", "Point at a program that uses a value before it is ready and expect a panic"),
     copy: copy(
@@ -144,7 +138,6 @@ export const expert = [
   }),
   quizLesson(
     "e06-escape",
-    37,
     ["escape analysis", "Escape analysis"],
     ["อธิบายว่าทำไม slice บางก้อนอยู่บน stack ได้มากขึ้น", "Explain why more slices can stay on the stack"],
     [
@@ -163,7 +156,6 @@ export const expert = [
   ),
   quizLesson(
     "e07-unsafe",
-    38,
     ["กับดักของ unsafe", "unsafe traps"],
     ["บอกผลที่พังของการใช้ unsafe ผิด โดยไม่ส่งโค้ด unsafe ไปรัน", "Describe what incorrect unsafe breaks, without sending unsafe code to the runner"],
     [
@@ -182,7 +174,6 @@ export const expert = [
   ),
   quizLesson(
     "e08-json-v2",
-    39,
     ["encoding/json/v2", "encoding/json/v2"],
     ["เปรียบเทียบ API ทดลองกับ encoding/json", "Compare the experimental API with encoding/json"],
     [
@@ -201,7 +192,6 @@ export const expert = [
   ),
   quizLesson(
     "e09-core-types",
-    40,
     ["core types ออกจากสเปก", "Core types leave the spec"],
     ["อธิบาย operand ที่เป็น type parameter โดยไม่ใช้คำว่า core type", "Explain a type-parameter operand without the words core type"],
     [
@@ -220,7 +210,6 @@ export const expert = [
   ),
   quizLesson(
     "e10-api-design",
-    41,
     ["ออกแบบ API", "API design"],
     ["ตัด interface ให้เล็ก ตั้งชื่อ package และตัดสินใจเรื่อง error", "Keep interfaces small, name the package, and decide the errors"],
     [

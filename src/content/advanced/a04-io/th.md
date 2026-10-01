@@ -24,15 +24,12 @@ func ReadAll(r io.Reader) (string, error) {
 ```
 
 ## hard
-Count คืนจำนวนไบต์ที่อ่านได้โดยไม่คืนเนื้อหา WriteTwice เขียนสตริงเดิมลง Writer สองครั้ง
+Count คืนจำนวนไบต์ที่อ่านได้โดยไม่เก็บเนื้อหา io.Copy ส่งข้อมูลทิ้งลง io.Discard ทีละช่วง จึงไม่ต้องจองหน่วยความจำทั้งก้อน WriteTwice เขียนสตริงเดิมลง Writer สองครั้ง
 
 ```
 func Count(r io.Reader) (int, error) {
-	data, err := io.ReadAll(r)
-	if err != nil {
-		return 0, err
-	}
-	return len(data), nil
+	n, err := io.Copy(io.Discard, r)
+	return int(n), err
 }
 ```
 

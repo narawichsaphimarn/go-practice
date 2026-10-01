@@ -16,7 +16,7 @@ require golang.org/x/mod v0.21.0 แปลว่าโปรแกรมนี�
 
 ```
 import "example.com/app/internal/web"
-import "golang.org/x/mod"
+import "golang.org/x/mod/semver"
 ```
 
 บรรทัดแรกอยู่ในโมดูล example.com/app บรรทัดที่สองอยู่นอกโมดูล
@@ -48,5 +48,5 @@ use ./tools
 ```
 
 ```
-import "golang.org/x/mod"
+import "golang.org/x/mod/semver"
 ```

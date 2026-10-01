@@ -23,17 +23,17 @@ func Run(limit int, jobs []func()) {
 	for _, job := range jobs {
 		wg.Add(1)
 		sem <- struct{}{}
-		go func(job func()) {
+		go func() {
 			defer wg.Done()
 			defer func() { <-sem }()
 			job()
-		}(job)
+		}()
 	}
 	wg.Wait()
 }
 ```
 
-ต้อง import "sync" ถ้า limit เป็น 2 และมีงาน 5 ชิ้น จะมี goroutine ที่กำลังทำ job ได้ไม่เกิน 2 ตัวในเวลาเดียวกัน
+ต้อง import "sync" ตั้งแต่ Go 1.22 ตัวแปร job เป็นตัวใหม่ทุกรอบ goroutine จึงใช้ job ได้ตรง ๆ โดยไม่ต้องส่งเป็นพารามิเตอร์ ถ้า limit เป็น 2 และมีงาน 5 ชิ้น จะมี goroutine ที่กำลังทำ job ได้ไม่เกิน 2 ตัวในเวลาเดียวกัน
 
 ## easy
 SumJobs บวกทุกค่าใน slice แล้วคืนผลรวม
@@ -58,11 +58,11 @@ func Run(limit int, jobs []func()) {
 	for _, job := range jobs {
 		wg.Add(1)
 		sem <- struct{}{}
-		go func(job func()) {
+		go func() {
 			defer wg.Done()
 			defer func() { <-sem }()
 			job()
-		}(job)
+		}()
 	}
 	wg.Wait()
 }

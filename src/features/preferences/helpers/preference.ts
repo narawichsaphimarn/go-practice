@@ -14,7 +14,7 @@ export type Theme = typeof THEME_LIGHT | typeof THEME_DARK;
 const SCHEME_DARK = "(prefers-color-scheme: dark)";
 const themeListeners = new Set<() => void>();
 
-function readStorage(key: string): string | null {
+export function readStorage(key: string): string | null {
   try {
     return localStorage.getItem(key);
   } catch {

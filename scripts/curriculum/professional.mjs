@@ -8,7 +8,6 @@ export const professional = [
   lesson({
     id: "p01-worker-pool",
     level: "professional",
-    order: 22,
     title: text("รูปแบบงานคู่ขนาน", "Concurrent work patterns"),
     goal: text("จำกัดจำนวน goroutine ที่ทำงานพร้อมกัน", "Limit how many goroutines run at once"),
     copy: copy(
@@ -37,7 +36,6 @@ export const professional = [
   lesson({
     id: "p02-waitgroup",
     level: "professional",
-    order: 23,
     title: text("sync.WaitGroup และ vet", "sync.WaitGroup and vet"),
     goal: text("เรียก Add ก่อนเริ่ม goroutine และให้ go vet ผ่าน", "Call Add before starting the goroutine and keep go vet clean"),
     copy: copy(
@@ -59,14 +57,13 @@ export const professional = [
     exercises: [
       testEx(say("easy", "เขียน FanIn ให้คืน n โดยรอ goroutine ให้ครบ", "Write FanIn to return n after waiting for the goroutines"), tests, 'package main\n\nfunc FanIn(n int) int {\n\treturn 0\n}\n', 'package main\n\nimport "testing"\n\nfunc TestFanIn(t *testing.T) {\n\tif FanIn(4) != 4 {\n\t\tt.Fatal("fan")\n\t}\n}\n'),
       testEx(say("mid", "เขียน Total ให้บวก 1 ต่อหนึ่ง goroutine อย่างปลอดภัย", "Write Total to add 1 per goroutine without a data race"), tests, 'package main\n\nfunc Total(n int) int {\n\treturn 0\n}\n', 'package main\n\nimport "testing"\n\nfunc TestTotal(t *testing.T) {\n\tif Total(5) != 5 {\n\t\tt.Fatal("total")\n\t}\n}\n'),
-      testEx(say("hard", "ย้าย wg.Add ออกจากใน goroutine แล้วให้ FanIn(3) คืน 3", "Move wg.Add out of the goroutine and make FanIn(3) return 3"), tests, 'package main\n\nimport "sync"\n\nfunc FanIn(n int) int {\n\tvar wg sync.WaitGroup\n\tfor i := 0; i < n; i++ {\n\t\tgo func() {\n\t\t\twg.Add(1)\n\t\t\twg.Done()\n\t\t}()\n\t}\n\twg.Wait()\n\treturn 0\n}\n', 'package main\n\nimport "testing"\n\nfunc TestFanIn(t *testing.T) {\n\tif FanIn(3) != 3 {\n\t\tt.Fatal("fan")\n\t}\n}\n'),
+      testEx(say("hard", "ย้าย wg.Add ไปไว้ก่อนคำสั่ง go ให้ FanIn(50) นับงานครบ 50 ทุกครั้ง", "Move wg.Add before the go statement so FanIn(50) counts all 50 jobs every time"), tests, 'package main\n\nimport (\n\t"sync"\n\t"sync/atomic"\n)\n\nfunc FanIn(n int) int {\n\tvar wg sync.WaitGroup\n\tvar done atomic.Int64\n\tfor i := 0; i < n; i++ {\n\t\tgo func() {\n\t\t\twg.Add(1)\n\t\t\tdefer wg.Done()\n\t\t\tdone.Add(1)\n\t\t}()\n\t}\n\twg.Wait()\n\treturn int(done.Load())\n}\n', 'package main\n\nimport "testing"\n\nfunc TestFanIn(t *testing.T) {\n\tfor i := 0; i < 100; i++ {\n\t\tif got := FanIn(50); got != 50 {\n\t\t\tt.Fatalf("FanIn(50) = %d", got)\n\t\t}\n\t}\n}\n'),
       withHint(testEx(say("twist", "เขียน Sum ให้แต่ละ goroutine บวกเลขดัชนีของตัวเองอย่างปลอดภัย ผลของ 4 คือ 6", "Write Sum so each goroutine safely adds its own index. Sum(4) is 6"), tests, 'package main\n\nfunc Sum(n int) int {\n\treturn 0\n}\n', 'package main\n\nimport "testing"\n\nfunc TestSum(t *testing.T) {\n\tif Sum(4) != 6 {\n\t\tt.Fatal("four")\n\t}\n\tif Sum(0) != 0 {\n\t\tt.Fatal("zero")\n\t}\n}\n'), "แต่ละ goroutine บวกดัชนีของตัวเอง แล้วรอให้ครบก่อนคืนผลรวม", "Each goroutine adds its own index, and you wait for all of them before returning the sum"),
     ],
   }),
   lesson({
     id: "p03-cancel",
     level: "professional",
-    order: 24,
     title: text("ยกเลิกงานด้วย context", "Cancel work with context"),
     goal: text("หยุดงานเมื่อ context ของผู้เรียกจบ", "Stop the work when the caller's context ends"),
     copy: copy(
@@ -89,13 +86,12 @@ export const professional = [
       testEx(say("easy", "เขียน Stopped ให้คืน ctx.Err() เมื่อ context จบแล้ว", "Write Stopped to return ctx.Err() when the context has ended"), tests, 'package main\n\nimport "context"\n\nfunc Stopped(ctx context.Context) error {\n\treturn nil\n}\n', 'package main\n\nimport (\n\t"context"\n\t"testing"\n)\n\nfunc TestStopped(t *testing.T) {\n\tctx, cancel := context.WithCancel(context.Background())\n\tcancel()\n\tif err := Stopped(ctx); err == nil {\n\t\tt.Fatal("err")\n\t}\n}\n'),
       testEx(say("mid", "เขียน Take ให้คืนค่าจาก channel เมื่อมีค่า และคืน 0 เมื่อ context จบ", "Write Take to return the channel value when present and 0 when the context has ended"), tests, 'package main\n\nimport "context"\n\nfunc Take(ctx context.Context, ch <-chan int) int {\n\treturn 1\n}\n', 'package main\n\nimport (\n\t"context"\n\t"testing"\n)\n\nfunc TestTake(t *testing.T) {\n\tch := make(chan int, 1)\n\tch <- 4\n\tif Take(context.Background(), ch) != 4 {\n\t\tt.Fatal("value")\n\t}\n\tctx, cancel := context.WithCancel(context.Background())\n\tcancel()\n\tif Take(ctx, make(chan int)) != 0 {\n\t\tt.Fatal("cancel")\n\t}\n}\n'),
       testEx(say("hard", "เขียน Wait ให้บล็อกจน context จบแล้วคืน ctx.Err()", "Write Wait to block until the context ends and return ctx.Err()"), tests, 'package main\n\nimport "context"\n\nfunc Wait(ctx context.Context) error {\n\treturn nil\n}\n', 'package main\n\nimport (\n\t"context"\n\t"testing"\n)\n\nfunc TestWait(t *testing.T) {\n\tctx, cancel := context.WithCancel(context.Background())\n\tcancel()\n\tif err := Wait(ctx); err == nil {\n\t\tt.Fatal("err")\n\t}\n}\n'),
-      withHint(testEx(say("twist", "เขียน Remain ให้นับรอบที่ทำได้ก่อน context จบ context ที่จบแล้วได้ 0", "Write Remain to count rounds finished before the context ends. An ended context returns 0"), tests, 'package main\n\nimport "context"\n\nfunc Remain(ctx context.Context, n int) int {\n\treturn 0\n}\n', 'package main\n\nimport (\n\t"context"\n\t"testing"\n)\n\nfunc TestRemain(t *testing.T) {\n\tctx, cancel := context.WithCancel(context.Background())\n\tcancel()\n\tif Remain(ctx, 4) != 0 {\n\t\tt.Fatal("canceled")\n\t}\n\tif Remain(context.Background(), 3) != 3 {\n\t\tt.Fatal("open")\n\t}\n}\n'), "ถ้า context จบแล้วอย่าเริ่มรอบ ถ้ายังทำงานให้นับครบ n", "If the context has ended, do not start a round. If it is still active, count all n rounds"),
+      withHint(testEx(say("twist", "เขียน Remain ให้วน n รอบ ก่อนเริ่มแต่ละรอบให้เช็กว่า context จบหรือยัง แล้วคืนจำนวนรอบที่ได้ทำ context ที่จบแล้วได้ 0", "Write Remain to loop n rounds, checking before each round whether the context has ended, and return how many rounds ran. An ended context returns 0"), tests, 'package main\n\nimport "context"\n\nfunc Remain(ctx context.Context, n int) int {\n\treturn 0\n}\n', 'package main\n\nimport (\n\t"context"\n\t"testing"\n)\n\nfunc TestRemain(t *testing.T) {\n\tctx, cancel := context.WithCancel(context.Background())\n\tcancel()\n\tif Remain(ctx, 4) != 0 {\n\t\tt.Fatal("canceled")\n\t}\n\tif Remain(context.Background(), 3) != 3 {\n\t\tt.Fatal("open")\n\t}\n}\n'), "ถ้า context จบแล้วอย่าเริ่มรอบ ถ้ายังทำงานให้นับครบ n", "If the context has ended, do not start a round. If it is still active, count all n rounds"),
     ],
   }),
   lesson({
     id: "p04-http",
     level: "professional",
-    order: 25,
     title: text("net/http", "net/http"),
     goal: text("ตรวจ method ของ request และตั้ง timeout ของ client", "Check the request method and set a client timeout"),
     copy: copy(
@@ -124,7 +120,6 @@ export const professional = [
   lesson({
     id: "p05-synctest",
     level: "professional",
-    order: 26,
     title: text("testing/synctest", "testing/synctest"),
     goal: text("ทดสอบโค้ดที่รอเวลาด้วยนาฬิกาใน bubble ของ synctest", "Test code that waits on time by using the synctest bubble clock"),
     copy: copy(
@@ -153,7 +148,6 @@ export const professional = [
   lesson({
     id: "p06-bench-fuzz",
     level: "professional",
-    order: 27,
     title: text("benchmark และ fuzz", "Benchmarks and fuzzing"),
     goal: text("อ่านผล benchmark และรู้ว่า fuzz target ขั้นต่ำหน้าตาเป็นอย่างไร", "Read a benchmark result and recognize a minimal fuzz target"),
     copy: copy(
@@ -205,7 +199,6 @@ export const professional = [
   lesson({
     id: "p07-vet-mod",
     level: "professional",
-    order: 28,
     title: text("hostport และ go.mod ignore", "hostport and go.mod ignore"),
     goal: text("ใช้ net.JoinHostPort และบอกได้ว่า ignore ทำให้คำสั่ง go ข้ามไดเรกทอรีใด", "Use net.JoinHostPort and say which directory ignore makes the go command skip"),
     copy: copy(
@@ -242,7 +235,6 @@ export const professional = [
   lesson({
     id: "p08-slog",
     level: "professional",
-    order: 29,
     title: text("log/slog", "log/slog"),
     goal: text("เขียน log เป็น key และ value", "Write logs as keys and values"),
     copy: copy(
@@ -264,14 +256,13 @@ export const professional = [
     exercises: [
       testEx(say("easy", "เขียน Line ให้บันทึก msg กับคู่ key value ลง Writer", "Write Line to record msg and a key value pair to a Writer"), tests, 'package main\n\nimport "io"\n\nfunc Line(w io.Writer, msg, key, value string) {\n}\n', 'package main\n\nimport (\n\t"bytes"\n\t"strings"\n\t"testing"\n)\n\nfunc TestLine(t *testing.T) {\n\tvar b bytes.Buffer\n\tLine(&b, "hello", "user", "ada")\n\tgot := b.String()\n\tif !strings.Contains(got, "msg=hello") || !strings.Contains(got, "user=ada") {\n\t\tt.Fatal(got)\n\t}\n}\n'),
       testEx(say("mid", "เขียน Warn ให้ใช้ระดับ Warn และมี key code", "Write Warn to use level Warn and include the key code"), tests, 'package main\n\nimport "io"\n\nfunc Warn(w io.Writer, code int) {\n}\n', 'package main\n\nimport (\n\t"bytes"\n\t"strings"\n\t"testing"\n)\n\nfunc TestWarn(t *testing.T) {\n\tvar b bytes.Buffer\n\tWarn(&b, 7)\n\tgot := b.String()\n\tif !strings.Contains(got, "level=WARN") || !strings.Contains(got, "code=7") {\n\t\tt.Fatal(got)\n\t}\n}\n'),
-      testEx(say("hard", "เขียน WithUser ให้ logger มี attribute user ติดไปกับทุกบรรทัด", "Write WithUser so the logger attaches the user attribute to the line"), tests, 'package main\n\nimport "io"\n\nfunc WithUser(w io.Writer, user, msg string) {\n}\n', 'package main\n\nimport (\n\t"bytes"\n\t"strings"\n\t"testing"\n)\n\nfunc TestWithUser(t *testing.T) {\n\tvar b bytes.Buffer\n\tWithUser(&b, "ada", "saved")\n\tgot := b.String()\n\tif !strings.Contains(got, "user=ada") || !strings.Contains(got, "msg=saved") {\n\t\tt.Fatal(got)\n\t}\n}\n'),
+      testEx(say("hard", "เขียน WithUser ให้ logger มี attribute user ติดไปกับทุกบรรทัด", "Write WithUser so the logger attaches the user attribute to every line"), tests, 'package main\n\nimport "io"\n\nfunc WithUser(w io.Writer, user, msg string) {\n}\n', 'package main\n\nimport (\n\t"bytes"\n\t"strings"\n\t"testing"\n)\n\nfunc TestWithUser(t *testing.T) {\n\tvar b bytes.Buffer\n\tWithUser(&b, "ada", "saved")\n\tgot := b.String()\n\tif !strings.Contains(got, "user=ada") || !strings.Contains(got, "msg=saved") {\n\t\tt.Fatal(got)\n\t}\n}\n'),
       withHint(testEx(say("twist", "เขียน InfoPair ให้บันทึกระดับ Info พร้อม attribute left และ right และข้อความ pair", "Write InfoPair to log at Info with attributes left and right and the message pair"), tests, 'package main\n\nimport "io"\n\nfunc InfoPair(w io.Writer, left, right string) {\n}\n', 'package main\n\nimport (\n\t"bytes"\n\t"strings"\n\t"testing"\n)\n\nfunc TestInfoPair(t *testing.T) {\n\tvar b bytes.Buffer\n\tInfoPair(&b, "a", "b")\n\tgot := b.String()\n\tif !strings.Contains(got, "level=INFO") || !strings.Contains(got, "msg=pair") || !strings.Contains(got, "left=a") || !strings.Contains(got, "right=b") {\n\t\tt.Fatal(got)\n\t}\n\tb.Reset()\n\tInfoPair(&b, "x", "y")\n\tgot = b.String()\n\tif !strings.Contains(got, "left=x") || !strings.Contains(got, "right=y") {\n\t\tt.Fatal(got)\n\t}\n}\n'), "ใช้ slog ระดับ Info และใส่ attribute สองตัวชื่อ left กับ right", "Use slog at Info and attach two attributes named left and right"),
     ],
   }),
   lesson({
     id: "p09-generic-api",
     level: "professional",
-    order: 30,
     title: text("generics ใน API จริง", "Generics in a real API"),
     goal: text("เลือก generic เมื่อชนิดต้องไปกับผู้เรียก", "Choose generics when the type must follow the caller"),
     copy: copy(
@@ -293,14 +284,13 @@ export const professional = [
     exercises: [
       testEx(say("easy", "เขียน First ให้คืนสมาชิกแรกและ true หรือ zero กับ false เมื่อว่าง", "Write First to return the first element and true, or the zero value and false when empty"), tests, 'package main\n\nfunc First[T any](items []T) (T, bool) {\n\tvar zero T\n\treturn zero, false\n}\n', 'package main\n\nimport "testing"\n\nfunc TestFirst(t *testing.T) {\n\tgot, ok := First([]int{4, 5})\n\tif !ok || got != 4 {\n\t\tt.Fatal("int")\n\t}\n\tif _, ok = First([]string{}); ok {\n\t\tt.Fatal("empty")\n\t}\n}\n'),
       testEx(say("mid", "เขียน Last ให้คืนสมาชิกสุดท้ายและ true", "Write Last to return the last element and true"), tests, 'package main\n\nfunc Last[T any](items []T) (T, bool) {\n\tvar zero T\n\treturn zero, false\n}\n', 'package main\n\nimport "testing"\n\nfunc TestLast(t *testing.T) {\n\tgot, ok := Last([]string{"a", "b"})\n\tif !ok || got != "b" {\n\t\tt.Fatal("last")\n\t}\n}\n'),
-      testEx(say("hard", "เขียน At ให้คืนสมาชิกที่ index เมื่ออยู่ในขอบ และ false เมื่อเกิน", "Write At to return the element at index when it is in range, and false otherwise"), tests, 'package main\n\nfunc At[T any](items []T, index int) (T, bool) {\n\tvar zero T\n\treturn zero, false\n}\n', 'package main\n\nimport "testing"\n\nfunc TestAt(t *testing.T) {\n\tgot, ok := At([]int{7, 8}, 1)\n\tif !ok || got != 8 {\n\t\tt.Fatal("at")\n\t}\n\tif _, ok = At([]int{7}, 3); ok {\n\t\tt.Fatal("oob")\n\t}\n}\n'),
+      testEx(say("hard", "เขียน At ให้คืนสมาชิกที่ index เมื่ออยู่ในขอบ และ false เมื่ออยู่นอกขอบ (รวม index ติดลบ)", "Write At to return the element at index when it is in range, and false otherwise (including a negative index)"), tests, 'package main\n\nfunc At[T any](items []T, index int) (T, bool) {\n\tvar zero T\n\treturn zero, false\n}\n', 'package main\n\nimport "testing"\n\nfunc TestAt(t *testing.T) {\n\tgot, ok := At([]int{7, 8}, 1)\n\tif !ok || got != 8 {\n\t\tt.Fatal("at")\n\t}\n\tif _, ok = At([]int{7}, 3); ok {\n\t\tt.Fatal("oob")\n\t}\n}\n'),
       withHint(testEx(say("twist", "เขียน NonZero ให้คืน slice ที่ตัด zero value ออก ทั้งตัวเลขและสตริง", "Write NonZero to return the slice with zero values removed, for both numbers and strings"), tests, 'package main\n\nfunc NonZero[T comparable](items []T) []T {\n\treturn nil\n}\n', 'package main\n\nimport "testing"\n\nfunc TestNonZero(t *testing.T) {\n\tgot := NonZero([]int{0, 2, 0, 3})\n\tif len(got) != 2 || got[0] != 2 || got[1] != 3 {\n\t\tt.Fatal("ints")\n\t}\n\twords := NonZero([]string{"", "a"})\n\tif len(words) != 1 || words[0] != "a" {\n\t\tt.Fatal("strings")\n\t}\n}\n'), "ตัดค่าที่เป็น zero value ของชนิดนั้นออก ทั้ง 0 และสตริงว่าง", "Drop values that are the zero value of the type, both 0 and the empty string"),
     ],
   }),
   lesson({
     id: "p10-mod-prod",
     level: "professional",
-    order: 31,
     title: text("module ในงานจริง", "Modules in production"),
     goal: text("กำหนดรุ่น Go ใน go.mod และรู้ว่า Go 1.25 เลือก toolchain อย่างไร", "Set the Go version in go.mod and know how Go 1.25 selects a toolchain"),
     copy: copy(

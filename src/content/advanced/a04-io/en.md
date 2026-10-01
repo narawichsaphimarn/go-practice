@@ -24,15 +24,12 @@ func ReadAll(r io.Reader) (string, error) {
 ```
 
 ## hard
-Count returns how many bytes were read and does not return the contents. WriteTwice writes the same string to the Writer twice.
+Count returns how many bytes were read without keeping the contents. io.Copy streams the data into io.Discard piece by piece, so it never holds the whole payload. WriteTwice writes the same string to the Writer twice.
 
 ```
 func Count(r io.Reader) (int, error) {
-	data, err := io.ReadAll(r)
-	if err != nil {
-		return 0, err
-	}
-	return len(data), nil
+	n, err := io.Copy(io.Discard, r)
+	return int(n), err
 }
 ```
 

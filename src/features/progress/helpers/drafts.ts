@@ -1,5 +1,8 @@
 import { STORAGE_KEY_DRAFTS } from "../../../shared/constants/content.ts";
 import { writeStorage } from "../../preferences/helpers/preference.ts";
+import { pendingRenames } from "../../../content/renames.ts";
+
+const DRAFTS_STORE = "drafts";
 
 export type Draft = {
   source?: string;
@@ -55,6 +58,21 @@ function readAll(): Record<string, Draft> {
     return {};
   }
 }
+
+function renameDrafts(): void {
+  const pending = pendingRenames(DRAFTS_STORE);
+  if (!pending) {
+    return;
+  }
+  const renamed: Record<string, Draft> = {};
+  for (const [id, draft] of Object.entries(readAll())) {
+    renamed[pending.rename(id)] = draft;
+  }
+  writeStorage(STORAGE_KEY_DRAFTS, JSON.stringify(renamed));
+  pending.done();
+}
+
+renameDrafts();
 
 export function readDraft(lessonId: string, exerciseId: string): Draft | undefined {
   const draft = readAll()[draftId(lessonId, exerciseId)];

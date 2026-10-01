@@ -23,17 +23,17 @@ func Run(limit int, jobs []func()) {
 	for _, job := range jobs {
 		wg.Add(1)
 		sem <- struct{}{}
-		go func(job func()) {
+		go func() {
 			defer wg.Done()
 			defer func() { <-sem }()
 			job()
-		}(job)
+		}()
 	}
 	wg.Wait()
 }
 ```
 
-Import "sync". If limit is 2 and there are 5 jobs, at most 2 goroutines are inside job at the same time.
+Import "sync". Since Go 1.22 each loop iteration gets a fresh job variable, so the goroutine can use job directly without passing it as a parameter. If limit is 2 and there are 5 jobs, at most 2 goroutines are inside job at the same time.
 
 ## easy
 SumJobs adds every value in the slice and returns the total.
@@ -58,11 +58,11 @@ func Run(limit int, jobs []func()) {
 	for _, job := range jobs {
 		wg.Add(1)
 		sem <- struct{}{}
-		go func(job func()) {
+		go func() {
 			defer wg.Done()
 			defer func() { <-sem }()
 			job()
-		}(job)
+		}()
 	}
 	wg.Wait()
 }

@@ -1,5 +1,5 @@
 ## explanation
-A context is the caller's signal that the work should continue. After it ends, ctx.Err() is not nil and ctx.Done() is ready to receive.
+A context is the caller's signal for whether the work should continue or stop. After it ends, ctx.Err() is not nil and ctx.Done() is ready to receive.
 
 ```
 func Done(ctx context.Context) bool {

@@ -10,7 +10,7 @@ const checksPath = path.resolve(
 );
 
 const keptHints = previousHints();
-const catalog = { lessons: lessons.map((lesson) => publishLesson(lesson, keptHints)) };
+const catalog = { lessons: lessons.map((lesson, index) => publishLesson(lesson, index + 1, keptHints)) };
 const checks = {};
 
 for (const lesson of lessons) {
@@ -59,18 +59,21 @@ function previousHints() {
   return hints;
 }
 
-function publishLesson(lesson, hints) {
+function publishLesson(lesson, order, hints) {
   return {
     id: lesson.id,
     level: lesson.level,
-    order: lesson.order,
+    order,
     title: lesson.title,
     goal: lesson.goal,
-    exercises: lesson.exercises.map((exercise) => publishExercise(exercise, hints.get(`${lesson.id}/${exercise.id}`))),
+    exercises: lesson.exercises.map((exercise) => {
+      const key = `${lesson.id}/${exercise.id}`;
+      return publishExercise(exercise, hints.get(key), key);
+    }),
   };
 }
 
-function publishExercise(exercise, keptHint) {
+function publishExercise(exercise, keptHint, key) {
   const published = {
     id: exercise.id,
     difficulty: exercise.difficulty ?? exercise.id,
@@ -84,10 +87,24 @@ function publishExercise(exercise, keptHint) {
     published.hint = hint;
   }
   if (exercise.choices) {
-    published.choices = exercise.choices;
-    published.answer = exercise.answer;
+    Object.assign(published, rotateChoices(exercise.choices, exercise.answer, key));
   }
   return published;
+}
+
+// Authors usually put the correct choice second; rotate per exercise so its position cannot be guessed.
+function rotateChoices(choices, answer, key) {
+  const count = choices.th.length;
+  let hash = 0;
+  for (const ch of key) {
+    hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
+  }
+  const shift = hash % count;
+  const rotate = (list) => list.map((_, i) => list[(i + shift) % count]);
+  return {
+    choices: { th: rotate(choices.th), en: rotate(choices.en) },
+    answer: (answer - shift + count) % count,
+  };
 }
 
 function markdown(language, lesson) {

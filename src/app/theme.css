@@ -113,8 +113,14 @@ h2 {
   -webkit-box-decoration-break: clone;
 }
 
-pre {
+pre,
+code {
   font-family: inherit;
+}
+
+code {
+  padding: 0 4px;
+  background: var(--color-bar);
 }
 
 .page {

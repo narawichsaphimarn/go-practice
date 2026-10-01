@@ -8,7 +8,6 @@ export const advanced = [
   lesson({
     id: "a01-interfaces",
     level: "advanced",
-    order: 11,
     title: text("interface", "Interfaces"),
     goal: text("ออกแบบ interface เล็กและสลับ implementation ได้", "Design a small interface and swap implementations"),
     copy: copy(
@@ -37,7 +36,6 @@ export const advanced = [
   lesson({
     id: "a02-generics",
     level: "advanced",
-    order: 12,
     title: text("generics", "Generics"),
     goal: text("เขียนฟังก์ชัน generic เมื่อ type parameter จำเป็นจริง", "Write a generic function when a type parameter is actually needed"),
     copy: copy(
@@ -66,7 +64,6 @@ export const advanced = [
   lesson({
     id: "a03-error-wrapping",
     level: "advanced",
-    order: 13,
     title: text("errors.Is และ errors.As", "errors.Is and errors.As"),
     goal: text("ห่อ error แล้วตรวจสาเหตุโดยไม่เทียบข้อความ", "Wrap an error and inspect the cause without comparing text"),
     copy: copy(
@@ -95,7 +92,6 @@ export const advanced = [
   lesson({
     id: "a04-io",
     level: "advanced",
-    order: 14,
     title: text("io.Reader และ io.Writer", "io.Reader and io.Writer"),
     goal: text("อ่านและเขียนสตรีมโดยไม่โหลดทั้งก้อนเมื่อไม่จำเป็น", "Read and write streams without loading everything when you do not need to"),
     copy: copy(
@@ -124,7 +120,6 @@ export const advanced = [
   lesson({
     id: "a05-json",
     level: "advanced",
-    order: 15,
     title: text("encoding/json", "encoding/json"),
     goal: text("marshal และ unmarshal struct ที่กำหนด tag เอง", "Marshal and unmarshal a struct with your own tags"),
     copy: copy(

@@ -16,7 +16,7 @@ Something inside the module example.com/app is a path that starts with that name
 
 ```
 import "example.com/app/internal/web"
-import "golang.org/x/mod"
+import "golang.org/x/mod/semver"
 ```
 
 The first import is inside example.com/app. The second import is outside the module.
@@ -48,5 +48,5 @@ use ./tools
 ```
 
 ```
-import "golang.org/x/mod"
+import "golang.org/x/mod/semver"
 ```

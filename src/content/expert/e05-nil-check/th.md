@@ -37,7 +37,7 @@ func main() {
 ```
 
 ## hard
-เรียก method Name ที่อ่านฟิลด์บน receiver ที่เป็น nil โปรแกรมต้อง panic การอ่านฟิลด์ผ่าน pointer ของ struct ที่เป็น nil ก็ panic เช่นกัน
+เรียก method Label ที่อ่านฟิลด์บน receiver ที่เป็น nil โปรแกรมต้อง panic การอ่านฟิลด์ผ่าน pointer ของ struct ที่เป็น nil ก็ panic เช่นกัน
 
 ```
 type User struct {

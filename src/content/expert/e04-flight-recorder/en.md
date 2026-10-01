@@ -15,11 +15,11 @@ Import "runtime/trace" and "time". MinAge and MaxBytes are the size of the windo
 When the program decides an event is worth saving, it calls WriteTo to write the latest window out. That is different from tracing the whole process, which writes to disk the entire time.
 
 ```
-fr.Stop()
 fr.WriteTo(w)
+fr.Stop()
 ```
 
-Stop ends collection. WriteTo writes the kept window to w.
+WriteTo writes the kept window to w. Call it while the recorder is still running, because after Stop it returns an error. Call Stop once you are done.
 
 ## easy
 Before the event, FlightRecorder keeps the data in memory as a short window.
@@ -36,6 +36,6 @@ fr.Start()
 It does not write a trace to disk the whole time. It writes out when the program decides to save, through WriteTo.
 
 ```
-fr.Stop()
 fr.WriteTo(w)
+fr.Stop()
 ```

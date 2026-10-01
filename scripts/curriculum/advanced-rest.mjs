@@ -8,7 +8,6 @@ export const advancedRest = [
   lesson({
     id: "a06-goroutines",
     level: "advanced",
-    order: 16,
     title: text("goroutine", "Goroutines"),
     goal: text("เริ่มงานคู่ขนานแล้วยังรอให้งานจบ", "Start concurrent work and still wait for it to finish"),
     copy: copy(
@@ -37,7 +36,6 @@ export const advancedRest = [
   lesson({
     id: "a07-channels",
     level: "advanced",
-    order: 17,
     title: text("channel", "Channels"),
     goal: text("ส่งและรับค่าผ่าน channel โดยไม่มี goroutine ค้าง", "Send and receive on a channel without leaving a goroutine stuck"),
     copy: copy(
@@ -66,7 +64,6 @@ export const advancedRest = [
   lesson({
     id: "a08-select",
     level: "advanced",
-    order: 18,
     title: text("select และ timeout", "select and timeout"),
     goal: text("เลือก channel ที่พร้อม และหยุดเมื่อหมดเวลา", "Choose the channel that is ready and stop when time runs out"),
     copy: copy(
@@ -95,7 +92,6 @@ export const advancedRest = [
   lesson({
     id: "a09-context",
     level: "advanced",
-    order: 19,
     title: text("context", "context"),
     goal: text("ส่ง cancellation ข้ามฟังก์ชันและเลิกงานเมื่อ context จบ", "Pass cancellation across functions and stop when the context ends"),
     copy: copy(
@@ -124,7 +120,6 @@ export const advancedRest = [
   lesson({
     id: "a10-testing",
     level: "advanced",
-    order: 20,
     title: text("table test", "Table tests"),
     goal: text("เขียนฟังก์ชันที่เทสต์แบบตารางครอบคลุมเคสปกติและเคสพัง", "Write a function whose hidden test is a table of normal and failing cases"),
     copy: copy(
@@ -153,7 +148,6 @@ export const advancedRest = [
   lesson({
     id: "a11-modules",
     level: "advanced",
-    order: 21,
     title: text("module และ workspace", "Modules and workspaces"),
     goal: text("อ่าน go.mod และแยกของในโมดูลกับของข้างนอก", "Read go.mod and separate what is inside the module from what is outside"),
     copy: copy(
@@ -186,8 +180,8 @@ export const advancedRest = [
         say("mid", "import แบบไหนอยู่นอกโมดูล example.com/app", "Which import is outside the module example.com/app?"),
         { th: "path ที่ไม่ได้ขึ้นต้นด้วย module path เป็นของโมดูลอื่น", en: "A path that does not start with the module path belongs to another module" },
         {
-          th: ["example.com/app/internal/web", "example.com/app", "golang.org/x/mod", "example.com/app/cmd/api"],
-          en: ["example.com/app/internal/web", "example.com/app", "golang.org/x/mod", "example.com/app/cmd/api"],
+          th: ["example.com/app/internal/web", "example.com/app", "golang.org/x/mod/semver", "example.com/app/cmd/api"],
+          en: ["example.com/app/internal/web", "example.com/app", "golang.org/x/mod/semver", "example.com/app/cmd/api"],
         },
         2,
       ),

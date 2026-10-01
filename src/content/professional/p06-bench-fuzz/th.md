@@ -3,7 +3,7 @@ benchmark วัดว่าฟังก์ชันใช้เวลานา�
 
 ```
 func BenchmarkSum(b *testing.B) {
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		SumJobs([]int{1, 2, 3})
 	}
 }
@@ -33,7 +33,7 @@ ns/op คือเวลาเฉลี่ยเป็นนาโนวิน�
 
 ```
 func BenchmarkSum(b *testing.B) {
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		SumJobs([]int{1, 2, 3})
 	}
 }

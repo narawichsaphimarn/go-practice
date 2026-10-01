@@ -1,5 +1,5 @@
 ## explanation
-A Go program starts at func main, and that function must live in a package named main. The go.mod file says this folder is one module and that it uses Go 1.25.
+The smallest Go program that prints text has five lines.
 
 ```
 package main
@@ -11,37 +11,26 @@ func main() {
 }
 ```
 
-```
-module example.com/hello
+Read it line by line:
 
-go 1.25
-```
+- `package main` says this file is a program you can run. (A package is a group of code; lesson 9 says more.)
+- `import "fmt"` asks to use the package `fmt`, which has the printing functions.
+- `func main() { ... }` is where the program starts. Go runs the lines inside the braces from top to bottom.
+- `fmt.Println("hello")` prints hello and then moves to a new line.
 
-In the folder that holds both files, go run . compiles and runs main, and you see the word hello.
+Text inside quotes, such as `"hello"`, is called a string. Numbers need no quotes: `fmt.Println(1 + 2)` prints 3, because Go works out the sum first.
 
 ## apply
-A command-line tool that prints a result and exits uses main like this. This greeting script prints two lines and then the program ends.
+Three print functions come up all the time:
 
-```
-package main
+- `fmt.Println(...)` prints and then starts a new line. Several values are separated by spaces: `fmt.Println("total:", 2+5)` prints `total: 7`.
+- `fmt.Print(...)` prints without a new line, so the next print continues on the same line.
+- `fmt.Printf("...", ...)` prints using a pattern. `%d` is a slot for a number and `\n` starts a new line, which Printf does not add for you.
 
-import "fmt"
-
-func main() {
-	fmt.Println("go")
-	fmt.Println("1.25")
-}
-```
-
-go run . prints
-
-```
-go
-1.25
-```
+A `+` between two strings joins them: `"Go" + "pher"` gives `Gopher`.
 
 ## easy
-Print the word hello on one line. Println adds the newline for you.
+Example: print two fruit names on two lines.
 
 ```
 package main
@@ -49,12 +38,20 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Println("hello")
+	fmt.Println("apple")
+	fmt.Println("banana")
 }
+```
+
+The output is
+
+```
+apple
+banana
 ```
 
 ## hard
-Print sum=3 by calculating 1+2 and joining it to the text. Do not type the digit 3 as a fixed word.
+Example: print the total price of 2 items at 15 baht each, letting Go do the multiplication.
 
 ```
 package main
@@ -62,6 +59,8 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Printf("sum=%d\n", 1+2)
+	fmt.Printf("total=%d baht\n", 2*15)
 }
 ```
+
+The output is `total=30 baht`, because Printf puts the result of `2*15` where `%d` is.
