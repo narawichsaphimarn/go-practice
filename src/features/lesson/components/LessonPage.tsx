@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { lessonById, lessonMarkdown, textOf } from "../../../content/load.ts";
+import { exerciseLabel } from "../../../content/types.ts";
 import { KIND_QUIZ, BUTTON_TYPE } from "../../../shared/constants/content.ts";
 
 import {
@@ -16,6 +17,7 @@ import {
   I18N_NO_RUN,
   I18N_PASSED,
   I18N_QUESTION,
+  I18N_TWIST,
   I18N_QUIZ_WRONG,
   I18N_SUBMIT,
   I18N_TO_EXERCISE,
@@ -98,6 +100,7 @@ export function LessonPage() {
         lessonId={lesson.id}
         exercises={lesson.exercises}
         questionLabel={t(I18N_QUESTION)}
+        twistLabel={t(I18N_TWIST)}
         passedLabel={t(I18N_PASSED)}
         notPassedLabel={t(I18N_NOT_PASSED)}
         isPassed={isPassed}
@@ -120,6 +123,7 @@ function CodingList(props: {
   lessonId: string;
   exercises: ExerciseSpec[];
   questionLabel: string;
+  twistLabel: string;
   passedLabel: string;
   notPassedLabel: string;
   isPassed: (lessonId: string, exerciseId: string) => boolean;
@@ -133,7 +137,7 @@ function CodingList(props: {
       {coding.map((exercise) => (
         <Link key={exercise.id} className="row" to={exercisePath(props.lessonId, exercise.id)}>
           <span>
-            {props.questionLabel} {exercise.id}
+            {props.questionLabel} {exerciseLabel(exercise.id, props.twistLabel)}
           </span>
           <span>{props.isPassed(props.lessonId, exercise.id) ? props.passedLabel : props.notPassedLabel}</span>
         </Link>

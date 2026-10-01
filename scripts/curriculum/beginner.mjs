@@ -1,4 +1,4 @@
-import { copy, exact, lesson, stdout, testEx, tests, text } from "./helpers.mjs";
+import { copy, exact, lesson, stdout, testEx, tests, text, withHint } from "./helpers.mjs";
 
 const main = 'package main\n\nimport "fmt"\n\nfunc main() {\n\tfmt.Println("todo")\n}\n';
 
@@ -33,6 +33,7 @@ export const beginner = [
       stdout(say("easy", "พิมพ์ hello", "Print hello"), exact, main, "hello\n"),
       stdout(say("mid", "พิมพ์สองบรรทัด go แล้ว 1.25", "Print go and then 1.25 on separate lines"), exact, main, "go\n1.25\n"),
       stdout(say("hard", "พิมพ์ sum=3 จาก 1+2", "Print sum=3 from 1+2"), exact, main, "sum=3\n"),
+      withHint(stdout(say("twist", "ต่อข้อความ go กับ 1.25 ด้วยขีดกลาง แล้วพิมพ์บรรทัดเดียว", "Join the text go and 1.25 with a hyphen and print one line"), exact, main, "go-1.25\n"), "ต่อข้อความสองค่าด้วยขีดกลาง แล้วพิมพ์บรรทัดเดียว", "Join two text values with a hyphen and print one line"),
     ],
   }),
   lesson({
@@ -61,6 +62,7 @@ export const beginner = [
       stdout(say("easy", "พิมพ์ zero value ของ int", "Print the zero value of an int"), exact, main, "0\n"),
       stdout(say("mid", "เก็บ go ไว้ในตัวแปร string แล้วพิมพ์", "Store go in a string variable and print it"), exact, main, "go\n"),
       stdout(say("hard", "พิมพ์ zero value ของ bool", "Print the zero value of a bool"), exact, main, "false\n"),
+      withHint(stdout(say("twist", "พิมพ์ zero value ของ int ติดกับสตริง go เป็น 0go", "Print the zero value of an int next to the string go as 0go"), exact, main, "0go\n"), "พิมพ์ตัวเลขศูนย์กับสตริงในบรรทัดเดียวกัน", "Print the zero and the string on the same line"),
     ],
   }),
   lesson({
@@ -89,6 +91,7 @@ export const beginner = [
       stdout(say("easy", "ให้ score เป็น 80 แล้วพิมพ์ pass เมื่อ score >= 80", "Set score to 80 and print pass when score >= 80"), exact, main, "pass\n"),
       stdout(say("mid", "พิมพ์ 123 โดยไม่มีช่องว่าง จากลูป 1 ถึง 3", "Print 123 with no spaces from a loop over 1 through 3"), exact, main, "123\n"),
       stdout(say("hard", "ให้ day เป็น 1 แล้ว switch พิมพ์ monday", "Set day to 1 and switch to print monday"), exact, main, "monday\n"),
+      withHint(stdout(say("twist", "วนจาก 3 ลงมา 1 แล้วพิมพ์ 321 โดยไม่มีช่องว่าง", "Loop from 3 down to 1 and print 321 with no spaces"), exact, main, "321\n"), "ให้ลูปนับถอยหลัง และใช้ Print เพื่อไม่เว้นบรรทัด", "Count downward and use Print so the digits stay on one line"),
     ],
   }),
   lesson({
@@ -117,6 +120,7 @@ export const beginner = [
       stdout(say("easy", "เขียน add แล้วพิมพ์ผลของ add(2, 3)", "Write add and print the result of add(2, 3)"), exact, main, "5\n"),
       stdout(say("mid", "เขียน div ที่คืน int กับ error แล้วพิมพ์ผลของ 4/2", "Write div that returns an int and an error, then print the result of 4/2"), exact, main, "2\n"),
       stdout(say("hard", "เมื่อหารด้วยศูนย์ให้พิมพ์ error", "When dividing by zero, print error"), exact, main, "error\n"),
+      withHint(stdout(say("twist", "เขียน clamp แล้วพิมพ์ผลของ clamp(10, 0, 3)", "Write clamp and print the result of clamp(10, 0, 3)"), exact, main, "3\n"), "ถ้าค่าสูงกว่าเพดานให้คืนเพดาน ถ้าต่ำกว่าพื้นให้คืนพื้น", "Return the ceiling when the value is above it, and the floor when it is below"),
     ],
   }),
   lesson({
@@ -145,6 +149,7 @@ export const beginner = [
       testEx(say("easy", "เขียน Sum ให้รวมตัวเลข และคืน 0 เมื่อ slice ว่าง", "Write Sum to add the numbers and return 0 for an empty slice"), tests, 'package main\n\nfunc Sum(values []int) int {\n\treturn 0\n}\n', 'package main\n\nimport "testing"\n\nfunc TestSum(t *testing.T) {\n\tif Sum([]int{1, 2, 3}) != 6 {\n\t\tt.Fatal("sum")\n\t}\n\tif Sum(nil) != 0 {\n\t\tt.Fatal("empty")\n\t}\n}\n'),
       testEx(say("mid", "เขียน Count ให้นับว่าค่า target โผล่กี่ครั้ง", "Write Count to count how often target appears"), tests, 'package main\n\nfunc Count(values []int, target int) int {\n\treturn 0\n}\n', 'package main\n\nimport "testing"\n\nfunc TestCount(t *testing.T) {\n\tif Count([]int{1, 2, 1}, 1) != 2 {\n\t\tt.Fatal("count")\n\t}\n\tif Count(nil, 1) != 0 {\n\t\tt.Fatal("empty")\n\t}\n}\n'),
       testEx(say("hard", "เขียน Last ให้คืนตัวสุดท้าย และคืน 0 เมื่อว่าง", "Write Last to return the last item, or 0 when empty"), tests, 'package main\n\nfunc Last(values []int) int {\n\treturn 0\n}\n', 'package main\n\nimport "testing"\n\nfunc TestLast(t *testing.T) {\n\tif Last([]int{4, 5, 6}) != 6 {\n\t\tt.Fatal("last")\n\t}\n\tif Last(nil) != 0 {\n\t\tt.Fatal("empty")\n\t}\n}\n'),
+      withHint(testEx(say("twist", "เขียน Index ให้คืนตำแหน่งแรกของค่า หรือ -1 เมื่อไม่มี", "Write Index to return the first position of the value, or -1 when it is missing"), tests, 'package main\n\nfunc Index(values []int, target int) int {\n\treturn 0\n}\n', 'package main\n\nimport "testing"\n\nfunc TestIndex(t *testing.T) {\n\tif Index([]int{4, 5, 4}, 4) != 0 {\n\t\tt.Fatal("first")\n\t}\n\tif Index([]int{1, 2}, 9) != -1 {\n\t\tt.Fatal("missing")\n\t}\n\tif Index(nil, 1) != -1 {\n\t\tt.Fatal("empty")\n\t}\n}\n'), "เดิน slice จนเจอค่า ถ้าไม่เจอหรือว่างให้คืน -1", "Walk the slice until you find the value. Return -1 when it is missing or the slice is empty"),
     ],
   }),
   lesson({
@@ -173,6 +178,7 @@ export const beginner = [
       testEx(say("easy", "เขียน Area ให้คืน W*H ของ Rect", "Write Area to return W*H of a Rect"), tests, 'package main\n\ntype Rect struct {\n\tW int\n\tH int\n}\n\nfunc Area(r Rect) int {\n\treturn 0\n}\n', 'package main\n\nimport "testing"\n\nfunc TestArea(t *testing.T) {\n\tif Area(Rect{W: 2, H: 3}) != 6 {\n\t\tt.Fatal("area")\n\t}\n}\n'),
       testEx(say("mid", "เขียน method Grow บน *Rect ให้บวก n ทั้ง W และ H", "Write Grow on *Rect to add n to both W and H"), tests, 'package main\n\ntype Rect struct {\n\tW int\n\tH int\n}\n\nfunc (r *Rect) Grow(n int) {\n}\n', 'package main\n\nimport "testing"\n\nfunc TestGrow(t *testing.T) {\n\tr := Rect{W: 2, H: 3}\n\tr.Grow(1)\n\tif r.W != 3 || r.H != 4 {\n\t\tt.Fatal("grow")\n\t}\n}\n'),
       testEx(say("hard", "เขียน Rename บน *User ให้เปลี่ยน Name", "Write Rename on *User to change Name"), tests, 'package main\n\ntype User struct {\n\tName string\n}\n\nfunc (u *User) Rename(name string) {\n}\n', 'package main\n\nimport "testing"\n\nfunc TestRename(t *testing.T) {\n\tu := User{Name: "old"}\n\tu.Rename("ada")\n\tif u.Name != "ada" {\n\t\tt.Fatal("name")\n\t}\n}\n'),
+      withHint(testEx(say("twist", "เขียน Shrink บน *Rect ให้ลบ n จาก W และ H แต่ไม่ต่ำกว่า 0", "Write Shrink on *Rect to subtract n from W and H, but not below 0"), tests, 'package main\n\ntype Rect struct {\n\tW int\n\tH int\n}\n\nfunc (r *Rect) Shrink(n int) {\n}\n', 'package main\n\nimport "testing"\n\nfunc TestShrink(t *testing.T) {\n\tr := Rect{W: 2, H: 3}\n\tr.Shrink(1)\n\tif r.W != 1 || r.H != 2 {\n\t\tt.Fatal("shrink")\n\t}\n\tsmall := Rect{W: 1, H: 1}\n\tsmall.Shrink(5)\n\tif small.W != 0 || small.H != 0 {\n\t\tt.Fatal("floor")\n\t}\n}\n'), "ลบ n ออกจากทั้งสองฟิลด์ แล้วกันไม่ให้ติดลบ", "Subtract n from both fields and keep them from going below zero"),
     ],
   }),
   lesson({
@@ -201,6 +207,7 @@ export const beginner = [
       testEx(say("easy", "เขียน Inc ให้เพิ่มค่าที่ pointer ชี้อยู่หนึ่ง", "Write Inc to add one to the pointed-to value"), tests, 'package main\n\nfunc Inc(n *int) {\n}\n', 'package main\n\nimport "testing"\n\nfunc TestInc(t *testing.T) {\n\tn := 1\n\tInc(&n)\n\tif n != 2 {\n\t\tt.Fatal("inc")\n\t}\n}\n'),
       testEx(say("mid", "เขียน Swap ให้สลับค่าของสอง pointer", "Write Swap to exchange the values of two pointers"), tests, 'package main\n\nfunc Swap(a, b *int) {\n}\n', 'package main\n\nimport "testing"\n\nfunc TestSwap(t *testing.T) {\n\ta, b := 1, 2\n\tSwap(&a, &b)\n\tif a != 2 || b != 1 {\n\t\tt.Fatal("swap")\n\t}\n}\n'),
       testEx(say("hard", "เขียน SetName ให้ตั้ง Name ผ่าน pointer", "Write SetName to set Name through a pointer"), tests, 'package main\n\ntype User struct {\n\tName string\n}\n\nfunc SetName(u *User, name string) {\n}\n', 'package main\n\nimport "testing"\n\nfunc TestSetName(t *testing.T) {\n\tu := User{}\n\tSetName(&u, "ada")\n\tif u.Name != "ada" {\n\t\tt.Fatal("name")\n\t}\n}\n'),
+      withHint(testEx(say("twist", "เขียน Add ให้บวก delta ผ่าน pointer รวมกรณีที่ delta ติดลบ", "Write Add to add delta through a pointer, including a negative delta"), tests, 'package main\n\nfunc Add(n *int, delta int) {\n}\n', 'package main\n\nimport "testing"\n\nfunc TestAdd(t *testing.T) {\n\tn := 5\n\tAdd(&n, -2)\n\tif n != 3 {\n\t\tt.Fatal("down")\n\t}\n\tAdd(&n, 4)\n\tif n != 7 {\n\t\tt.Fatal("up")\n\t}\n}\n'), "บวก delta เข้าค่าที่ pointer ชี้อยู่ delta ติดลบได้", "Add delta through the pointer. Delta may be negative"),
     ],
   }),
   lesson({
@@ -229,6 +236,7 @@ export const beginner = [
       testEx(say("easy", "เขียน Div ให้คืน error เมื่อ b เป็น 0 และคืน a/b เมื่อสำเร็จ", "Write Div to return an error when b is 0 and a/b on success"), tests, 'package main\n\nfunc Div(a, b int) (int, error) {\n\treturn 0, nil\n}\n', 'package main\n\nimport "testing"\n\nfunc TestDiv(t *testing.T) {\n\tgot, err := Div(4, 2)\n\tif err != nil || got != 2 {\n\t\tt.Fatal("ok")\n\t}\n\tif _, err = Div(1, 0); err == nil {\n\t\tt.Fatal("zero")\n\t}\n}\n'),
       testEx(say("mid", "เขียน ParsePositive ให้รับสตริงที่เป็นจำนวนมากกว่า 0", "Write ParsePositive to accept a string that is a number greater than 0"), tests, 'package main\n\nfunc ParsePositive(s string) (int, error) {\n\treturn 0, nil\n}\n', 'package main\n\nimport "testing"\n\nfunc TestParsePositive(t *testing.T) {\n\tgot, err := ParsePositive("3")\n\tif err != nil || got != 3 {\n\t\tt.Fatal("ok")\n\t}\n\tif _, err = ParsePositive("0"); err == nil {\n\t\tt.Fatal("zero")\n\t}\n\tif _, err = ParsePositive("no"); err == nil {\n\t\tt.Fatal("text")\n\t}\n}\n'),
       testEx(say("hard", "เขียน MustHave ให้คืน error เมื่อสตริงว่าง", "Write MustHave to return an error for an empty string"), tests, 'package main\n\nfunc MustHave(s string) error {\n\treturn nil\n}\n', 'package main\n\nimport "testing"\n\nfunc TestMustHave(t *testing.T) {\n\tif err := MustHave("go"); err != nil {\n\t\tt.Fatal("ok")\n\t}\n\tif err := MustHave(""); err == nil {\n\t\tt.Fatal("empty")\n\t}\n}\n'),
+      withHint(testEx(say("twist", "เขียน Between ให้คืน error เมื่อค่านอกช่วงปิด และคืนตัวเลขเมื่ออยู่ในช่วง", "Write Between to return an error when the value is outside the closed range, and the number when it is inside"), tests, 'package main\n\nfunc Between(n, low, high int) (int, error) {\n\treturn 0, nil\n}\n', 'package main\n\nimport "testing"\n\nfunc TestBetween(t *testing.T) {\n\tgot, err := Between(5, 1, 10)\n\tif err != nil || got != 5 {\n\t\tt.Fatal("inside")\n\t}\n\tif _, err = Between(0, 1, 10); err == nil {\n\t\tt.Fatal("below")\n\t}\n\tgot, err = Between(10, 1, 10)\n\tif err != nil || got != 10 {\n\t\tt.Fatal("edge")\n\t}\n}\n'), "คืน error เมื่อค่าต่ำกว่า low หรือสูงกว่า high และคืนตัวเลขเมื่ออยู่ในช่วง", "Return an error when the value is below low or above high, and return the number when it is inside"),
     ],
   }),
   lesson({
@@ -257,6 +265,7 @@ export const beginner = [
       testEx(say("easy", "เขียน Greet ให้คืน hello ตามด้วยช่องว่างและชื่อ", "Write Greet to return hello, a space, and the name"), tests, 'package main\n\nfunc Greet(name string) string {\n\treturn ""\n}\n', 'package main\n\nimport "testing"\n\nfunc TestGreet(t *testing.T) {\n\tif Greet("ada") != "hello ada" {\n\t\tt.Fatal("greet")\n\t}\n}\n'),
       testEx(say("mid", "เขียน Join ให้ต่อ a กับ b ด้วยจุลภาค", "Write Join to join a and b with a comma"), tests, 'package main\n\nfunc Join(a, b string) string {\n\treturn ""\n}\n', 'package main\n\nimport "testing"\n\nfunc TestJoin(t *testing.T) {\n\tif Join("a", "b") != "a,b" {\n\t\tt.Fatal("join")\n\t}\n}\n'),
       testEx(say("hard", "เขียน Version ให้คืน 1.25", "Write Version to return 1.25"), tests, 'package main\n\nfunc Version() string {\n\treturn ""\n}\n', 'package main\n\nimport "testing"\n\nfunc TestVersion(t *testing.T) {\n\tif Version() != "1.25" {\n\t\tt.Fatal("version")\n\t}\n}\n'),
+      withHint(testEx(say("twist", "เขียน Label ให้คืนภาษา เว้นวรรค แล้วรุ่น เช่น go 1.25", "Write Label to return the language, a space, then the version, such as go 1.25"), tests, 'package main\n\nfunc Label(lang, version string) string {\n\treturn ""\n}\n', 'package main\n\nimport "testing"\n\nfunc TestLabel(t *testing.T) {\n\tif Label("go", "1.25") != "go 1.25" {\n\t\tt.Fatal("go")\n\t}\n\tif Label("a", "b") != "a b" {\n\t\tt.Fatal("pair")\n\t}\n}\n'), "คืนภาษา เว้นวรรค แล้วรุ่น", "Return the language, a space, then the version"),
     ],
   }),
   lesson({
@@ -285,6 +294,7 @@ export const beginner = [
       testEx(say("easy", "เขียน Order ให้คืน ab โดยใช้ defer เติม b", "Write Order to return ab by appending b in defer"), tests, 'package main\n\nfunc Order() (s string) {\n\treturn ""\n}\n', 'package main\n\nimport "testing"\n\nfunc TestOrder(t *testing.T) {\n\tif Order() != "ab" {\n\t\tt.Fatal("order")\n\t}\n}\n'),
       testEx(say("mid", "เขียน Closed ให้คืน 1 โดยเพิ่มตัวนับใน defer ผ่าน named return", "Write Closed to return 1 by incrementing a named result in defer"), tests, 'package main\n\nfunc Closed() (n int) {\n\treturn 0\n}\n', 'package main\n\nimport "testing"\n\nfunc TestClosed(t *testing.T) {\n\tif Closed() != 1 {\n\t\tt.Fatal("closed")\n\t}\n}\n'),
       testEx(say("hard", "เขียน Safe ให้ panic แล้ว recover ใน defer และคืน true", "Write Safe to panic, recover inside defer, and return true"), tests, 'package main\n\nfunc Safe() (recovered bool) {\n\treturn false\n}\n', 'package main\n\nimport "testing"\n\nfunc TestSafe(t *testing.T) {\n\tif !Safe() {\n\t\tt.Fatal("recover")\n\t}\n}\n'),
+      withHint(testEx(say("twist", "เขียน Mark ให้ใช้ defer สองตัวเติมตัวอักษร แล้วคืน abc", "Write Mark to use two defers to append letters and return abc"), tests, 'package main\n\nfunc Mark() (s string) {\n\treturn ""\n}\n', 'package main\n\nimport "testing"\n\nfunc TestMark(t *testing.T) {\n\tif Mark() != "abc" {\n\t\tt.Fatal("mark")\n\t}\n}\n'), "defer ที่ประกาศทีหลังทำงานก่อน เลยได้ a แล้ว b แล้ว c", "The defer you register later runs first, so the letters come out a, then b, then c"),
     ],
   }),
 ];

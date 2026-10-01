@@ -72,6 +72,10 @@ export function lesson(spec) {
   return spec;
 }
 
+export function withHint(exercise, th, en) {
+  return { ...exercise, hint: text(th, en) };
+}
+
 export const exact = {
   th: "ผลที่พิมพ์ต้องตรงทุกตัวอักษร รวมบรรทัดว่างท้าย",
   en: "Printed output must match every character, including the final newline",
