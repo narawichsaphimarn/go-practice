@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Editor from "@monaco-editor/react";
 import { lessonById, textOf } from "../../../content/load.ts";
@@ -9,11 +9,13 @@ import {
   BUTTON_TYPE,
   CLASS_PAGE,
   I18N_BACK,
+  I18N_BACK_TO_LESSON,
   I18N_CHECK,
   I18N_FORMAT,
   I18N_HINT,
   I18N_NEXT_EXERCISE,
   I18N_NOT_FOUND,
+  I18N_PREV_EXERCISE,
   I18N_NOT_PASSED,
   I18N_OUTPUT,
   I18N_PASSED,
@@ -27,7 +29,8 @@ import {
 import { ROUTE_HOME } from "../../../shared/constants/preference.ts";
 import { exercisePath, lessonPath } from "../../../shared/helpers/routes.ts";
 import type { PracticeResult } from "../../../shared/api/practice.ts";
-import { EDITOR_LANG, FONT_NOTEBOOK, MODE_CHECK, MODE_FORMAT, MODE_RUN, MODE_VET, RUN_FAILS_BEFORE_HINT } from "../constants/editor.ts";
+import { readDraft, writeDraft } from "../../progress/helpers/drafts.ts";
+import { DRAFT_SAVE_DELAY_MS, EDITOR_LANG, FONT_NOTEBOOK, MODE_CHECK, MODE_FORMAT, MODE_RUN, MODE_VET, RUN_FAILS_BEFORE_HINT } from "../constants/editor.ts";
 import { runPracticeAction } from "../helpers/actions.ts";
 import { defineNotebookThemes, editorTheme, HOVER_DELAY_MS, registerGoCompletions } from "../helpers/editor.ts";
 
@@ -46,26 +49,41 @@ export function PracticePage() {
     );
   }
 
-  return <PracticeEditor lesson={lesson} exercise={exercise} />;
+  return <PracticeEditor key={`${lesson.id}/${exercise.id}`} lesson={lesson} exercise={exercise} />;
 }
 
 function PracticeEditor({ lesson, exercise }: { lesson: LessonSpec; exercise: ExerciseSpec }) {
   const { t, locale, theme } = usePreferences();
   const { markPassed, isPassed } = useProgress();
-  const [source, setSource] = useState(exercise.starter);
+  const [source, setSource] = useState(() => readDraft(lesson.id, exercise.id)?.source ?? exercise.starter);
   const [output, setOutput] = useState("");
   const [busy, setBusy] = useState(false);
   const [runFails, setRunFails] = useState(0);
   const [hintOpen, setHintOpen] = useState(false);
+  const saveReady = useRef(false);
   const passed = isPassed(lesson.id, exercise.id);
   const showHint = runFails > RUN_FAILS_BEFORE_HINT && exercise.hint !== undefined;
+  const previous = previousCoding(lesson, exercise.id);
 
   useEffect(() => {
-    setSource(exercise.starter);
-    setOutput("");
-    setRunFails(0);
-    setHintOpen(false);
-  }, [exercise]);
+    if (passed) {
+      setOutput((current) => (current.length === 0 ? t(I18N_PASSED) : current));
+    }
+  }, [passed, t]);
+
+  useEffect(() => {
+    if (!saveReady.current) {
+      saveReady.current = true;
+      return;
+    }
+    const handle = window.setTimeout(() => {
+      writeDraft(lesson.id, exercise.id, { source });
+    }, DRAFT_SAVE_DELAY_MS);
+    return () => {
+      window.clearTimeout(handle);
+      writeDraft(lesson.id, exercise.id, { source });
+    };
+  }, [source, lesson.id, exercise.id]);
 
   async function perform(mode: string) {
     setBusy(true);
@@ -83,6 +101,7 @@ function PracticeEditor({ lesson, exercise }: { lesson: LessonSpec; exercise: Ex
       setSource(result.formatted);
     }
     if (mode === MODE_CHECK && result.ok) {
+      writeDraft(lesson.id, exercise.id, { source });
       await markPassed(lesson.id, exercise.id);
       setOutput(t(I18N_PASSED));
       return;
@@ -100,7 +119,19 @@ function PracticeEditor({ lesson, exercise }: { lesson: LessonSpec; exercise: Ex
           </h1>
           <p>{textOf(exercise.prompt, locale)}</p>
           <p>{textOf(exercise.rule, locale)}</p>
-          {passed ? <NextLink lesson={lesson} exercise={exercise} label={t(I18N_NEXT_EXERCISE)} /> : null}
+          {previous || passed ? (
+            <div className="actions">
+              {previous ? <Link to={exercisePath(lesson.id, previous.id)}>{t(I18N_PREV_EXERCISE)}</Link> : null}
+              {passed ? (
+                <NextLink
+                  lesson={lesson}
+                  exercise={exercise}
+                  nextLabel={t(I18N_NEXT_EXERCISE)}
+                  backLabel={t(I18N_BACK_TO_LESSON)}
+                />
+              ) : null}
+            </div>
+          ) : null}
         </section>
         <section>
           <div className="editor-pane">
@@ -162,14 +193,25 @@ function panelText(mode: string, result: PracticeResult, fallback: string): stri
   return "";
 }
 
-function NextLink(props: { lesson: LessonSpec; exercise: ExerciseSpec; label: string }) {
+function previousCoding(lesson: LessonSpec, exerciseId: string): ExerciseSpec | undefined {
+  const index = lesson.exercises.findIndex((item) => item.id === exerciseId);
+  for (let cursor = index - 1; cursor >= 0; cursor -= 1) {
+    const item = lesson.exercises[cursor];
+    if (item.kind !== KIND_QUIZ) {
+      return item;
+    }
+  }
+  return undefined;
+}
+
+function NextLink(props: { lesson: LessonSpec; exercise: ExerciseSpec; nextLabel: string; backLabel: string }) {
   const index = props.lesson.exercises.findIndex((item) => item.id === props.exercise.id);
   const next = props.lesson.exercises[index + 1];
   if (!next) {
-    return null;
+    return <Link to={lessonPath(props.lesson.id)}>{props.backLabel}</Link>;
   }
   if (next.kind === KIND_QUIZ) {
-    return <Link to={`${lessonPath(props.lesson.id)}#${next.id}`}>{props.label}</Link>;
+    return <Link to={`${lessonPath(props.lesson.id)}#${next.id}`}>{props.nextLabel}</Link>;
   }
-  return <Link to={exercisePath(props.lesson.id, next.id)}>{props.label}</Link>;
+  return <Link to={exercisePath(props.lesson.id, next.id)}>{props.nextLabel}</Link>;
 }

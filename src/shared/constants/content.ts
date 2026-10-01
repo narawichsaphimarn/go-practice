@@ -27,9 +27,11 @@ export const API_CHECK = "/v1/golang-practice/check";
 
 export const PROGRESS_DB = "go-practice-progress";
 export const STORAGE_KEY_LAST_LESSON = "go-practice.lastLesson";
+export const STORAGE_KEY_DRAFTS = "go-practice.drafts";
 
 export const I18N_NOT_FOUND = "shell.notFound";
 export const I18N_BACK = "shell.back";
+export const I18N_BACK_TO_LESSON = "shell.backToLesson";
 export const I18N_NOT_READY = "shell.notReady";
 export const I18N_GOAL = "shell.goal";
 export const I18N_EXPLAIN = "shell.explain";
@@ -49,6 +51,7 @@ export const I18N_WORKING = "shell.working";
 export const I18N_PASSED = "shell.passed";
 export const I18N_NOT_PASSED = "shell.notPassed";
 export const I18N_NEXT_EXERCISE = "shell.nextExercise";
+export const I18N_PREV_EXERCISE = "shell.prevExercise";
 export const I18N_UNAVAILABLE = "shell.unavailable";
 export const I18N_SUBMIT = "shell.submit";
 export const I18N_QUIZ_WRONG = "shell.quizWrong";
