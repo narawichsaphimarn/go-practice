@@ -26,9 +26,9 @@ import {
 import { ROUTE_HOME } from "../../../shared/constants/preference.ts";
 import { exercisePath, lessonPath } from "../../../shared/helpers/routes.ts";
 import type { PracticeResult } from "../../../shared/api/practice.ts";
-import { EDITOR_LANG, MODE_CHECK, MODE_FORMAT, MODE_RUN, MODE_VET } from "../constants/editor.ts";
+import { EDITOR_LANG, FONT_NOTEBOOK, MODE_CHECK, MODE_FORMAT, MODE_RUN, MODE_VET } from "../constants/editor.ts";
 import { runPracticeAction } from "../helpers/actions.ts";
-import { editorTheme, registerGoCompletions } from "../helpers/editor.ts";
+import { defineNotebookThemes, editorTheme, registerGoCompletions } from "../helpers/editor.ts";
 
 export function PracticePage() {
   const { lessonId = "", exerciseId = "" } = useParams();
@@ -101,8 +101,15 @@ function PracticeEditor({ lesson, exercise }: { lesson: LessonSpec; exercise: Ex
               theme={editorTheme(theme)}
               value={source}
               onChange={(value) => setSource(value ?? "")}
+              beforeMount={defineNotebookThemes}
               onMount={(_editor, monaco) => registerGoCompletions(monaco)}
-              options={{ minimap: { enabled: false }, fontSize: 14, scrollBeyondLastLine: false }}
+              options={{
+                minimap: { enabled: false },
+                fontSize: 18,
+                fontFamily: FONT_NOTEBOOK,
+                scrollBeyondLastLine: false,
+                bracketPairColorization: { enabled: false },
+              }}
             />
           </div>
           <div className="actions">
