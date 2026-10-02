@@ -1,5 +1,5 @@
 ## explanation
-An interface is a promise of what something can do. It does not say whether the value is a dog or a cat. Speaker promises a Speak method that returns text.
+An interface is a list of methods a type must have. It says what something can do, not what it is, like a host on stage who does not need to know who is a dog or a cat, only that they can make a sound.
 
 ```
 type Speaker interface {
@@ -7,60 +7,74 @@ type Speaker interface {
 }
 ```
 
-A dog and a cat are different types, and both can keep that promise.
+Any type with the method `Speak() string` is a Speaker at once. You never write "I implement Speaker".
 
 ```
 type Dog struct{}
 
 func (Dog) Speak() string { return "woof" }
 
-type Cat struct{}
-
-func (Cat) Speak() string { return "meow" }
+var s Speaker = Dog{}
 ```
+
+The last line compiles because Dog already has Speak. Delete the Speak method and the compiler says Dog is not a Speaker.
+
+Coming from another language: Java needs `implements Speaker`. Go has no such keyword; having the methods is enough.
 
 ## apply
-An announcer on a stage does not need to know which animal is which. They only ask it to speak. The dog answers woof and the cat answers meow. Announce is that announcer. It accepts a Speaker and calls Speak.
+A function that takes an interface works with every type that has those methods, including types nobody has written yet.
 
 ```
 func Announce(s Speaker) string {
-	return s.Speak()
+	return "on stage: " + s.Speak()
 }
-
-fmt.Println(Announce(Dog{}))
-fmt.Println(Announce(Cat{}))
 ```
 
-The same function prints woof, then meow.
+`Announce(Dog{})` gives `on stage: woof`, and if someone later writes a Cat with Speak, you can pass a Cat without touching Announce.
+
+Sometimes you need to know which type is really inside an interface value. Use a type switch.
+
+```
+switch v := s.(type) {
+case Dog:
+	fmt.Println("a dog")
+default:
+	fmt.Println("something else", v)
+}
+```
+
+Keep interfaces small, with only the methods their users need. Many standard library interfaces have a single method, such as `io.Reader`.
 
 ## easy
-Let the dog speak. Dog's Speak returns woof.
+Example: an interface for things that have a price.
 
 ```
-type Dog struct{}
-
-func (Dog) Speak() string {
-	return "woof"
+type Pricer interface {
+	Price() int
 }
+
+type Coffee struct{}
+
+func (Coffee) Price() int { return 60 }
 ```
+
+Coffee has `Price() int`, so it is a Pricer and `var p Pricer = Coffee{}` compiles.
 
 ## hard
-Announce does not take a Dog directly. It takes a Speaker, so both Dog and Cat can be passed in. Cat also needs Speak that returns meow, or it cannot be passed to Announce.
+Example: total the price of anything that is a Pricer.
 
 ```
-type Speaker interface {
-	Speak() string
-}
+type Tea struct{ Cups int }
 
-type Dog struct{}
+func (t Tea) Price() int { return 30 * t.Cups }
 
-func (Dog) Speak() string { return "woof" }
-
-type Cat struct{}
-
-func (Cat) Speak() string { return "meow" }
-
-func Announce(s Speaker) string {
-	return s.Speak()
+func Bill(items []Pricer) int {
+	total := 0
+	for _, it := range items {
+		total += it.Price()
+	}
+	return total
 }
 ```
+
+`Bill([]Pricer{Coffee{}, Tea{Cups: 2}})` is 120. Bill never needs to know whether the list holds coffee or tea.

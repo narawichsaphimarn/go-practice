@@ -1,5 +1,5 @@
 ## explanation
-interface คือสัญญาว่าต้องทำอะไรได้ ไม่ได้บอกว่าของนั้นเป็นหมาหรือแมว Speaker สัญญาว่ามี Speak ที่คืนข้อความ
+interface คือรายการ method ที่ชนิดหนึ่งต้องมี มันบอกแค่ว่า "ทำอะไรได้" ไม่ได้บอกว่า "เป็นอะไร" เหมือนพิธีกรบนเวทีที่ไม่ต้องรู้ว่าใครเป็นหมาหรือแมว แค่ขอให้ส่งเสียง
 
 ```
 type Speaker interface {
@@ -7,60 +7,74 @@ type Speaker interface {
 }
 ```
 
-สุนัขกับแมวคนละชนิด แต่ทั้งคู่ทำให้สัญญาสำเร็จได้
+ชนิดไหนก็ตามที่มี method `Speak() string` ถือว่าเป็น Speaker ทันที ไม่ต้องเขียนประกาศว่า "ฉันทำตาม Speaker"
 
 ```
 type Dog struct{}
 
 func (Dog) Speak() string { return "woof" }
 
-type Cat struct{}
-
-func (Cat) Speak() string { return "meow" }
+var s Speaker = Dog{}
 ```
+
+บรรทัดสุดท้ายคอมไพล์ผ่าน เพราะ Dog มี Speak ครบแล้ว ถ้าลบ method Speak ออก คอมไพเลอร์จะบอกว่า Dog ไม่ใช่ Speaker
+
+มาจากภาษาอื่น: Java ต้องเขียน `implements Speaker` แต่ Go ไม่มีคำนี้ แค่มี method ครบก็พอ
 
 ## apply
-คนประกาศบนเวทีไม่ต้องรู้ว่าตัวไหนเป็นหมาหรือแมว เขาแค่ขอให้ส่งเสียง หมาตอบ woof แมวตอบ meow ฟังก์ชัน Announce คือคนประกาศ มันรับ Speaker แล้วเรียก Speak
+ฟังก์ชันที่รับ interface ใช้ได้กับทุกชนิดที่มี method ตามนั้น รวมถึงชนิดที่ยังไม่มีใครเขียนตอนนี้
 
 ```
 func Announce(s Speaker) string {
-	return s.Speak()
+	return "on stage: " + s.Speak()
 }
-
-fmt.Println(Announce(Dog{}))
-fmt.Println(Announce(Cat{}))
 ```
 
-ได้ woof แล้ว meow จากฟังก์ชันเดียวกัน
+`Announce(Dog{})` ได้ `on stage: woof` และถ้าวันหลังมีคนเขียน Cat ที่มี Speak ก็ส่ง Cat เข้ามาได้เลยโดยไม่ต้องแก้ Announce
+
+บางครั้งต้องรู้ว่าค่าใน interface เป็นชนิดไหนจริง ๆ ให้ใช้ type switch
+
+```
+switch v := s.(type) {
+case Dog:
+	fmt.Println("a dog")
+default:
+	fmt.Println("something else", v)
+}
+```
+
+ควรออกแบบ interface ให้เล็ก มี method น้อยที่สุดเท่าที่ผู้ใช้ต้องการ interface ในไลบรารีมาตรฐานหลายตัวมี method เดียว เช่น `io.Reader`
 
 ## easy
-ทำให้สุนัขส่งเสียงได้ โดยให้ Speak ของ Dog คืน woof
+ตัวอย่าง: interface สำหรับสิ่งที่บอกราคาได้
 
 ```
-type Dog struct{}
-
-func (Dog) Speak() string {
-	return "woof"
+type Pricer interface {
+	Price() int
 }
+
+type Coffee struct{}
+
+func (Coffee) Price() int { return 60 }
 ```
+
+Coffee มี `Price() int` จึงเป็น Pricer แล้ว `var p Pricer = Coffee{}` คอมไพล์ผ่าน
 
 ## hard
-Announce ไม่รับ Dog โดยตรง แต่รับ Speaker จึงใส่ได้ทั้ง Dog และ Cat แมวต้องมี Speak ที่คืน meow ด้วย ไม่งั้นยังส่งเข้า Announce ไม่ได้
+ตัวอย่าง: รวมราคาของอะไรก็ได้ที่เป็น Pricer
 
 ```
-type Speaker interface {
-	Speak() string
-}
+type Tea struct{ Cups int }
 
-type Dog struct{}
+func (t Tea) Price() int { return 30 * t.Cups }
 
-func (Dog) Speak() string { return "woof" }
-
-type Cat struct{}
-
-func (Cat) Speak() string { return "meow" }
-
-func Announce(s Speaker) string {
-	return s.Speak()
+func Bill(items []Pricer) int {
+	total := 0
+	for _, it := range items {
+		total += it.Price()
+	}
+	return total
 }
 ```
+
+`Bill([]Pricer{Coffee{}, Tea{Cups: 2}})` ได้ 120 Bill ไม่ต้องรู้เลยว่าในรายการมีกาแฟหรือชา

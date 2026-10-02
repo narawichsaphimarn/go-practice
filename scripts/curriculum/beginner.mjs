@@ -1,8 +1,6 @@
-import { exact, lesson, panicEx, quiz, solved, stdout, testEx, tests, text, withHint } from "./helpers.mjs";
+import { exact, go, lesson, panicEx, pick, program, say, solved, stdout, testEx, testFile, tests, text, unit, withHint } from "./helpers.mjs";
 
 // Lesson text lives in src/content/beginner/<id>/{th,en}.md. This file holds titles, goals, and exercises.
-const go = String.raw;
-
 const main = go`package main
 
 import "fmt"
@@ -11,26 +9,6 @@ func main() {
 	fmt.Println("todo")
 }
 `;
-
-function say(id, th, en) {
-  return { id, th, en };
-}
-
-function program(body, imports = `"fmt"`) {
-  return `package main\n\nimport ${imports}\n\nfunc main() {\n${body}\n}\n`;
-}
-
-function unit(body) {
-  return `package main\n\n${body}\n`;
-}
-
-function testFile(body, imports = `"testing"`) {
-  return `package main\n\nimport ${imports}\n\n${body}\n`;
-}
-
-function pick(id, th, en, why, choices, answer) {
-  return quiz(say(id, th, en), why, choices, answer);
-}
 
 export const beginner = [
   lesson({

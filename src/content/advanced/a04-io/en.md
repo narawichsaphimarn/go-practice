@@ -1,45 +1,57 @@
 ## explanation
-An io.Reader is something you can read bytes from, a chunk at a time. An io.Writer is something you can write bytes to. You do not need to know whether the other side is a file, memory, or the network.
+An `io.Reader` is something you can read data out of, a piece at a time, and an `io.Writer` is something you can write data into. Both are interfaces with a single method.
 
 ```
-text, err := ReadAll(strings.NewReader("go"))
+type Reader interface {
+	Read(p []byte) (n int, err error)
+}
+
+type Writer interface {
+	Write(p []byte) (n int, err error)
+}
 ```
 
-text is go because that Reader holds the text go in memory.
+Files, network connections, `strings.NewReader("...")`, and `bytes.Buffer` are all Readers or Writers, so a function that takes an `io.Reader` works with any source, like a hose that fits any tap.
+
+Read returns `io.EOF` when the data runs out. That is not a failure; it only says the data has ended.
 
 ## apply
-Read a short note in one go. Write the same sentence into a log twice. Count the bytes that pass through without keeping the contents.
+You rarely call Read yourself. Use the functions in package io:
+
+- `io.ReadAll(r)` reads everything and returns a `[]byte`. Handy for small data.
+- `io.Copy(w, r)` moves data from r to w piece by piece, never holding it all in memory.
+- `io.WriteString(w, s)` writes text to w.
+- `io.LimitReader(r, n)` wraps r so it gives at most n bytes.
+- `io.Discard` is a Writer that throws everything away, for when you only want to count or drain.
+
+For a 2 GB file, ReadAll needs 2 GB of memory, while io.Copy only ever uses a small buffer.
 
 ## easy
-ReadAll reads until the end and returns a string.
+Example: read all the text and count the lines.
 
 ```
-func ReadAll(r io.Reader) (string, error) {
+func Lines(r io.Reader) (int, error) {
 	data, err := io.ReadAll(r)
 	if err != nil {
-		return "", err
+		return 0, err
 	}
-	return string(data), nil
+	return strings.Count(string(data), "\n"), nil
 }
 ```
+
+`Lines(strings.NewReader("a\nb\n"))` is 2.
 
 ## hard
-Count returns how many bytes were read without keeping the contents. io.Copy streams the data into io.Discard piece by piece, so it never holds the whole payload. WriteTwice writes the same string to the Writer twice.
+Example: copy data to a destination and report how many bytes went across, without holding it all.
 
 ```
-func Count(r io.Reader) (int, error) {
-	n, err := io.Copy(io.Discard, r)
-	return int(n), err
-}
-```
-
-```
-func WriteTwice(w io.Writer, s string) error {
-	for i := 0; i < 2; i++ {
-		if _, err := io.WriteString(w, s); err != nil {
-			return err
-		}
+func Save(dst io.Writer, src io.Reader) (int64, error) {
+	n, err := io.Copy(dst, src)
+	if err != nil {
+		return n, fmt.Errorf("save: %w", err)
 	}
-	return nil
+	return n, nil
 }
 ```
+
+dst can be a file, a `bytes.Buffer`, or `os.Stdout`. Save does not need to know, because it only takes an io.Writer.

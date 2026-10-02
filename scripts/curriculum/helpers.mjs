@@ -95,3 +95,46 @@ export const panicRule = {
   th: "โปรแกรมต้อง panic เพราะ nil pointer ตอนรันจากหน้า editor",
   en: "The program must panic on a nil pointer when run from the editor",
 };
+
+// Go source is written with String.raw so \n inside Go strings stays as written.
+export const go = String.raw;
+
+export function say(id, th, en) {
+  return { id, th, en };
+}
+
+export function program(body, imports = `"fmt"`) {
+  return `package main\n\nimport ${imports}\n\nfunc main() {\n${body}\n}\n`;
+}
+
+export function unit(body) {
+  return `package main\n\n${body}\n`;
+}
+
+// A body that starts with its own import block is used as is.
+export function testFile(body, imports = `"testing"`) {
+  if (body.startsWith("import")) {
+    return `package main\n\n${body}\n`;
+  }
+  return `package main\n\nimport ${imports}\n\n${body}\n`;
+}
+
+export function pick(id, th, en, why, choices, answer) {
+  return quiz(say(id, th, en), why, choices, answer);
+}
+
+// Test-side guard for code that may block forever: fails after 2 seconds instead of hanging. Needs "time" imported.
+export const withinHelper = String.raw`
+func within(t *testing.T, f func()) {
+	t.Helper()
+	done := make(chan struct{})
+	go func() {
+		f()
+		close(done)
+	}()
+	select {
+	case <-done:
+	case <-time.After(2 * time.Second):
+		t.Fatal("still waiting after 2 seconds")
+	}
+}`;

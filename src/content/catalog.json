@@ -1116,8 +1116,8 @@
         "en": "Interfaces"
       },
       "goal": {
-        "th": "ออกแบบ interface เล็กและสลับ implementation ได้",
-        "en": "Design a small interface and swap implementations"
+        "th": "เขียน interface เล็ก ๆ แล้วใช้ชนิดต่างกันผ่าน interface เดียวกัน",
+        "en": "Write a small interface and use different types through it"
       },
       "exercises": [
         {
@@ -1125,59 +1125,71 @@
           "difficulty": "easy",
           "kind": "test",
           "prompt": {
-            "th": "ให้ Dog มี Speak ที่คืน woof",
-            "en": "Give Dog a Speak method that returns woof"
+            "th": "เขียน method Speak ของ Dog ให้คืน woof",
+            "en": "Write the Speak method of Dog to return woof"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\ntype Dog struct{}\n\nfunc (Dog) Speak() string {\n\treturn \"\"\n}\n"
+          "starter": "package main\n\ntype Dog struct{}\n\nfunc (Dog) Speak() string {\n\treturn \"\"\n}\n",
+          "hint": {
+            "th": "แก้ return \"\" เป็น return \"woof\" แค่มี method Speak ครบ Dog ก็ทำตาม Speaker ได้ ไม่ต้องประกาศอะไรเพิ่ม",
+            "en": "Change return \"\" to return \"woof\". Having the Speak method is all Dog needs to satisfy Speaker; nothing else is declared"
+          }
         },
         {
           "id": "mid",
           "difficulty": "mid",
           "kind": "test",
           "prompt": {
-            "th": "ให้ Cat มี Speak ที่คืน meow",
-            "en": "Give Cat a Speak method that returns meow"
+            "th": "เขียน Announce ให้รับ Speaker อะไรก็ได้ แล้วคืนสิ่งที่มันพูด",
+            "en": "Write Announce to take any Speaker and return what it says"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\ntype Cat struct{}\n\nfunc (Cat) Speak() string {\n\treturn \"\"\n}\n"
+          "starter": "package main\n\ntype Speaker interface {\n\tSpeak() string\n}\n\nfunc Announce(s Speaker) string {\n\treturn \"\"\n}\n",
+          "hint": {
+            "th": "Announce ไม่รู้ว่า s เป็นชนิดไหน แต่รู้ว่ามี Speak จึงคืน s.Speak()",
+            "en": "Announce does not know the type of s, only that it has Speak, so return s.Speak()"
+          }
         },
         {
           "id": "hard",
           "difficulty": "hard",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Announce ที่รับ Speaker แล้วคืนผล Speak",
-            "en": "Write Announce that accepts a Speaker and returns Speak"
+            "th": "เขียน TotalArea ให้รวมพื้นที่ของทุก Shape ใน slice ไม่ว่าจะเป็น Rect, Square หรือชนิดอื่นที่มี Area",
+            "en": "Write TotalArea to add up the area of every Shape in the slice, whether it is a Rect, a Square, or any other type with Area"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\ntype Speaker interface {\n\tSpeak() string\n}\n\ntype Dog struct{}\n\nfunc (Dog) Speak() string {\n\treturn \"woof\"\n}\n\nfunc Announce(s Speaker) string {\n\treturn \"\"\n}\n"
+          "starter": "package main\n\ntype Shape interface {\n\tArea() int\n}\n\ntype Rect struct{ W, H int }\n\nfunc (r Rect) Area() int { return r.W * r.H }\n\ntype Square struct{ Side int }\n\nfunc (s Square) Area() int { return s.Side * s.Side }\n\nfunc TotalArea(shapes []Shape) int {\n\treturn 0\n}\n",
+          "hint": {
+            "th": "ไล่ shapes ด้วย range แล้วบวก s.Area() ทุกตัว ไม่ต้องเช็กว่าเป็นชนิดไหน",
+            "en": "Range over shapes and add s.Area() for each one. You never need to check which type it is"
+          }
         },
         {
           "id": "twist",
           "difficulty": "twist",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Louder ให้รับ Speaker แล้วคืนคำพูดต่อด้วย !",
-            "en": "Write Louder to accept a Speaker and return the speech plus !"
+            "th": "เขียน Kind ให้คืน dog เมื่อ s เป็น Dog, cat เมื่อเป็น Cat และ other สำหรับชนิดอื่น",
+            "en": "Write Kind to return dog when s is a Dog, cat when it is a Cat, and other for any other type"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\ntype Speaker interface {\n\tSpeak() string\n}\n\ntype Cow struct{}\n\nfunc (Cow) Speak() string {\n\treturn \"moo\"\n}\n\nfunc Louder(s Speaker) string {\n\treturn \"\"\n}\n",
+          "starter": "package main\n\ntype Speaker interface {\n\tSpeak() string\n}\n\ntype Dog struct{}\n\nfunc (Dog) Speak() string { return \"woof\" }\n\ntype Cat struct{}\n\nfunc (Cat) Speak() string { return \"meow\" }\n\nfunc Kind(s Speaker) string {\n\treturn \"\"\n}\n",
           "hint": {
-            "th": "เรียก Speak แล้วต่อเครื่องหมายตกใจ",
-            "en": "Call Speak and append an exclamation mark"
+            "th": "ใช้ type switch: switch s.(type) { case Dog: ... case Cat: ... default: ... }",
+            "en": "Use a type switch: switch s.(type) { case Dog: ... case Cat: ... default: ... }"
           }
         }
       ]
@@ -1191,8 +1203,8 @@
         "en": "Generics"
       },
       "goal": {
-        "th": "เขียนฟังก์ชัน generic เมื่อ type parameter จำเป็นจริง",
-        "en": "Write a generic function when a type parameter is actually needed"
+        "th": "เขียนฟังก์ชันเดียวที่ใช้ได้กับหลายชนิด และเลือก constraint ให้ตรงกับสิ่งที่ฟังก์ชันทำ",
+        "en": "Write one function that works for many types, and pick the constraint that matches what it does"
       },
       "exercises": [
         {
@@ -1200,59 +1212,71 @@
           "difficulty": "easy",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Identity ให้คืนค่าที่รับมา",
-            "en": "Write Identity to return the value it received"
+            "th": "เขียน Contains ให้คืน true เมื่อ v อยู่ใน s ใช้ได้ทั้ง slice ของ int และ string",
+            "en": "Write Contains to return true when v is in s. It must work for slices of int and of string"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc Identity[T any](v T) T {\n\tvar zero T\n\treturn zero\n}\n"
+          "starter": "package main\n\nfunc Contains[T comparable](s []T, v T) bool {\n\treturn false\n}\n",
+          "hint": {
+            "th": "ไล่ s ด้วย range แล้วเทียบ x == v ได้ เพราะ constraint comparable รับประกันว่าใช้ == ได้",
+            "en": "Range over s and compare x == v. The comparable constraint guarantees that == works"
+          }
         },
         {
           "id": "mid",
           "difficulty": "mid",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Min ให้คืนค่าที่น้อยกว่าระหว่าง a กับ b",
-            "en": "Write Min to return the lesser of a and b"
+            "th": "เขียน Min ให้คืนค่าที่น้อยกว่าระหว่าง a กับ b เช่น Min(2, 5) ได้ 2 และ Min(\"b\", \"a\") ได้ a",
+            "en": "Write Min to return the smaller of a and b. Min(2, 5) is 2 and Min(\"b\", \"a\") is a"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nimport \"cmp\"\n\nfunc Min[T cmp.Ordered](a, b T) T {\n\tvar zero T\n\treturn zero\n}\n"
+          "starter": "package main\n\nimport \"cmp\"\n\nfunc Min[T cmp.Ordered](a, b T) T {\n\tvar zero T\n\treturn zero\n}\n",
+          "hint": {
+            "th": "cmp.Ordered อนุญาตให้ใช้ < กับ T ได้ ถ้า a < b ให้คืน a ไม่งั้นคืน b",
+            "en": "cmp.Ordered lets you use < on T. If a < b, return a; otherwise return b"
+          }
         },
         {
           "id": "hard",
           "difficulty": "hard",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Map ให้แปลงสมาชิกทุกตัวด้วยฟังก์ชัน f",
-            "en": "Write Map to transform every element with f"
+            "th": "เขียน Map ให้คืน slice ใหม่ที่ได้จากการเรียก f กับทุกสมาชิก ชนิดของผลต่างจากชนิดเข้าได้ เช่น int เป็น string",
+            "en": "Write Map to return a new slice made by calling f on every item. The result type may differ from the input type, such as int to string"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc Map[T any, U any](in []T, f func(T) U) []U {\n\treturn nil\n}\n"
+          "starter": "package main\n\nfunc Map[T, U any](in []T, f func(T) U) []U {\n\treturn nil\n}\n",
+          "hint": {
+            "th": "สร้าง out := make([]U, len(in)) แล้วใส่ out[i] = f(v) ทุกรอบ",
+            "en": "Make out := make([]U, len(in)) and set out[i] = f(v) each round"
+          }
         },
         {
           "id": "twist",
           "difficulty": "twist",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Filter ให้คัดสมาชิกที่ฟังก์ชันเก็บไว้ รวม slice ว่าง",
-            "en": "Write Filter to keep the items the function accepts, including an empty slice"
+            "th": "เขียน SortedKeys ให้คืน key ทั้งหมดของ map เรียงจากน้อยไปมาก ใช้ได้กับ map ทุกแบบที่ key เรียงลำดับได้",
+            "en": "Write SortedKeys to return all keys of a map in ascending order. It must work for any map whose keys can be ordered"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc Filter[T any](in []T, keep func(T) bool) []T {\n\treturn nil\n}\n",
+          "starter": "package main\n\nimport \"cmp\"\n\nfunc SortedKeys[K cmp.Ordered, V any](m map[K]V) []K {\n\treturn nil\n}\n",
           "hint": {
-            "th": "สร้าง slice ใหม่เฉพาะสมาชิกที่ keep คืน true รวมกรณีว่าง",
-            "en": "Build a new slice of items keep accepts, including an empty input"
+            "th": "เก็บ key ทุกตัวด้วย for k := range m แล้วเรียงด้วย slices.Sort ซึ่งต้อง import \"slices\"",
+            "en": "Collect every key with for k := range m, then sort with slices.Sort, which needs import \"slices\""
           }
         }
       ]
@@ -1262,12 +1286,12 @@
       "level": "advanced",
       "order": 15,
       "title": {
-        "th": "errors.Is และ errors.As",
-        "en": "errors.Is and errors.As"
+        "th": "ห่อ error และหาสาเหตุ",
+        "en": "Wrapping errors and finding the cause"
       },
       "goal": {
-        "th": "ห่อ error แล้วตรวจสาเหตุโดยไม่เทียบข้อความ",
-        "en": "Wrap an error and inspect the cause without comparing text"
+        "th": "ห่อ error เพื่อเพิ่มบริบท แล้วตรวจสาเหตุด้วย errors.Is และ errors.As โดยไม่เทียบข้อความ",
+        "en": "Wrap errors to add context, then find the cause with errors.Is and errors.As instead of comparing text"
       },
       "exercises": [
         {
@@ -1275,59 +1299,71 @@
           "difficulty": "easy",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Wrap ให้ห่อ ErrBoom แล้วให้ errors.Is เจอ ErrBoom",
-            "en": "Write Wrap so errors.Is finds ErrBoom"
+            "th": "เขียน Load ให้คืน error ที่มีข้อความ load config: boom และยังตรวจเจอ ErrBoom ด้วย errors.Is",
+            "en": "Write Load to return an error whose message is load config: boom and that errors.Is still matches to ErrBoom"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nimport \"errors\"\n\nvar ErrBoom = errors.New(\"boom\")\n\nfunc Wrap() error {\n\treturn nil\n}\n"
+          "starter": "package main\n\nimport \"errors\"\n\nvar ErrBoom = errors.New(\"boom\")\n\nfunc Load() error {\n\treturn ErrBoom\n}\n",
+          "hint": {
+            "th": "ใช้ fmt.Errorf(\"load config: %w\", ErrBoom) ตัว %w เก็บ error เดิมไว้ข้างใน ส่วน %v เก็บแค่ข้อความ",
+            "en": "Use fmt.Errorf(\"load config: %w\", ErrBoom). %w keeps the original error inside; %v keeps only its text"
+          }
         },
         {
           "id": "mid",
           "difficulty": "mid",
           "kind": "test",
           "prompt": {
-            "th": "เขียน AsCode ให้ดึง Code จาก error ที่ห่อ CodeError",
-            "en": "Write AsCode to read Code from a wrapped CodeError"
+            "th": "เขียน HasBoom ให้คืน true เมื่อมี ErrBoom อยู่ข้างใน error แม้ถูกห่อหลายชั้น แต่ error อื่นที่ข้อความเป็น boom เหมือนกันต้องได้ false",
+            "en": "Write HasBoom to return true when ErrBoom is inside the error, even several layers deep. A different error that also says boom must return false"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\ntype CodeError struct {\n\tCode int\n}\n\nfunc (e CodeError) Error() string {\n\treturn \"code\"\n}\n\nfunc AsCode(err error) int {\n\treturn 0\n}\n"
+          "starter": "package main\n\nimport \"errors\"\n\nvar ErrBoom = errors.New(\"boom\")\n\nfunc HasBoom(err error) bool {\n\treturn false\n}\n",
+          "hint": {
+            "th": "errors.Is(err, ErrBoom) ไล่ดูทุกชั้นที่ห่อด้วย %w และเทียบว่าเป็น error ตัวเดียวกัน ไม่ได้เทียบข้อความ",
+            "en": "errors.Is(err, ErrBoom) walks every layer wrapped with %w and checks for the same error value, not the same text"
+          }
         },
         {
           "id": "hard",
           "difficulty": "hard",
           "kind": "test",
           "prompt": {
-            "th": "เขียน HasBoom ให้คืน true เมื่อสาย error มียอด ErrBoom",
-            "en": "Write HasBoom to return true when the chain contains ErrBoom"
+            "th": "เขียน CodeOr ให้ดึง Code จาก CodeError ที่อยู่ข้างใน error (อาจห่อหลายชั้น) ถ้าไม่มีให้คืน fallback",
+            "en": "Write CodeOr to read Code from a CodeError inside the error, possibly several layers deep. If there is none, return fallback"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n)\n\nvar ErrBoom = errors.New(\"boom\")\n\nfunc HasBoom(err error) bool {\n\treturn false\n}\n\nfunc sample() error {\n\treturn fmt.Errorf(\"wrap: %w\", ErrBoom)\n}\n"
+          "starter": "package main\n\ntype CodeError struct {\n\tCode int\n}\n\nfunc (e CodeError) Error() string {\n\treturn \"code error\"\n}\n\nfunc CodeOr(err error, fallback int) int {\n\treturn fallback\n}\n",
+          "hint": {
+            "th": "ประกาศ var target CodeError แล้ว if errors.As(err, &target) { return target.Code }",
+            "en": "Declare var target CodeError, then if errors.As(err, &target) { return target.Code }"
+          }
         },
         {
           "id": "twist",
           "difficulty": "twist",
           "kind": "test",
           "prompt": {
-            "th": "เขียน CodeOr ให้ดึง Code จาก CodeError ที่ถูกห่อสองชั้น ไม่งั้นคืนค่าสำรอง",
-            "en": "Write CodeOr to read Code from a CodeError wrapped twice, or return the fallback"
+            "th": "เขียน Validate ให้คืน error ที่รวมทุกปัญหา: ErrNoName เมื่อ name ว่าง และ ErrBadAge เมื่อ age ติดลบ ถ้าไม่มีปัญหาให้คืน nil",
+            "en": "Write Validate to return one error holding every problem: ErrNoName when name is empty and ErrBadAge when age is negative. Return nil when there is no problem"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\ntype CodeError struct {\n\tCode int\n}\n\nfunc (e CodeError) Error() string {\n\treturn \"code\"\n}\n\nfunc CodeOr(err error, fallback int) int {\n\treturn 0\n}\n",
+          "starter": "package main\n\nimport \"errors\"\n\nvar (\n\tErrNoName = errors.New(\"no name\")\n\tErrBadAge = errors.New(\"bad age\")\n)\n\nfunc Validate(name string, age int) error {\n\treturn nil\n}\n",
           "hint": {
-            "th": "ใช้ errors.As ไล่สาย error ที่ห่อไว้ ถ้าไม่เจอให้คืนค่าสำรอง",
-            "en": "Use errors.As to walk the wrapped chain. Return the fallback when it is not there"
+            "th": "เก็บปัญหาไว้ใน var errs []error แล้วคืน errors.Join(errs...) ซึ่งคืน nil เองเมื่อไม่มีปัญหา",
+            "en": "Collect problems in var errs []error and return errors.Join(errs...), which returns nil by itself when there are none"
           }
         }
       ]
@@ -1341,8 +1377,8 @@
         "en": "io.Reader and io.Writer"
       },
       "goal": {
-        "th": "อ่านและเขียนสตรีมโดยไม่โหลดทั้งก้อนเมื่อไม่จำเป็น",
-        "en": "Read and write streams without loading everything when you do not need to"
+        "th": "อ่านและเขียนข้อมูลผ่าน io.Reader กับ io.Writer โดยไม่โหลดทั้งก้อนเมื่อไม่จำเป็น",
+        "en": "Read and write through io.Reader and io.Writer without loading everything when you do not need to"
       },
       "exercises": [
         {
@@ -1350,59 +1386,71 @@
           "difficulty": "easy",
           "kind": "test",
           "prompt": {
-            "th": "เขียน ReadAll ให้คืนข้อความทั้งก้อนจาก Reader",
-            "en": "Write ReadAll to return the whole Reader as text"
+            "th": "เขียน ReadAll ให้อ่าน r จนหมดแล้วคืนเป็นข้อความ",
+            "en": "Write ReadAll to read r to the end and return it as text"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nimport \"io\"\n\nfunc ReadAll(r io.Reader) (string, error) {\n\treturn \"\", nil\n}\n"
+          "starter": "package main\n\nimport \"io\"\n\nfunc ReadAll(r io.Reader) (string, error) {\n\treturn \"\", nil\n}\n",
+          "hint": {
+            "th": "data, err := io.ReadAll(r) ได้ []byte มา แล้วแปลงด้วย string(data)",
+            "en": "data, err := io.ReadAll(r) gives you a []byte; convert it with string(data)"
+          }
         },
         {
           "id": "mid",
           "difficulty": "mid",
           "kind": "test",
           "prompt": {
-            "th": "เขียน WriteTwice ให้เขียน s ลง Writer สองครั้ง",
-            "en": "Write WriteTwice to write s to the Writer twice"
+            "th": "เขียน WriteTwice ให้เขียน s ลง w สองครั้ง และคืน error ทันทีถ้าเขียนไม่สำเร็จ",
+            "en": "Write WriteTwice to write s to w two times, returning the error at once if a write fails"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nimport \"io\"\n\nfunc WriteTwice(w io.Writer, s string) error {\n\treturn nil\n}\n"
+          "starter": "package main\n\nimport \"io\"\n\nfunc WriteTwice(w io.Writer, s string) error {\n\treturn nil\n}\n",
+          "hint": {
+            "th": "io.WriteString(w, s) คืน error มาด้วย เช็ก err != nil หลังครั้งแรกก่อนเขียนครั้งที่สอง",
+            "en": "io.WriteString(w, s) returns an error too. Check err != nil after the first write, before the second"
+          }
         },
         {
           "id": "hard",
           "difficulty": "hard",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Count ให้คืนจำนวนไบต์ที่อ่านได้โดยไม่เก็บเนื้อหา",
-            "en": "Write Count to return how many bytes were read without keeping them"
+            "th": "เขียน Count ให้คืนจำนวนไบต์ทั้งหมดใน r โดยไม่เก็บเนื้อหาไว้ในหน่วยความจำ",
+            "en": "Write Count to return how many bytes r holds without keeping the contents in memory"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nimport \"io\"\n\nfunc Count(r io.Reader) (int, error) {\n\treturn 0, nil\n}\n"
+          "starter": "package main\n\nimport \"io\"\n\nfunc Count(r io.Reader) (int64, error) {\n\treturn 0, nil\n}\n",
+          "hint": {
+            "th": "io.Copy(io.Discard, r) อ่านทีละช่วงแล้วทิ้งลง io.Discard และคืนจำนวนไบต์ที่ส่งผ่านเป็น int64",
+            "en": "io.Copy(io.Discard, r) reads piece by piece, throws the data into io.Discard, and returns the byte count as an int64"
+          }
         },
         {
           "id": "twist",
           "difficulty": "twist",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Head ให้อ่านได้ไม่เกิน n ไบต์ รวมกรณี n เป็น 0",
-            "en": "Write Head to read at most n bytes, including when n is 0"
+            "th": "เขียน Head ให้อ่านจาก r ไม่เกิน n ไบต์แล้วคืนเป็นข้อความ ถ้ามีข้อมูลน้อยกว่า n ให้คืนเท่าที่มี",
+            "en": "Write Head to read at most n bytes from r and return them as text. If r has fewer than n bytes, return what there is"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nimport \"io\"\n\nfunc Head(r io.Reader, n int) (string, error) {\n\treturn \"\", nil\n}\n",
+          "starter": "package main\n\nimport \"io\"\n\nfunc Head(r io.Reader, n int64) (string, error) {\n\treturn \"\", nil\n}\n",
           "hint": {
-            "th": "อ่านได้ไม่เกิน n ไบต์ เมื่อ n เป็น 0 ให้คืนสตริงว่าง",
-            "en": "Read at most n bytes. When n is 0, return an empty string"
+            "th": "io.LimitReader(r, n) คืน Reader ที่หยุดหลังครบ n ไบต์ แล้วอ่านมันด้วย io.ReadAll",
+            "en": "io.LimitReader(r, n) gives a Reader that stops after n bytes; read it with io.ReadAll"
           }
         }
       ]
@@ -1416,8 +1464,8 @@
         "en": "encoding/json"
       },
       "goal": {
-        "th": "marshal และ unmarshal struct ที่กำหนด tag เอง",
-        "en": "Marshal and unmarshal a struct with your own tags"
+        "th": "แปลง struct เป็น JSON และกลับ โดยกำหนดชื่อฟิลด์ด้วย tag",
+        "en": "Turn structs into JSON and back, naming the fields with tags"
       },
       "exercises": [
         {
@@ -1425,59 +1473,71 @@
           "difficulty": "easy",
           "kind": "test",
           "prompt": {
-            "th": "เขียน DecodeName ให้อ่านฟิลด์ name",
-            "en": "Write DecodeName to read the name field"
+            "th": "เขียน DecodeName ให้อ่าน JSON แล้วคืนค่าของฟิลด์ name และคืน error เมื่อ JSON ผิดรูป",
+            "en": "Write DecodeName to read the JSON and return the name field, and an error when the JSON is malformed"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\ntype Person struct {\n\tName string `json:\"name\"`\n}\n\nfunc DecodeName(data []byte) (string, error) {\n\treturn \"\", nil\n}\n"
+          "starter": "package main\n\ntype Person struct {\n\tName string `json:\"name\"`\n}\n\nfunc DecodeName(data []byte) (string, error) {\n\treturn \"\", nil\n}\n",
+          "hint": {
+            "th": "ประกาศ var p Person แล้วเรียก json.Unmarshal(data, &p) ต้องส่ง &p เพื่อให้ Unmarshal เขียนลงตัวจริง",
+            "en": "Declare var p Person and call json.Unmarshal(data, &p). Pass &p so Unmarshal writes into the real value"
+          }
         },
         {
           "id": "mid",
           "difficulty": "mid",
           "kind": "test",
           "prompt": {
-            "th": "เขียน EncodeName ให้ได้ JSON ที่มี name",
-            "en": "Write EncodeName to produce JSON with name"
+            "th": "เขียน EncodeName ให้คืน JSON รูป {\"name\":\"...\"} ต้องรองรับชื่อที่มีเครื่องหมายคำพูดด้วย",
+            "en": "Write EncodeName to return JSON shaped like {\"name\":\"...\"}. Names containing quotes must work too"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc EncodeName(name string) ([]byte, error) {\n\treturn nil, nil\n}\n"
+          "starter": "package main\n\nfunc EncodeName(name string) ([]byte, error) {\n\treturn nil, nil\n}\n",
+          "hint": {
+            "th": "สร้าง struct ที่มี tag json:\"name\" แล้วใช้ json.Marshal อย่าต่อข้อความเอง เพราะ Marshal จัดการเครื่องหมายคำพูดให้",
+            "en": "Make a struct with the tag json:\"name\" and use json.Marshal. Do not build the text yourself; Marshal escapes the quotes for you"
+          }
         },
         {
           "id": "hard",
           "difficulty": "hard",
           "kind": "test",
           "prompt": {
-            "th": "เขียน DecodeName ให้คืนสตริงว่างเมื่อไม่มีฟิลด์ name และไม่มี error",
-            "en": "Write DecodeName to return an empty string without an error when name is missing"
+            "th": "เขียน TotalQty ให้อ่านคำสั่งซื้อ JSON แล้วคืนผลรวมของ qty ทุกรายการใน items",
+            "en": "Write TotalQty to read an order in JSON and return the sum of qty over every entry in items"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc DecodeName(data []byte) (string, error) {\n\treturn \"x\", nil\n}\n"
+          "starter": "package main\n\nfunc TotalQty(data []byte) (int, error) {\n\treturn 0, nil\n}\n",
+          "hint": {
+            "th": "ประกาศ struct ซ้อนกัน: Order มี Items []Item และ Item มี Qty int ใส่ tag json:\"items\" กับ json:\"qty\" ฟิลด์ที่ไม่ได้ประกาศ เช่น sku จะถูกข้ามไปเอง",
+            "en": "Declare nested structs: Order has Items []Item and Item has Qty int, with the tags json:\"items\" and json:\"qty\". Fields you do not declare, such as sku, are skipped"
+          }
         },
         {
           "id": "twist",
           "difficulty": "twist",
           "kind": "test",
           "prompt": {
-            "th": "เขียน SumAges ให้รวมฟิลด์ age จาก JSON array และนับวัตถุที่ไม่มีฟิลด์นั้นเป็น 0",
-            "en": "Write SumAges to add the age fields in a JSON array and count a missing age as 0"
+            "th": "เพิ่ม tag ให้ User เพื่อให้ JSON ใช้ชื่อ name และ email, ไม่ใส่ email เมื่อว่าง และไม่ส่ง Password ออกไปเลย",
+            "en": "Add tags to User so the JSON uses the names name and email, leaves email out when empty, and never includes Password"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc SumAges(data []byte) (int, error) {\n\treturn 0, nil\n}\n",
+          "starter": "package main\n\nimport \"encoding/json\"\n\ntype User struct {\n\tName     string\n\tEmail    string\n\tPassword string\n}\n\nfunc Encode(u User) ([]byte, error) {\n\treturn json.Marshal(u)\n}\n",
           "hint": {
-            "th": "ถอด JSON เป็น slice ของ struct แล้วบวก age ที่หายให้เป็น 0",
-            "en": "Unmarshal into a slice of structs and treat a missing age as 0"
+            "th": "tag json:\"email,omitempty\" ข้ามค่าว่าง และ json:\"-\" ข้ามฟิลด์นั้นเสมอ",
+            "en": "The tag json:\"email,omitempty\" skips an empty value, and json:\"-\" always skips the field"
           }
         }
       ]
@@ -1716,8 +1776,8 @@
         "en": "context"
       },
       "goal": {
-        "th": "ส่ง cancellation ข้ามฟังก์ชันและเลิกงานเมื่อ context จบ",
-        "en": "Pass cancellation across functions and stop when the context ends"
+        "th": "หยุดงานที่รออยู่เมื่อผู้เรียกยกเลิกหรือหมดเวลา และตั้งเวลาจำกัดให้งานเอง",
+        "en": "Stop waiting work when the caller cancels or time runs out, and set a time limit yourself"
       },
       "exercises": [
         {
@@ -1725,59 +1785,71 @@
           "difficulty": "easy",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Done ให้คืน true เมื่อ context จบแล้ว",
-            "en": "Write Done to return true when the context has ended"
+            "th": "เขียน Done ให้คืน true เมื่อ context จบแล้ว และคืน false ทันทีเมื่อยังไม่จบ",
+            "en": "Write Done to return true when the context has ended, and false right away when it has not"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nimport \"context\"\n\nfunc Done(ctx context.Context) bool {\n\treturn false\n}\n"
+          "starter": "package main\n\nimport \"context\"\n\nfunc Done(ctx context.Context) bool {\n\treturn false\n}\n",
+          "hint": {
+            "th": "ใช้ select ที่มี case <-ctx.Done() กับ default ตัว default ทำให้ไม่ต้องรอเมื่อยังไม่จบ",
+            "en": "Use a select with case <-ctx.Done() and a default. The default means you never wait when it is still open"
+          }
         },
         {
           "id": "mid",
           "difficulty": "mid",
           "kind": "test",
           "prompt": {
-            "th": "เขียน OrDefault ให้คืน 0 เมื่อ context จบ และคืน value เมื่อยังไม่จบ",
-            "en": "Write OrDefault to return 0 when the context has ended and value otherwise"
+            "th": "เขียน Sleep ให้รอ d แล้วคืน nil แต่ถ้า context จบก่อนให้เลิกรอทันทีแล้วคืน ctx.Err()",
+            "en": "Write Sleep to wait for d and return nil, but if the context ends first, stop waiting at once and return ctx.Err()"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nimport \"context\"\n\nfunc OrDefault(ctx context.Context, value int) int {\n\treturn 0\n}\n"
+          "starter": "package main\n\nimport (\n\t\"context\"\n\t\"time\"\n)\n\nfunc Sleep(ctx context.Context, d time.Duration) error {\n\ttime.Sleep(d)\n\treturn nil\n}\n",
+          "hint": {
+            "th": "select รอสองอย่างพร้อมกัน: case <-time.After(d) คืน nil และ case <-ctx.Done() คืน ctx.Err() อันไหนมาก่อนก็ได้อันนั้น",
+            "en": "Select on two things at once: case <-time.After(d) returns nil and case <-ctx.Done() returns ctx.Err(). Whichever comes first wins"
+          }
         },
         {
           "id": "hard",
           "difficulty": "hard",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Wait ให้รอจน context จบแล้วคืน ctx.Err()",
-            "en": "Write Wait to wait until the context ends and return ctx.Err()"
+            "th": "เขียน SumUntil ให้บวกค่าจาก ch จนกว่า ch จะถูกปิดแล้วคืนผลรวมกับ nil ถ้า context จบก่อนให้คืนผลรวมเท่าที่ได้กับ ctx.Err()",
+            "en": "Write SumUntil to add values from ch until ch is closed, then return the sum and nil. If the context ends first, return the sum so far and ctx.Err()"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nimport \"context\"\n\nfunc Wait(ctx context.Context) error {\n\treturn nil\n}\n"
+          "starter": "package main\n\nimport \"context\"\n\nfunc SumUntil(ctx context.Context, ch <-chan int) (int, error) {\n\treturn 0, nil\n}\n",
+          "hint": {
+            "th": "วนด้วย for แล้วใช้ select: case v, ok := <-ch ถ้า ok เป็น false แปลว่าปิดแล้วให้คืนผลรวม ส่วน case <-ctx.Done() คืนผลรวมกับ ctx.Err()",
+            "en": "Loop with for and select: in case v, ok := <-ch, ok is false once the channel is closed, so return the sum. In case <-ctx.Done(), return the sum and ctx.Err()"
+          }
         },
         {
           "id": "twist",
           "difficulty": "twist",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Value ให้คืนตัวเลขเมื่อ context ยังทำงาน และคืน ctx.Err() เมื่อจบแล้ว",
-            "en": "Write Value to return the number while the context is active, and ctx.Err() when it has ended"
+            "th": "เขียน Within ให้เรียก work ด้วย context ที่หมดเวลาหลัง d และคืน error ของ work อย่าลืมยกเลิก context เมื่อเสร็จ",
+            "en": "Write Within to call work with a context that times out after d, and return work's error. Remember to cancel the context when done"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nimport \"context\"\n\nfunc Value(ctx context.Context, n int) (int, error) {\n\treturn 0, nil\n}\n",
+          "starter": "package main\n\nimport (\n\t\"context\"\n\t\"time\"\n)\n\nfunc Within(parent context.Context, d time.Duration, work func(context.Context) error) error {\n\treturn work(parent)\n}\n",
           "hint": {
-            "th": "ถ้า context จบแล้วให้คืน 0 กับ ctx.Err() ไม่งั้นคืนตัวเลขกับ nil",
-            "en": "When the context has ended, return 0 and ctx.Err. Otherwise return the number and nil"
+            "th": "ctx, cancel := context.WithTimeout(parent, d) แล้ว defer cancel() ทันที จากนั้น return work(ctx)",
+            "en": "ctx, cancel := context.WithTimeout(parent, d), then defer cancel() right away, then return work(ctx)"
           }
         }
       ]
@@ -1866,8 +1938,8 @@
         "en": "Modules and workspaces"
       },
       "goal": {
-        "th": "อ่าน go.mod และแยกของในโมดูลกับของข้างนอก",
-        "en": "Read go.mod and separate what is inside the module from what is outside"
+        "th": "อ่าน go.mod ออก แยกได้ว่า import ไหนอยู่ในหรือนอกโมดูล และรู้ว่าเมื่อไรใช้ go.work",
+        "en": "Read go.mod, tell which imports are inside or outside the module, and know when to use go.work"
       },
       "exercises": [
         {
@@ -1875,26 +1947,26 @@
           "difficulty": "easy",
           "kind": "quiz",
           "prompt": {
-            "th": "บรรทัด require ใน go.mod หมายถึงอะไร",
-            "en": "What does a require line in go.mod mean?"
+            "th": "บรรทัด require golang.org/x/mod v0.21.0 ใน go.mod หมายถึงอะไร",
+            "en": "What does the line require golang.org/x/mod v0.21.0 in go.mod mean?"
           },
           "rule": {
-            "th": "มันบันทึกว่าโมดูลนี้ต้องการโมดูลนั้นที่รุ่นที่ระบุ",
-            "en": "It records that this module needs that module at the given version"
+            "th": "require บันทึกว่าโมดูลนี้ใช้โมดูล golang.org/x/mod รุ่น v0.21.0",
+            "en": "require records that this module uses the module golang.org/x/mod at version v0.21.0"
           },
           "starter": "",
           "choices": {
             "th": [
               "ตั้งค่า GOPROXY",
               "ปิดการตรวจ checksum",
-              "สั่งให้ลบโฟลเดอร์นั้นตอน build",
-              "บันทึกว่าโมดูลนี้ต้องการโมดูลนั้นที่รุ่นที่ระบุ"
+              "ลบโฟลเดอร์นั้นตอน build",
+              "โมดูลนี้ใช้ golang.org/x/mod รุ่น v0.21.0"
             ],
             "en": [
-              "It sets GOPROXY",
-              "It turns off checksum checks",
-              "It deletes that folder during the build",
-              "It records that this module needs that module at the given version"
+              "Set GOPROXY",
+              "Turn off checksum checks",
+              "Delete that folder during the build",
+              "This module uses golang.org/x/mod at version v0.21.0"
             ]
           },
           "answer": 3
@@ -1904,12 +1976,12 @@
           "difficulty": "mid",
           "kind": "quiz",
           "prompt": {
-            "th": "import แบบไหนอยู่นอกโมดูล example.com/app",
-            "en": "Which import is outside the module example.com/app?"
+            "th": "go.mod เขียนว่า module example.com/app import ไหนมาจากนอกโมดูล",
+            "en": "go.mod says module example.com/app. Which import comes from outside the module?"
           },
           "rule": {
-            "th": "path ที่ไม่ได้ขึ้นต้นด้วย module path เป็นของโมดูลอื่น",
-            "en": "A path that does not start with the module path belongs to another module"
+            "th": "path ที่ไม่ได้ขึ้นต้นด้วย example.com/app เป็นของโมดูลอื่น",
+            "en": "A path that does not start with example.com/app belongs to another module"
           },
           "starter": "",
           "choices": {
@@ -1933,29 +2005,58 @@
           "difficulty": "hard",
           "kind": "quiz",
           "prompt": {
-            "th": "ไฟล์ go.work ใช้ทำอะไร",
-            "en": "What is a go.work file for?"
+            "th": "แก้โมดูล app กับโมดูล lib บนเครื่องพร้อมกัน และอยากให้ app ใช้ lib ฉบับในเครื่องโดยไม่แก้ go.mod ควรใช้อะไร",
+            "en": "You are editing module app and module lib on your machine together, and want app to use the local lib without editing go.mod. What do you use?"
           },
           "rule": {
-            "th": "มันจัดหลายโมดูลบนดิสก์ให้พัฒนาพร้อมกัน โดยไม่แทน go.mod",
-            "en": "It groups modules on disk for local development and does not replace go.mod"
+            "th": "go.work บอกให้ใช้โมดูลจากโฟลเดอร์ในเครื่องระหว่างพัฒนา ส่วน go.mod ของแต่ละโมดูลยังอยู่ครบ",
+            "en": "go.work points the build at local module folders while you develop, and each module keeps its own go.mod"
           },
           "starter": "",
           "choices": {
             "th": [
-              "ตั้ง GOMAXPROCS",
-              "แทนที่ go.mod ทั้งไฟล์",
-              "ปิด checksum database",
-              "จัดหลายโมดูลบนดิสก์ให้พัฒนาพร้อมกัน"
+              "คัดลอกโค้ด lib ไปไว้ใน app",
+              "ลบ go.mod ของ lib",
+              "ไฟล์ go.work ที่มี use ./app และ use ./lib",
+              "ตั้ง GOMAXPROCS"
             ],
             "en": [
-              "It sets GOMAXPROCS",
-              "It replaces go.mod",
-              "It disables the checksum database",
-              "It groups modules on disk for local development"
+              "Copy lib's code into app",
+              "Delete lib's go.mod",
+              "A go.work file with use ./app and use ./lib",
+              "Set GOMAXPROCS"
             ]
           },
-          "answer": 3
+          "answer": 2
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "quiz",
+          "prompt": {
+            "th": "เพิ่ม import ของโมดูลใหม่ในโค้ดแล้ว build ไม่ผ่านเพราะ go.mod ยังไม่มี require ของโมดูลนั้น ควรรันคำสั่งไหน",
+            "en": "You added an import from a new module and the build fails because go.mod has no require for it. Which command do you run?"
+          },
+          "rule": {
+            "th": "go mod tidy อ่าน import ทั้งหมดแล้วเพิ่ม require ที่ขาดและลบ require ที่ไม่ได้ใช้",
+            "en": "go mod tidy reads every import, adds missing requires, and removes unused ones"
+          },
+          "starter": "",
+          "choices": {
+            "th": [
+              "go clean",
+              "go mod tidy",
+              "go vet",
+              "go fmt"
+            ],
+            "en": [
+              "go clean",
+              "go mod tidy",
+              "go vet",
+              "go fmt"
+            ]
+          },
+          "answer": 1
         }
       ]
     },
@@ -2039,12 +2140,12 @@
       "level": "professional",
       "order": 25,
       "title": {
-        "th": "sync.WaitGroup และ vet",
-        "en": "sync.WaitGroup and vet"
+        "th": "sync.WaitGroup, Mutex และ vet",
+        "en": "sync.WaitGroup, Mutex, and vet"
       },
       "goal": {
-        "th": "เรียก Add ก่อนเริ่ม goroutine และให้ go vet ผ่าน",
-        "en": "Call Add before starting the goroutine and keep go vet clean"
+        "th": "รองาน goroutine ให้ครบ ป้องกันข้อมูลที่ใช้ร่วมกัน และให้ go vet จับบั๊กของ WaitGroup",
+        "en": "Wait for every goroutine, protect shared data, and let go vet catch WaitGroup bugs"
       },
       "exercises": [
         {
@@ -2052,28 +2153,36 @@
           "difficulty": "easy",
           "kind": "test",
           "prompt": {
-            "th": "เขียน FanIn ให้คืน n โดยรอ goroutine ให้ครบ",
-            "en": "Write FanIn to return n after waiting for the goroutines"
+            "th": "เขียน RunAll ให้เริ่มทุกงานใน jobs เป็น goroutine พร้อมกัน แล้วรอจนทุกงานจบก่อนคืน",
+            "en": "Write RunAll to start every job in jobs as a goroutine at the same time, and wait for all of them before returning"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc FanIn(n int) int {\n\treturn 0\n}\n"
+          "starter": "package main\n\nfunc RunAll(jobs []func()) {\n\tfor _, job := range jobs {\n\t\tjob()\n\t}\n}\n",
+          "hint": {
+            "th": "ประกาศ var wg sync.WaitGroup แล้วใช้ wg.Go(job) กับทุกงาน (Go 1.25) จากนั้น wg.Wait()",
+            "en": "Declare var wg sync.WaitGroup, call wg.Go(job) for every job (Go 1.25), then wg.Wait()"
+          }
         },
         {
           "id": "mid",
           "difficulty": "mid",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Total ให้บวก 1 ต่อหนึ่ง goroutine อย่างปลอดภัย",
-            "en": "Write Total to add 1 per goroutine without a data race"
+            "th": "แก้ Counter ให้ Inc ถูกเรียกจากหลาย goroutine พร้อมกันได้โดยไม่นับหาย",
+            "en": "Fix Counter so Inc can be called from many goroutines at once without losing counts"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc Total(n int) int {\n\treturn 0\n}\n"
+          "starter": "package main\n\ntype Counter struct {\n\tn int\n}\n\nfunc (c *Counter) Inc() {\n\tc.n++\n}\n\nfunc (c *Counter) Value() int {\n\treturn c.n\n}\n",
+          "hint": {
+            "th": "เพิ่มฟิลด์ mu sync.Mutex แล้วครอบ c.n++ และการอ่าน c.n ด้วย c.mu.Lock() กับ defer c.mu.Unlock()",
+            "en": "Add a field mu sync.Mutex and wrap both c.n++ and the read of c.n with c.mu.Lock() and defer c.mu.Unlock()"
+          }
         },
         {
           "id": "hard",
@@ -2087,24 +2196,28 @@
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nimport (\n\t\"sync\"\n\t\"sync/atomic\"\n)\n\nfunc FanIn(n int) int {\n\tvar wg sync.WaitGroup\n\tvar done atomic.Int64\n\tfor i := 0; i < n; i++ {\n\t\tgo func() {\n\t\t\twg.Add(1)\n\t\t\tdefer wg.Done()\n\t\t\tdone.Add(1)\n\t\t}()\n\t}\n\twg.Wait()\n\treturn int(done.Load())\n}\n"
+          "starter": "package main\n\nimport (\n\t\"sync\"\n\t\"sync/atomic\"\n)\n\nfunc FanIn(n int) int {\n\tvar wg sync.WaitGroup\n\tvar done atomic.Int64\n\tfor i := 0; i < n; i++ {\n\t\tgo func() {\n\t\t\twg.Add(1)\n\t\t\tdefer wg.Done()\n\t\t\tdone.Add(1)\n\t\t}()\n\t}\n\twg.Wait()\n\treturn int(done.Load())\n}\n",
+          "hint": {
+            "th": "ถ้า Add อยู่ใน goroutine Wait อาจทำงานตอนตัวนับยังเป็น 0 ย้าย wg.Add(1) ออกมาไว้ในลูปก่อน go หรือเปลี่ยนเป็น wg.Go",
+            "en": "With Add inside the goroutine, Wait may run while the counter is still 0. Move wg.Add(1) into the loop before go, or switch to wg.Go"
+          }
         },
         {
           "id": "twist",
           "difficulty": "twist",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Sum ให้แต่ละ goroutine บวกเลขดัชนีของตัวเองอย่างปลอดภัย ผลของ 4 คือ 6",
-            "en": "Write Sum so each goroutine safely adds its own index. Sum(4) is 6"
+            "th": "เขียน Squares ให้คำนวณกำลังสองของแต่ละตัวใน goroutine ของมันเอง แล้วคืนผลเรียงตามลำดับเดิม โดยไม่ใช้ Mutex",
+            "en": "Write Squares to compute each square in its own goroutine and return the results in the original order, without a Mutex"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc Sum(n int) int {\n\treturn 0\n}\n",
+          "starter": "package main\n\nfunc Squares(nums []int) []int {\n\treturn nil\n}\n",
           "hint": {
-            "th": "แต่ละ goroutine บวกดัชนีของตัวเอง แล้วรอให้ครบก่อนคืนผลรวม",
-            "en": "Each goroutine adds its own index, and you wait for all of them before returning the sum"
+            "th": "สร้าง out := make([]int, len(nums)) ก่อน แต่ละ goroutine เขียนแค่ช่อง out[i] ของตัวเอง ช่องไม่ทับกันจึงไม่ต้องล็อก แล้ว wg.Wait() ก่อนคืน",
+            "en": "Make out := make([]int, len(nums)) first. Each goroutine writes only its own slot out[i]; the slots never overlap, so no lock is needed. Call wg.Wait() before returning"
           }
         }
       ]
@@ -2193,8 +2306,8 @@
         "en": "net/http"
       },
       "goal": {
-        "th": "ตรวจ method ของ request และตั้ง timeout ของ client",
-        "en": "Check the request method and set a client timeout"
+        "th": "เขียน HTTP handler ที่ตรวจ method อ่าน request ตอบสถานะให้ถูก และเรียก service อื่นโดยมี timeout",
+        "en": "Write HTTP handlers that check the method, read the request, answer with the right status, and call other services with a timeout"
       },
       "exercises": [
         {
@@ -2209,52 +2322,64 @@
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nimport \"net/http\"\n\nfunc Status(r *http.Request) int {\n\treturn 0\n}\n"
+          "starter": "package main\n\nimport \"net/http\"\n\nfunc Status(r *http.Request) int {\n\treturn 0\n}\n",
+          "hint": {
+            "th": "เทียบ r.Method กับ http.MethodPost แล้วคืน http.StatusOK หรือ http.StatusMethodNotAllowed",
+            "en": "Compare r.Method with http.MethodPost and return http.StatusOK or http.StatusMethodNotAllowed"
+          }
         },
         {
           "id": "mid",
           "difficulty": "mid",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Client ให้คืน http.Client ที่ Timeout เป็น 1 วินาที",
-            "en": "Write Client to return an http.Client whose Timeout is one second"
+            "th": "เขียน handler Hello ให้ตอบ hello, ตามด้วยค่าของ query name เช่น /?name=ann ได้ hello, ann และถ้าไม่มี name ให้ใช้ world",
+            "en": "Write the handler Hello to answer hello, followed by the query value name, so /?name=ann gives hello, ann. Without name, use world"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nimport \"net/http\"\n\nfunc Client() *http.Client {\n\treturn nil\n}\n"
+          "starter": "package main\n\nimport \"net/http\"\n\nfunc Hello(w http.ResponseWriter, r *http.Request) {\n}\n",
+          "hint": {
+            "th": "r.URL.Query().Get(\"name\") คืนข้อความว่างเมื่อไม่มี แล้วเขียนคำตอบด้วย fmt.Fprintf(w, \"hello, %s\", name)",
+            "en": "r.URL.Query().Get(\"name\") returns empty text when it is missing. Write the answer with fmt.Fprintf(w, \"hello, %s\", name)"
+          }
         },
         {
           "id": "hard",
           "difficulty": "hard",
           "kind": "test",
           "prompt": {
-            "th": "เขียน WriteOK ให้ตอบ 200 และเนื้อหา ok",
-            "en": "Write WriteOK to respond with 200 and the body ok"
+            "th": "เขียน handler CreateItem: รับเฉพาะ POST (ไม่งั้นตอบ 405), อ่าน JSON {\"name\":...} จาก body ถ้าอ่านไม่ได้หรือ name ว่างตอบ 400 ถ้าผ่านตอบ 201 พร้อม JSON {\"name\":...} กลับไป",
+            "en": "Write the handler CreateItem: accept only POST (otherwise 405), read the JSON {\"name\":...} from the body, answer 400 if it cannot be read or name is empty, and otherwise 201 with the JSON {\"name\":...} back"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nimport \"net/http\"\n\nfunc WriteOK(w http.ResponseWriter) {\n}\n"
+          "starter": "package main\n\nimport \"net/http\"\n\ntype Item struct {\n\tName string `json:\"name\"`\n}\n\nfunc CreateItem(w http.ResponseWriter, r *http.Request) {\n}\n",
+          "hint": {
+            "th": "ลำดับคือ: เช็ก method, json.NewDecoder(r.Body).Decode(&item), เช็ก name แล้ว w.WriteHeader(http.StatusCreated) ก่อน json.NewEncoder(w).Encode(item) ใช้ http.Error ตอบ error",
+            "en": "In order: check the method, json.NewDecoder(r.Body).Decode(&item), check name, then w.WriteHeader(http.StatusCreated) before json.NewEncoder(w).Encode(item). Use http.Error for failures"
+          }
         },
         {
           "id": "twist",
           "difficulty": "twist",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Allow ให้คืน 200 เมื่อ method อยู่ในรายการ และ 405 เมื่อไม่อยู่",
-            "en": "Write Allow to return 200 when the method is in the list and 405 when it is not"
+            "th": "เขียน NewClient ให้คืน http.Client ที่ยอมรอคำตอบไม่เกิน 100 มิลลิวินาที เซิร์ฟเวอร์ที่ช้ากว่านั้นต้องทำให้ Get คืน error",
+            "en": "Write NewClient to return an http.Client that waits at most 100 milliseconds for an answer. A slower server must make Get return an error"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nimport \"net/http\"\n\nfunc Allow(r *http.Request, methods ...string) int {\n\treturn 0\n}\n",
+          "starter": "package main\n\nimport \"net/http\"\n\nfunc NewClient() *http.Client {\n\treturn &http.Client{}\n}\n",
           "hint": {
-            "th": "คืน 200 เมื่อ method ตรงกับรายการ และ 405 เมื่อไม่ตรง",
-            "en": "Return 200 when the method is in the list and 405 when it is not"
+            "th": "ตั้งฟิลด์ Timeout: &http.Client{Timeout: 100 * time.Millisecond} ค่าศูนย์ของ Timeout แปลว่ารอได้ไม่จำกัด",
+            "en": "Set the Timeout field: &http.Client{Timeout: 100 * time.Millisecond}. A zero Timeout means wait forever"
           }
         }
       ]
@@ -2343,8 +2468,8 @@
         "en": "Benchmarks and fuzzing"
       },
       "goal": {
-        "th": "อ่านผล benchmark และรู้ว่า fuzz target ขั้นต่ำหน้าตาเป็นอย่างไร",
-        "en": "Read a benchmark result and recognize a minimal fuzz target"
+        "th": "อ่านผล benchmark ออก และใช้ fuzz หาค่าที่ทำให้ฟังก์ชันพัง",
+        "en": "Read benchmark results and use fuzzing to find inputs that break a function"
       },
       "exercises": [
         {
@@ -2352,26 +2477,26 @@
           "difficulty": "easy",
           "kind": "quiz",
           "prompt": {
-            "th": "ns/op ในผล benchmark หมายถึงอะไร",
-            "en": "What does ns/op in a benchmark result mean?"
+            "th": "ผล benchmark บรรทัด BenchmarkJoin-8  2000000  612 ns/op ตัวเลข 612 ns/op หมายถึงอะไร",
+            "en": "In the benchmark line BenchmarkJoin-8  2000000  612 ns/op, what does 612 ns/op mean?"
           },
           "rule": {
-            "th": "มันคือเวลาเฉลี่ยเป็นนาโนวินาทีต่องานหนึ่งครั้ง",
-            "en": "It is the average time in nanoseconds for one operation"
+            "th": "ns/op คือเวลาเฉลี่ยเป็นนาโนวินาทีต่อการเรียกหนึ่งครั้ง ส่วน 2000000 คือจำนวนรอบที่วัด",
+            "en": "ns/op is the average time in nanoseconds per call; 2000000 is how many rounds were measured"
           },
           "starter": "",
           "choices": {
             "th": [
-              "ขนาดไบนารี",
-              "จำนวนเทสต์ที่พัง",
-              "จำนวน goroutine",
-              "เวลาเฉลี่ยเป็นนาโนวินาทีต่องานหนึ่งครั้ง"
+              "ไบนารีมีขนาด 612 ไบต์",
+              "มีเทสต์พัง 612 ข้อ",
+              "มี goroutine 612 ตัว",
+              "เรียกหนึ่งครั้งใช้เวลาเฉลี่ย 612 นาโนวินาที"
             ],
             "en": [
-              "The binary size",
-              "The number of failing tests",
-              "The goroutine count",
-              "The average time in nanoseconds for one operation"
+              "The binary is 612 bytes",
+              "612 tests failed",
+              "There are 612 goroutines",
+              "One call takes 612 nanoseconds on average"
             ]
           },
           "answer": 3
@@ -2381,26 +2506,26 @@
           "difficulty": "mid",
           "kind": "quiz",
           "prompt": {
-            "th": "allocs/op ที่ลดลงบอกอะไร",
-            "en": "What does a lower allocs/op tell you?"
+            "th": "หลังแก้โค้ด allocs/op ลดจาก 5 เหลือ 1 แปลว่าอะไร",
+            "en": "After a change, allocs/op drops from 5 to 1. What does that mean?"
           },
           "rule": {
-            "th": "งานหนึ่งครั้งจองหน่วยความจำบน heap น้อยลง",
-            "en": "One operation allocates less on the heap"
+            "th": "allocs/op คือจำนวนครั้งที่จองหน่วยความจำบน heap ต่อการเรียกหนึ่งครั้ง น้อยลงแปลว่าตัวเก็บขยะมีงานน้อยลง",
+            "en": "allocs/op is how many heap allocations one call makes. Fewer means less work for the garbage collector"
           },
           "starter": "",
           "choices": {
             "th": [
               "โปรแกรมใช้ CPU มากขึ้นเสมอ",
-              "งานหนึ่งครั้งจองหน่วยความจำบน heap น้อยลง",
-              "เทสต์ถูกลบ",
-              "โมดูลไม่มี dependency"
+              "การเรียกหนึ่งครั้งจองหน่วยความจำบน heap น้อยลง",
+              "เทสต์ถูกลบไป 4 ข้อ",
+              "โมดูลไม่มี dependency แล้ว"
             ],
             "en": [
               "The program always uses more CPU",
-              "One operation allocates less on the heap",
-              "The test was deleted",
-              "The module has no dependencies"
+              "One call makes fewer heap allocations",
+              "Four tests were deleted",
+              "The module has no dependencies now"
             ]
           },
           "answer": 1
@@ -2414,25 +2539,43 @@
             "en": "What does a minimal fuzz target need?"
           },
           "rule": {
-            "th": "ฟังก์ชัน Fuzz ที่รับ *testing.F แล้วเรียก f.Fuzz",
-            "en": "A Fuzz function that takes *testing.F and calls f.Fuzz"
+            "th": "ชื่อขึ้นต้นด้วย Fuzz รับ *testing.F และเรียก f.Fuzz ด้วยฟังก์ชันที่รับ *testing.T กับค่าที่จะสุ่ม",
+            "en": "A name starting with Fuzz, a *testing.F parameter, and a call to f.Fuzz with a function that takes *testing.T and the values to vary"
           },
           "starter": "",
           "choices": {
             "th": [
               "คำสั่ง go vet",
               "ฟังก์ชัน main ที่เรียก rand",
-              "ไฟล์ go.mod เท่านั้น",
-              "ฟังก์ชัน Fuzz ที่รับ *testing.F แล้วเรียก f.Fuzz"
+              "ไฟล์ go.mod อย่างเดียว",
+              "ฟังก์ชันชื่อขึ้นต้นด้วย Fuzz ที่รับ *testing.F แล้วเรียก f.Fuzz"
             ],
             "en": [
               "The go vet command",
               "A main function that calls rand",
               "Only a go.mod file",
-              "A Fuzz function that takes *testing.F and calls f.Fuzz"
+              "A function whose name starts with Fuzz, takes *testing.F, and calls f.Fuzz"
             ]
           },
           "answer": 3
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "test",
+          "prompt": {
+            "th": "แก้ Reverse ให้กลับลำดับข้อความได้ถูกต้องกับทุกภาษา โค้ดทดสอบเป็น fuzz target ที่มีข้อความไทยอยู่ในชุดเริ่มต้น",
+            "en": "Fix Reverse so it reverses text correctly in every language. The hidden test is a fuzz target whose seed inputs include Thai text"
+          },
+          "rule": {
+            "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
+            "en": "The function must pass the hidden tests"
+          },
+          "starter": "package main\n\nfunc Reverse(s string) string {\n\tb := []byte(s)\n\tfor i, j := 0, len(b)-1; i < j; i, j = i+1, j-1 {\n\t\tb[i], b[j] = b[j], b[i]\n\t}\n\treturn string(b)\n}\n",
+          "hint": {
+            "th": "ตัวอักษรไทยหนึ่งตัวใช้หลายไบต์ การสลับไบต์จึงทำให้ตัวอักษรแตก แปลงเป็น []rune ก่อนสลับ แล้วแปลงกลับด้วย string(...)",
+            "en": "One Thai character takes several bytes, so swapping bytes breaks it. Convert to []rune before swapping, then back with string(...)"
+          }
         }
       ]
     },
@@ -2535,8 +2678,8 @@
         "en": "log/slog"
       },
       "goal": {
-        "th": "เขียน log เป็น key และ value",
-        "en": "Write logs as keys and values"
+        "th": "เขียน log แบบมีโครงสร้างเป็นคู่ key กับ value ผูกข้อมูลประจำ logger และกรองตามระดับ",
+        "en": "Write structured logs as key and value pairs, attach shared fields to a logger, and filter by level"
       },
       "exercises": [
         {
@@ -2544,59 +2687,71 @@
           "difficulty": "easy",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Line ให้บันทึก msg กับคู่ key value ลง Writer",
-            "en": "Write Line to record msg and a key value pair to a Writer"
+            "th": "เขียน Line ให้บันทึกข้อความ msg พร้อมคู่ key กับ value ลง w ด้วย slog แบบข้อความ",
+            "en": "Write Line to log the message msg with one key and value pair to w, using slog's text format"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nimport \"io\"\n\nfunc Line(w io.Writer, msg, key, value string) {\n}\n"
+          "starter": "package main\n\nimport \"io\"\n\nfunc Line(w io.Writer, msg, key, value string) {\n}\n",
+          "hint": {
+            "th": "slog.New(slog.NewTextHandler(w, nil)) ได้ logger แล้วเรียก .Info(msg, key, value)",
+            "en": "slog.New(slog.NewTextHandler(w, nil)) gives a logger; then call .Info(msg, key, value)"
+          }
         },
         {
           "id": "mid",
           "difficulty": "mid",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Warn ให้ใช้ระดับ Warn และมี key code",
-            "en": "Write Warn to use level Warn and include the key code"
+            "th": "เขียน Warn ให้บันทึกข้อความ slow ระดับ Warn พร้อม key code ที่เป็นตัวเลข",
+            "en": "Write Warn to log the message slow at level Warn, with a numeric key code"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nimport \"io\"\n\nfunc Warn(w io.Writer, code int) {\n}\n"
+          "starter": "package main\n\nimport \"io\"\n\nfunc Warn(w io.Writer, code int) {\n}\n",
+          "hint": {
+            "th": "ใช้ .Warn(\"slow\", \"code\", code) หรือ slog.Int(\"code\", code) ถ้าอยากระบุชนิดให้ชัด",
+            "en": "Use .Warn(\"slow\", \"code\", code), or slog.Int(\"code\", code) to make the type explicit"
+          }
         },
         {
           "id": "hard",
           "difficulty": "hard",
           "kind": "test",
           "prompt": {
-            "th": "เขียน WithUser ให้ logger มี attribute user ติดไปกับทุกบรรทัด",
-            "en": "Write WithUser so the logger attaches the user attribute to every line"
+            "th": "เขียน ForUser ให้คืน logger ที่ทุกบรรทัดที่บันทึกผ่านมันมี user ติดไปด้วยเสมอ",
+            "en": "Write ForUser to return a logger whose every line carries the user field"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nimport \"io\"\n\nfunc WithUser(w io.Writer, user, msg string) {\n}\n"
+          "starter": "package main\n\nimport (\n\t\"io\"\n\t\"log/slog\"\n)\n\nfunc ForUser(w io.Writer, user string) *slog.Logger {\n\treturn slog.New(slog.NewTextHandler(w, nil))\n}\n",
+          "hint": {
+            "th": "logger.With(\"user\", user) คืน logger ใหม่ที่แนบ user ไปกับทุกบรรทัด",
+            "en": "logger.With(\"user\", user) returns a new logger that attaches user to every line"
+          }
         },
         {
           "id": "twist",
           "difficulty": "twist",
           "kind": "test",
           "prompt": {
-            "th": "เขียน InfoPair ให้บันทึกระดับ Info พร้อม attribute left และ right และข้อความ pair",
-            "en": "Write InfoPair to log at Info with attributes left and right and the message pair"
+            "th": "เขียน Quiet ให้คืน logger ที่ทิ้งบรรทัดระดับ Info แต่ยังบันทึกระดับ Warn และ Error",
+            "en": "Write Quiet to return a logger that drops Info lines but still records Warn and Error"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nimport \"io\"\n\nfunc InfoPair(w io.Writer, left, right string) {\n}\n",
+          "starter": "package main\n\nimport (\n\t\"io\"\n\t\"log/slog\"\n)\n\nfunc Quiet(w io.Writer) *slog.Logger {\n\treturn slog.New(slog.NewTextHandler(w, nil))\n}\n",
           "hint": {
-            "th": "ใช้ slog ระดับ Info และใส่ attribute สองตัวชื่อ left กับ right",
-            "en": "Use slog at Info and attach two attributes named left and right"
+            "th": "ส่ง &slog.HandlerOptions{Level: slog.LevelWarn} เป็นค่าตัวที่สองของ slog.NewTextHandler",
+            "en": "Pass &slog.HandlerOptions{Level: slog.LevelWarn} as the second argument of slog.NewTextHandler"
           }
         }
       ]
@@ -2607,11 +2762,11 @@
       "order": 32,
       "title": {
         "th": "generics ใน API จริง",
-        "en": "Generics in a real API"
+        "en": "Generics in real APIs"
       },
       "goal": {
-        "th": "เลือก generic เมื่อชนิดต้องไปกับผู้เรียก",
-        "en": "Choose generics when the type must follow the caller"
+        "th": "ออกแบบชนิดและฟังก์ชัน generic ที่ผู้เรียกใช้ได้กับข้อมูลของตัวเอง และคืนผลแบบ (ค่า, ok) เมื่ออาจไม่มีค่า",
+        "en": "Design generic types and functions callers can use with their own data, returning (value, ok) when a value may be missing"
       },
       "exercises": [
         {
@@ -2619,50 +2774,62 @@
           "difficulty": "easy",
           "kind": "test",
           "prompt": {
-            "th": "เขียน First ให้คืนสมาชิกแรกและ true หรือ zero กับ false เมื่อว่าง",
-            "en": "Write First to return the first element and true, or the zero value and false when empty"
+            "th": "เขียน First ให้คืนสมาชิกแรกกับ true หรือค่าศูนย์กับ false เมื่อ slice ว่าง",
+            "en": "Write First to return the first item and true, or the zero value and false when the slice is empty"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc First[T any](items []T) (T, bool) {\n\tvar zero T\n\treturn zero, false\n}\n"
+          "starter": "package main\n\nfunc First[T any](items []T) (T, bool) {\n\tvar zero T\n\treturn zero, false\n}\n",
+          "hint": {
+            "th": "ถ้า len(items) == 0 ให้คืน zero, false ไม่งั้นคืน items[0], true",
+            "en": "If len(items) == 0, return zero, false; otherwise return items[0], true"
+          }
         },
         {
           "id": "mid",
           "difficulty": "mid",
           "kind": "test",
           "prompt": {
-            "th": "เขียน Last ให้คืนสมาชิกสุดท้ายและ true",
-            "en": "Write Last to return the last element and true"
+            "th": "เขียน method Add และ Has ของชนิด generic Set[T] ที่เก็บค่าไม่ซ้ำ และ Len ที่คืนจำนวนค่า",
+            "en": "Write the methods Add and Has of the generic type Set[T], which stores distinct values, and Len, which returns how many"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc Last[T any](items []T) (T, bool) {\n\tvar zero T\n\treturn zero, false\n}\n"
+          "starter": "package main\n\ntype Set[T comparable] struct {\n\titems map[T]struct{}\n}\n\nfunc (s *Set[T]) Add(v T) {\n}\n\nfunc (s *Set[T]) Has(v T) bool {\n\treturn false\n}\n\nfunc (s *Set[T]) Len() int {\n\treturn 0\n}\n",
+          "hint": {
+            "th": "map ที่เป็น nil อ่านได้แต่เขียนไม่ได้ ใน Add ให้สร้าง s.items = make(map[T]struct{}) ถ้ายังเป็น nil แล้วค่อยใส่ s.items[v] = struct{}{}",
+            "en": "A nil map can be read but not written. In Add, create s.items = make(map[T]struct{}) if it is still nil, then set s.items[v] = struct{}{}"
+          }
         },
         {
           "id": "hard",
           "difficulty": "hard",
           "kind": "test",
           "prompt": {
-            "th": "เขียน At ให้คืนสมาชิกที่ index เมื่ออยู่ในขอบ และ false เมื่ออยู่นอกขอบ (รวม index ติดลบ)",
-            "en": "Write At to return the element at index when it is in range, and false otherwise (including a negative index)"
+            "th": "เขียน GetOr ของ Cache[K, V]: ถ้ามี key อยู่แล้วให้คืนค่าเดิม ถ้าไม่มีให้เรียก load หนึ่งครั้ง เก็บผลไว้ แล้วคืนผลนั้น",
+            "en": "Write GetOr on Cache[K, V]: if the key is there, return its value; otherwise call load once, store the result, and return it"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
             "en": "The function must pass the hidden tests"
           },
-          "starter": "package main\n\nfunc At[T any](items []T, index int) (T, bool) {\n\tvar zero T\n\treturn zero, false\n}\n"
+          "starter": "package main\n\ntype Cache[K comparable, V any] struct {\n\tdata map[K]V\n}\n\nfunc (c *Cache[K, V]) GetOr(key K, load func() V) V {\n\treturn load()\n}\n",
+          "hint": {
+            "th": "ใช้ v, ok := c.data[key] ถ้า ok ให้คืน v ถ้าไม่ ให้สร้าง map เมื่อยังเป็น nil แล้วเก็บ c.data[key] = load()",
+            "en": "Use v, ok := c.data[key]. If ok, return v. Otherwise create the map when it is nil and store c.data[key] = load()"
+          }
         },
         {
           "id": "twist",
           "difficulty": "twist",
           "kind": "test",
           "prompt": {
-            "th": "เขียน NonZero ให้คืน slice ที่ตัด zero value ออก ทั้งตัวเลขและสตริง",
-            "en": "Write NonZero to return the slice with zero values removed, for both numbers and strings"
+            "th": "เขียน NonZero ให้คืน slice ใหม่ที่ตัดค่าศูนย์ของชนิดนั้นออก ใช้ได้ทั้งตัวเลขและข้อความ",
+            "en": "Write NonZero to return a new slice without the zero values of the type, for numbers and text alike"
           },
           "rule": {
             "th": "ฟังก์ชันต้องผ่านเทสต์ที่ซ่อนไว้",
@@ -2670,8 +2837,8 @@
           },
           "starter": "package main\n\nfunc NonZero[T comparable](items []T) []T {\n\treturn nil\n}\n",
           "hint": {
-            "th": "ตัดค่าที่เป็น zero value ของชนิดนั้นออก ทั้ง 0 และสตริงว่าง",
-            "en": "Drop values that are the zero value of the type, both 0 and the empty string"
+            "th": "ประกาศ var zero T ไว้เทียบ แล้วเก็บเฉพาะค่าที่ v != zero",
+            "en": "Declare var zero T to compare against, and keep only values where v != zero"
           }
         }
       ]
@@ -2685,8 +2852,8 @@
         "en": "Modules in production"
       },
       "goal": {
-        "th": "กำหนดรุ่น Go ใน go.mod และรู้ว่า Go 1.25 เลือก toolchain อย่างไร",
-        "en": "Set the Go version in go.mod and know how Go 1.25 selects a toolchain"
+        "th": "กำหนดรุ่น Go ใน go.mod และรู้ว่า Go เลือก toolchain ที่ใช้ build อย่างไร",
+        "en": "Set the Go version in go.mod and know how Go picks the toolchain that builds it"
       },
       "exercises": [
         {
@@ -2698,22 +2865,22 @@
             "en": "What does the line go 1.25 in go.mod say?"
           },
           "rule": {
-            "th": "โมดูลนี้ใช้ภาษาอย่างน้อยรุ่น 1.25",
-            "en": "This module uses at least language version 1.25"
+            "th": "โมดูลนี้ต้องใช้ภาษา Go รุ่น 1.25 ขึ้นไป Go รุ่นเก่ากว่านั้นจะไม่ build ให้เอง",
+            "en": "This module needs Go language version 1.25 or newer. An older Go will not build it on its own"
           },
           "starter": "",
           "choices": {
             "th": [
-              "โมดูลนี้ใช้ภาษาอย่างน้อยรุ่น 1.25",
-              "ปิด module",
+              "โมดูลนี้ต้องใช้ Go รุ่น 1.25 ขึ้นไป",
+              "ปิดการใช้โมดูล",
               "ตั้งพอร์ต 25",
-              "ต้องมีไฟล์ 25 ไฟล์"
+              "โมดูลมีไฟล์ 25 ไฟล์"
             ],
             "en": [
-              "This module uses at least language version 1.25",
-              "It disables modules",
+              "This module needs Go 1.25 or newer",
+              "It turns modules off",
               "It sets port 25",
-              "The module must contain 25 files"
+              "The module has 25 files"
             ]
           },
           "answer": 0
@@ -2723,26 +2890,26 @@
           "difficulty": "mid",
           "kind": "quiz",
           "prompt": {
-            "th": "บรรทัด toolchain ต่างจากบรรทัด go อย่างไร",
-            "en": "How is a toolchain line different from the go line?"
+            "th": "บรรทัด toolchain go1.25.3 ต่างจากบรรทัด go 1.25 อย่างไร",
+            "en": "How is the line toolchain go1.25.3 different from the line go 1.25?"
           },
           "rule": {
-            "th": "toolchain ขอชุดเครื่องมือรุ่นนั้น ส่วน go บอกรุ่นภาษา",
-            "en": "toolchain requests that toolset, while go states the language version"
+            "th": "go บอกรุ่นภาษาขั้นต่ำ ส่วน toolchain บอกชุดเครื่องมือที่แนะนำให้ใช้ build ถ้าเครื่องมีรุ่นเก่ากว่า",
+            "en": "go states the minimum language version; toolchain names the tool set suggested for the build when the installed one is older"
           },
           "starter": "",
           "choices": {
             "th": [
-              "toolchain ขอชุดเครื่องมือรุ่นนั้น ส่วน go บอกรุ่นภาษา",
+              "go คือรุ่นภาษาขั้นต่ำ ส่วน toolchain คือชุดเครื่องมือที่แนะนำ",
               "toolchain ลบ dependency",
-              "go ตั้ง GOPROXY",
-              "ทั้งสองบรรทัดคือสิ่งเดียวกัน"
+              "go ตั้งค่า GOPROXY",
+              "สองบรรทัดเหมือนกัน"
             ],
             "en": [
-              "toolchain requests that toolset, while go states the language version",
+              "go is the minimum language version; toolchain is the suggested tool set",
               "toolchain deletes dependencies",
               "go sets GOPROXY",
-              "The two lines are the same thing"
+              "They mean the same"
             ]
           },
           "answer": 0
@@ -2752,29 +2919,58 @@
           "difficulty": "hard",
           "kind": "quiz",
           "prompt": {
-            "th": "GOTOOLCHAIN=local ทำให้เกิดอะไร",
-            "en": "What does GOTOOLCHAIN=local do?"
+            "th": "ตั้ง GOTOOLCHAIN=local แล้วเกิดอะไร",
+            "en": "What happens with GOTOOLCHAIN=local?"
           },
           "rule": {
-            "th": "ใช้ toolchain ที่ติดตั้งอยู่ และไม่ดาวน์โหลด toolchain อื่น",
-            "en": "Use the installed toolchain and do not download another one"
+            "th": "Go ใช้เฉพาะ toolchain ที่ติดตั้งในเครื่อง ไม่ดาวน์โหลดรุ่นอื่น ถ้า go.mod ขอรุ่นที่ใหม่กว่าจะ build ไม่ผ่าน",
+            "en": "Go uses only the installed toolchain and never downloads another. If go.mod asks for a newer one, the build fails"
           },
           "starter": "",
           "choices": {
             "th": [
               "ปิด go test",
               "เปลี่ยนชื่อโมดูล",
-              "ใช้ toolchain ที่ติดตั้งอยู่ และไม่ดาวน์โหลด toolchain อื่น",
-              "ดาวน์โหลด toolchain ล่าสุดทุกครั้ง"
+              "ใช้ toolchain ในเครื่องเท่านั้นและไม่ดาวน์โหลดรุ่นอื่น",
+              "ดาวน์โหลดรุ่นใหม่สุดทุกครั้ง"
             ],
             "en": [
               "Disable go test",
               "Rename the module",
-              "Use the installed toolchain and do not download another one",
+              "Use only the installed toolchain and never download another",
               "Download the newest toolchain every time"
             ]
           },
           "answer": 2
+        },
+        {
+          "id": "twist",
+          "difficulty": "twist",
+          "kind": "quiz",
+          "prompt": {
+            "th": "เครื่องติดตั้ง Go 1.25 แต่ go.mod ของโปรเจกต์เขียนว่า go 1.26 และไม่ได้ตั้ง GOTOOLCHAIN (ค่าเริ่มต้นคือ auto) สั่ง go build แล้วเกิดอะไร",
+            "en": "Go 1.25 is installed, but the project's go.mod says go 1.26 and GOTOOLCHAIN is not set (the default is auto). What happens on go build?"
+          },
+          "rule": {
+            "th": "ค่า auto ให้ Go ดาวน์โหลด toolchain 1.26 มาใช้ build เอง ถ้าตั้งเป็น local จะ build ไม่ผ่านแทน",
+            "en": "With auto, Go downloads the 1.26 toolchain and builds with it. With local, the build would fail instead"
+          },
+          "starter": "",
+          "choices": {
+            "th": [
+              "build ด้วย 1.25 แล้วข้ามโค้ดใหม่",
+              "ดาวน์โหลด toolchain 1.26 มาใช้ build",
+              "ลบบรรทัด go 1.26 ออกให้",
+              "แก้ go.mod เป็น 1.25 ให้เอง"
+            ],
+            "en": [
+              "Build with 1.25 and skip the new code",
+              "Download the 1.26 toolchain and build with it",
+              "Delete the go 1.26 line",
+              "Rewrite go.mod to 1.25"
+            ]
+          },
+          "answer": 1
         }
       ]
     },
@@ -3204,14 +3400,18 @@
           "difficulty": "easy",
           "kind": "stdout",
           "prompt": {
-            "th": "ทำให้ main panic โดย dereference *int ที่เป็น nil",
-            "en": "Make main panic by dereferencing a nil *int"
+            "th": "ทำให้ main panic โดยอ่านค่าผ่าน *int ที่เป็น nil",
+            "en": "Make main panic by reading through a nil *int"
           },
           "rule": {
             "th": "โปรแกรมต้อง panic เพราะ nil pointer ตอนรันจากหน้า editor",
             "en": "The program must panic on a nil pointer when run from the editor"
           },
-          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"ok\")\n}\n"
+          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"ok\")\n}\n",
+          "hint": {
+            "th": "ประกาศ var p *int แล้วพิมพ์ *p",
+            "en": "Declare var p *int, then print *p"
+          }
         },
         {
           "id": "mid",
@@ -3225,7 +3425,11 @@
             "th": "โปรแกรมต้อง panic เพราะ nil pointer ตอนรันจากหน้า editor",
             "en": "The program must panic on a nil pointer when run from the editor"
           },
-          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"ok\")\n}\n"
+          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"ok\")\n}\n",
+          "hint": {
+            "th": "ประกาศ struct ที่มีฟิลด์ แล้ว var b *Box ก่อนพิมพ์ b.N",
+            "en": "Declare a struct with a field, then var b *Box, and print b.N"
+          }
         },
         {
           "id": "hard",
@@ -3239,7 +3443,11 @@
             "th": "โปรแกรมต้อง panic เพราะ nil pointer ตอนรันจากหน้า editor",
             "en": "The program must panic on a nil pointer when run from the editor"
           },
-          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"ok\")\n}\n"
+          "starter": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"ok\")\n}\n",
+          "hint": {
+            "th": "การเรียก method บน pointer ที่เป็น nil ยังไม่ panic จะ panic ตอน method อ่านฟิลด์ เขียน method แบบ (u *User) Label() string ที่คืน u.Name",
+            "en": "Calling a method on a nil pointer does not panic yet; it panics when the method reads a field. Write a method (u *User) Label() string that returns u.Name"
+          }
         },
         {
           "id": "twist",

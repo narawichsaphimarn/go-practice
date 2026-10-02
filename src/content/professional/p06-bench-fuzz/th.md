@@ -1,55 +1,69 @@
 ## explanation
-benchmark วัดว่าฟังก์ชันใช้เวลานานแค่ไหนต่องานหนึ่งครั้ง ผลมีช่อง ns/op คือเวลาเฉลี่ยเป็นนาโนวินาทีต่องานหนึ่งครั้ง
+benchmark วัดว่าโค้ดเร็วแค่ไหนและจองหน่วยความจำเท่าไร เขียนในไฟล์ `_test.go` ชื่อขึ้นต้นด้วย Benchmark และรับ `*testing.B`
 
 ```
-func BenchmarkSum(b *testing.B) {
+func BenchmarkJoin(b *testing.B) {
+	parts := []string{"a", "b", "c"}
 	for b.Loop() {
-		SumJobs([]int{1, 2, 3})
+		strings.Join(parts, ",")
 	}
 }
 ```
 
-ถ้าผลเป็น 40 ns/op แปลว่างาน SumJobs หนึ่งครั้งใช้เวลาเฉลี่ย 40 นาโนวินาที ต้อง import "testing"
+`b.Loop()` (Go 1.24) วนให้เองจนได้เวลามากพอจะวัดได้แม่น รันด้วย `go test -bench=. -benchmem` ได้ผลประมาณนี้
+
+```
+BenchmarkJoin-8   20000000   61 ns/op   16 B/op   1 allocs/op
+```
+
+- `ns/op` เวลาเฉลี่ยต่อการเรียกหนึ่งครั้ง หน่วยนาโนวินาที
+- `B/op` จำนวนไบต์ที่จองต่อครั้ง
+- `allocs/op` จำนวนครั้งที่จองหน่วยความจำบน heap ต่อครั้ง ยิ่งน้อย ตัวเก็บขยะยิ่งมีงานน้อย
 
 ## apply
-allocs/op คือจำนวนครั้งที่งานหนึ่งครั้งจองหน่วยความจำบน heap ตัวเลขที่ลดลงแปลว่าจองน้อยลง fuzz คือให้เครื่องมือสุ่มอินพุตใส่ฟังก์ชัน Fuzz ที่รับ *testing.F แล้วเรียก f.Fuzz
+fuzz หาค่าที่ทำให้ฟังก์ชันพัง โดยสุ่มค่าเข้าไปเรื่อย ๆ แล้วตรวจคุณสมบัติที่ต้องจริงเสมอ เช่น "กลับข้อความสองครั้งต้องได้ของเดิม"
 
 ```
-func FuzzSign(f *testing.F) {
-	f.Add(0)
-	f.Fuzz(func(t *testing.T, n int) {
-		got := Sign(n)
-		if got < -1 || got > 1 {
-			t.Fatalf("Sign(%d)=%d", n, got)
+func FuzzTrim(f *testing.F) {
+	f.Add("  go  ")
+	f.Fuzz(func(t *testing.T, s string) {
+		once := strings.TrimSpace(s)
+		if strings.TrimSpace(once) != once {
+			t.Fatalf("trimming twice changed %q", s)
 		}
 	})
 }
 ```
 
-f.Add(0) คือเมล็ดเริ่มต้น f.Fuzz คือตัวที่ถูกเรียกกับค่าที่สุ่มมา
+- `f.Add(...)` ใส่ค่าเริ่มต้น (seed) ที่อยากให้ลองแน่ ๆ
+- `f.Fuzz(...)` คือฟังก์ชันที่ถูกเรียกด้วยค่าสุ่ม
+
+`go test` ธรรมดาจะรันแค่ค่าเริ่มต้นเหมือนเทสต์ปกติ ส่วน `go test -fuzz=FuzzTrim` จะสุ่มต่อไปเรื่อย ๆ เมื่อเจอค่าที่ทำให้พัง Go จะเก็บค่านั้นไว้ในโฟลเดอร์ testdata ให้รันซ้ำได้
 
 ## easy
-ns/op คือเวลาเฉลี่ยเป็นนาโนวินาทีต่องานหนึ่งครั้ง อ่านจากผลของ Benchmark
+ตัวอย่าง: อ่านผล benchmark สองบรรทัดก่อนและหลังแก้
 
 ```
-func BenchmarkSum(b *testing.B) {
-	for b.Loop() {
-		SumJobs([]int{1, 2, 3})
-	}
-}
+BenchmarkOld-8   1000000   1200 ns/op   5 allocs/op
+BenchmarkNew-8   3000000    400 ns/op   1 allocs/op
 ```
+
+แบบใหม่เร็วขึ้นสามเท่า (1200 เหลือ 400 ns/op) และจองหน่วยความจำบน heap น้อยลงจาก 5 เหลือ 1 ครั้งต่อการเรียก
 
 ## hard
-fuzz target ขั้นต่ำคือฟังก์ชันชื่อขึ้นต้นด้วย Fuzz รับ *testing.F แล้วเรียก f.Fuzz allocs/op ที่ลดลงแปลว่างานหนึ่งครั้งจอง heap น้อยลง
+ตัวอย่าง: fuzz ที่ตรวจว่าการแปลงเลขไปกลับไม่ทำให้ค่าเปลี่ยน
 
 ```
-func FuzzSign(f *testing.F) {
+func FuzzItoa(f *testing.F) {
 	f.Add(0)
+	f.Add(-42)
 	f.Fuzz(func(t *testing.T, n int) {
-		got := Sign(n)
-		if got < -1 || got > 1 {
-			t.Fatalf("Sign(%d)=%d", n, got)
+		back, err := strconv.Atoi(strconv.Itoa(n))
+		if err != nil || back != n {
+			t.Fatalf("%d came back as %d, %v", n, back, err)
 		}
 	})
 }
 ```
+
+fuzz ไม่ได้รู้คำตอบที่ถูกของแต่ละค่า มันตรวจแค่คุณสมบัติที่ต้องจริงกับทุกค่า จึงใช้ได้แม้ไม่รู้ว่าค่าที่สุ่มมาคืออะไร
