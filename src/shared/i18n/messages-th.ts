@@ -33,6 +33,7 @@ export const messagesTh = {
     passed: "ผ่าน",
     notPassed: "ยังไม่ผ่าน",
     nextExercise: "ข้อถัดไป",
+    nextLesson: "ไปต่อเนื้อหาถัดไป",
     prevExercise: "ข้อก่อนหน้า",
     unavailable: "ตรวจไม่ได้",
     submit: "ส่ง",

@@ -33,6 +33,7 @@ export const messagesEn = {
     passed: "Passed",
     notPassed: "Not passed",
     nextExercise: "Next exercise",
+    nextLesson: "Continue to next lesson",
     prevExercise: "Previous exercise",
     unavailable: "Checker unavailable",
     submit: "Submit",
