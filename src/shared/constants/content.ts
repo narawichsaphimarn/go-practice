@@ -26,6 +26,8 @@ export const API_FORMAT = "/v1/golang-practice/format";
 export const API_VET = "/v1/golang-practice/vet";
 export const API_RUN = "/v1/golang-practice/run";
 export const API_CHECK = "/v1/golang-practice/check";
+export const API_KEY_HEADER = "X-Practice-Key";
+export const API_KEY = import.meta.env.VITE_PRACTICE_API_KEY || "";
 
 export const PROGRESS_DB = "go-practice-progress";
 export const STORAGE_KEY_LAST_LESSON = "go-practice.lastLesson";
@@ -54,6 +56,7 @@ export const I18N_WORKING = "shell.working";
 export const I18N_PASSED = "shell.passed";
 export const I18N_NOT_PASSED = "shell.notPassed";
 export const I18N_NEXT_EXERCISE = "shell.nextExercise";
+export const I18N_NEXT_LESSON = "shell.nextLesson";
 export const I18N_PREV_EXERCISE = "shell.prevExercise";
 export const I18N_UNAVAILABLE = "shell.unavailable";
 export const I18N_SUBMIT = "shell.submit";

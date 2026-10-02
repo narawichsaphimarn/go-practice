@@ -2,6 +2,8 @@ import {
   API_BASE_URL,
   API_CHECK,
   API_FORMAT,
+  API_KEY,
+  API_KEY_HEADER,
   API_RUN,
   API_VET,
 } from "../constants/content.ts";
@@ -34,10 +36,14 @@ const EMPTY: PracticeResult = {
 export async function postPractice(path: string, body: PracticeRequest): Promise<PracticeResult> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 20000);
+  const headers: Record<string, string> = { "Content-Type": JSON_HEADER };
+  if (API_KEY) {
+    headers[API_KEY_HEADER] = API_KEY;
+  }
   try {
     const response = await fetch(`${API_BASE_URL}${path}`, {
       method: "POST",
-      headers: { "Content-Type": JSON_HEADER },
+      headers,
       body: JSON.stringify(body),
       signal: controller.signal,
     });

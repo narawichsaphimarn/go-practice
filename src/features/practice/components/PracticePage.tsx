@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Editor from "@monaco-editor/react";
-import { lessonById, textOf } from "../../../content/load.ts";
+import { lessonById, nextLesson, textOf } from "../../../content/load.ts";
 import { exerciseLabel, type ExerciseSpec, type LessonSpec } from "../../../content/types.ts";
 import { usePreferences } from "../../preferences/components/usePreferences.ts";
 import { useProgress } from "../../progress/components/useProgress.ts";
@@ -14,6 +14,7 @@ import {
   I18N_FORMAT,
   I18N_HINT,
   I18N_NEXT_EXERCISE,
+  I18N_NEXT_LESSON,
   I18N_NOT_FOUND,
   I18N_PREV_EXERCISE,
   I18N_NOT_PASSED,
@@ -55,7 +56,7 @@ export function PracticePage() {
 
 function PracticeEditor({ lesson, exercise }: { lesson: LessonSpec; exercise: ExerciseSpec }) {
   const { t, locale, theme } = usePreferences();
-  const { markPassed, isPassed } = useProgress();
+  const { markPassed, isPassed, passedCount } = useProgress();
   const [source, setSource] = useState(() => readDraft(lesson.id, exercise.id)?.source ?? exercise.starter);
   const [output, setOutput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -65,6 +66,9 @@ function PracticeEditor({ lesson, exercise }: { lesson: LessonSpec; exercise: Ex
   const passed = isPassed(lesson.id, exercise.id);
   const showHint = runFails > RUN_FAILS_BEFORE_HINT && exercise.hint !== undefined;
   const previous = previousCoding(lesson, exercise.id);
+  const upcoming = nextLesson(lesson.id);
+  const isLastCoding = isLastCodingExercise(lesson, exercise.id);
+  const showNextLesson = upcoming !== undefined && passed && (isLastCoding || passedCount(lesson.id) === lesson.exercises.length);
 
   useEffect(() => {
     if (passed) {
@@ -131,6 +135,7 @@ function PracticeEditor({ lesson, exercise }: { lesson: LessonSpec; exercise: Ex
                   backLabel={t(I18N_BACK_TO_LESSON)}
                 />
               ) : null}
+              {showNextLesson && upcoming ? <Link to={lessonPath(upcoming.id)}>{t(I18N_NEXT_LESSON)}</Link> : null}
             </div>
           ) : null}
         </section>
@@ -203,6 +208,11 @@ function previousCoding(lesson: LessonSpec, exerciseId: string): ExerciseSpec | 
     }
   }
   return undefined;
+}
+
+function isLastCodingExercise(lesson: LessonSpec, exerciseId: string): boolean {
+  const coding = lesson.exercises.filter((item) => item.kind !== KIND_QUIZ);
+  return coding.length > 0 && coding[coding.length - 1].id === exerciseId;
 }
 
 function NextLink(props: { lesson: LessonSpec; exercise: ExerciseSpec; nextLabel: string; backLabel: string }) {

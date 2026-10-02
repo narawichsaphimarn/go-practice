@@ -20,6 +20,12 @@ export function lessonById(id: string): LessonSpec | undefined {
   return catalog.lessons.find((lesson) => lesson.id === current);
 }
 
+export function nextLesson(lessonId: string): LessonSpec | undefined {
+  const all = lessons();
+  const index = all.findIndex((lesson) => lesson.id === currentLessonId(lessonId));
+  return index === -1 ? undefined : all[index + 1];
+}
+
 export function textOf(value: Localized, locale: string): string {
   return locale === LOCALE_TH ? value.th : value.en;
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { lessonById, lessonMarkdown, textOf } from "../../../content/load.ts";
+import { Link, useLocation, useParams } from "react-router-dom";
+import { lessonById, lessonMarkdown, nextLesson, textOf } from "../../../content/load.ts";
 import { exerciseLabel } from "../../../content/types.ts";
 import { KIND_QUIZ, BUTTON_TYPE } from "../../../shared/constants/content.ts";
 
@@ -13,6 +13,7 @@ import {
   I18N_HARD_CASE,
   I18N_NOT_FOUND,
   I18N_NOT_PASSED,
+  I18N_NEXT_LESSON,
   I18N_NOT_READY,
   I18N_NO_RUN,
   I18N_PASSED,
@@ -24,7 +25,7 @@ import {
 } from "../../../shared/constants/content.ts";
 import { I18N_STATUS_IN_PROGRESS, LOCALE_TH, ROUTE_HOME } from "../../../shared/constants/preference.ts";
 import { CLASS_PAGE } from "../../../shared/constants/content.ts";
-import { exercisePath } from "../../../shared/helpers/routes.ts";
+import { exercisePath, lessonPath } from "../../../shared/helpers/routes.ts";
 import { usePreferences } from "../../preferences/components/usePreferences.ts";
 import { readDraft, writeDraft } from "../../progress/helpers/drafts.ts";
 import { useProgress } from "../../progress/components/useProgress.ts";
@@ -36,12 +37,20 @@ export function LessonPage() {
   const lesson = lessonById(lessonId);
   const { t, locale } = usePreferences();
   const { rememberLesson, passedCount, isPassed, markPassed } = useProgress();
+  const location = useLocation();
 
   useEffect(() => {
     if (lesson) {
       rememberLesson(lesson.id);
     }
   }, [lesson, rememberLesson]);
+
+  useEffect(() => {
+    if (!location.hash) {
+      return;
+    }
+    document.getElementById(location.hash.slice(1))?.scrollIntoView({ block: "start" });
+  }, [location.hash, lesson]);
 
   if (!lesson) {
     return (
@@ -66,6 +75,7 @@ export function LessonPage() {
 
   const done = passedCount(lesson.id);
   const next = lesson.exercises.find((exercise) => !isPassed(lesson.id, exercise.id));
+  const upcoming = nextLesson(lesson.id);
 
   return (
     <div className={CLASS_PAGE}>
@@ -115,6 +125,7 @@ export function LessonPage() {
         isPassed={isPassed}
         markPassed={markPassed}
       />
+      {upcoming ? <Link to={lessonPath(upcoming.id)}>{t(I18N_NEXT_LESSON)}</Link> : null}
     </div>
   );
 }
