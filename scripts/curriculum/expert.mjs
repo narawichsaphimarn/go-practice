@@ -1,4 +1,4 @@
-import { copy, lesson, panicEx, panicRule, quiz, text, withHint } from "./helpers.mjs";
+import { copy, go, lesson, panicEx, panicRule, quiz, solved, text, withHint } from "./helpers.mjs";
 
 function say(id, th, en) {
   return { id, th, en };
@@ -130,10 +130,120 @@ export const expert = [
       ],
     ),
     exercises: [
-      panicEx(say("easy", "ทำให้ main panic โดย dereference *int ที่เป็น nil", "Make main panic by dereferencing a nil *int"), panicRule, quiet, "nil pointer"),
-      panicEx(say("mid", "ทำให้ panic โดยอ่านฟิลด์ผ่าน pointer ของ struct ที่เป็น nil", "Panic by reading a field through a nil struct pointer"), panicRule, quiet, "nil pointer"),
-      panicEx(say("hard", "ทำให้ panic โดยเรียก method ที่อ่านฟิลด์บน receiver ที่เป็น nil", "Panic by calling a method that reads a field on a nil receiver"), panicRule, quiet, "nil pointer"),
-      withHint(panicEx(say("twist", "เรียก load แล้วใช้ *int ก่อนตรวจ error จนโปรแกรม panic", "Call load and use the *int before checking the error so the program panics"), panicRule, 'package main\n\nimport "fmt"\n\nfunc load() (*int, error) {\n\treturn nil, nil\n}\n\nfunc main() {\n\tfmt.Println("ok")\n}\n', "nil pointer"), "เรียก load แล้วใช้ pointer ก่อนดู error", "Call load and use the pointer before you look at the error"),
+      solved(
+        withHint(
+          panicEx(
+            say("easy", "ทำให้ main panic โดยอ่านค่าผ่าน *int ที่เป็น nil", "Make main panic by reading through a nil *int"),
+            panicRule,
+            quiet,
+            "nil pointer",
+          ),
+          "ประกาศ var p *int แล้วพิมพ์ *p",
+          "Declare var p *int, then print *p",
+        ),
+        go`package main
+
+import "fmt"
+
+func main() {
+	var p *int
+	fmt.Println(*p)
+}
+`,
+      ),
+      solved(
+        withHint(
+          panicEx(
+            say("mid", "ทำให้ panic โดยอ่านฟิลด์ผ่าน pointer ของ struct ที่เป็น nil", "Panic by reading a field through a nil struct pointer"),
+            panicRule,
+            quiet,
+            "nil pointer",
+          ),
+          "ประกาศ struct ที่มีฟิลด์ แล้ว var b *Box ก่อนพิมพ์ b.N",
+          "Declare a struct with a field, then var b *Box, and print b.N",
+        ),
+        go`package main
+
+import "fmt"
+
+type Box struct {
+	N int
+}
+
+func main() {
+	var b *Box
+	fmt.Println(b.N)
+}
+`,
+      ),
+      solved(
+        withHint(
+          panicEx(
+            say("hard", "ทำให้ panic โดยเรียก method ที่อ่านฟิลด์บน receiver ที่เป็น nil", "Panic by calling a method that reads a field on a nil receiver"),
+            panicRule,
+            quiet,
+            "nil pointer",
+          ),
+          "การเรียก method บน pointer ที่เป็น nil ยังไม่ panic จะ panic ตอน method อ่านฟิลด์ เขียน method แบบ (u *User) Label() string ที่คืน u.Name",
+          "Calling a method on a nil pointer does not panic yet; it panics when the method reads a field. Write a method (u *User) Label() string that returns u.Name",
+        ),
+        go`package main
+
+import "fmt"
+
+type User struct {
+	Name string
+}
+
+func (u *User) Label() string {
+	return u.Name
+}
+
+func main() {
+	var u *User
+	fmt.Println(u.Label())
+}
+`,
+      ),
+      solved(
+        withHint(
+          panicEx(
+            say("twist", "เรียก load แล้วใช้ *int ก่อนตรวจ error จนโปรแกรม panic", "Call load and use the *int before checking the error so the program panics"),
+            panicRule,
+            go`package main
+
+import "fmt"
+
+func load() (*int, error) {
+	return nil, nil
+}
+
+func main() {
+	fmt.Println("ok")
+}
+`,
+            "nil pointer",
+          ),
+          "เรียก load แล้วใช้ pointer ก่อนดู error",
+          "Call load and use the pointer before you look at the error",
+        ),
+        go`package main
+
+import "fmt"
+
+func load() (*int, error) {
+	return nil, nil
+}
+
+func main() {
+	p, err := load()
+	fmt.Println(*p)
+	if err != nil {
+		return
+	}
+}
+`,
+      ),
     ],
   }),
   quizLesson(

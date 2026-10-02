@@ -1,4 +1,4 @@
-import { copy, lesson, testEx, tests, text, withHint } from "./helpers.mjs";
+import { copy, lesson, solved, testEx, tests, text, withHint } from "./helpers.mjs";
 
 function say(id, th, en) {
   return { id, th, en };
@@ -11,6 +11,154 @@ function task(id, th, en, starter, test, hintTh, hintEn) {
     hintEn,
   );
 }
+
+// Reference answers for scripts/verify-solutions.mjs, keyed by exercise id.
+const solutions = {
+  1: `package main
+
+import "errors"
+
+type Item struct {
+	Name string
+	N    int
+}
+
+func Apply(items []Item) ([]Item, error) {
+	if items == nil {
+		return nil, nil
+	}
+	out := make([]Item, len(items))
+	for i, it := range items {
+		if it.Name == "" {
+			return nil, errors.New("empty name")
+		}
+		it.N = min(max(it.N, 1), 10)
+		out[i] = it
+	}
+	return out, nil
+}
+`,
+  2: `package main
+
+import (
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+)
+
+var ErrNegative = errors.New("negative")
+
+func SumPositive(r io.Reader) (int, error) {
+	var rows []struct {
+		N int ` + "`json:\"n\"`" + `
+	}
+	if err := json.NewDecoder(r).Decode(&rows); err != nil {
+		return 0, err
+	}
+	sum := 0
+	for _, row := range rows {
+		if row.N < 0 {
+			return 0, fmt.Errorf("value %d: %w", row.N, ErrNegative)
+		}
+		sum += row.N
+	}
+	return sum, nil
+}
+`,
+  3: `package main
+
+import (
+	"context"
+	"sync"
+)
+
+func RunAll(ctx context.Context, limit int, jobs []func() error) (done int, failed int) {
+	var wg sync.WaitGroup
+	var mu sync.Mutex
+	slots := make(chan struct{}, limit)
+	for _, job := range jobs {
+		if ctx.Err() != nil {
+			break
+		}
+		slots <- struct{}{}
+		wg.Go(func() {
+			defer func() { <-slots }()
+			err := job()
+			mu.Lock()
+			defer mu.Unlock()
+			if err != nil {
+				failed++
+			} else {
+				done++
+			}
+		})
+	}
+	wg.Wait()
+	return done, failed
+}
+`,
+  4: `package main
+
+import (
+	"encoding/json"
+	"io"
+	"log/slog"
+	"net"
+	"net/http"
+)
+
+func Handle(w http.ResponseWriter, r *http.Request, log io.Writer) {
+	logger := slog.New(slog.NewTextHandler(log, nil))
+	if r.Method != http.MethodPost {
+		logger.Warn("method not allowed", "method", r.Method)
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	var in struct {
+		Host string ` + "`json:\"host\"`" + `
+		Port string ` + "`json:\"port\"`" + `
+	}
+	if err := json.NewDecoder(r.Body).Decode(&in); err != nil {
+		http.Error(w, "bad JSON", http.StatusBadRequest)
+		return
+	}
+	addr := net.JoinHostPort(in.Host, in.Port)
+	logger.Info("joined", "addr", addr)
+	io.WriteString(w, addr)
+}
+`,
+  5: `package main
+
+type Speaker interface {
+	Speak() string
+}
+
+func Collect(items []Speaker) (said []string, panicked int) {
+	for _, it := range items {
+		text, ok := speak(it)
+		if !ok {
+			panicked++
+			continue
+		}
+		said = append(said, text)
+	}
+	return said, panicked
+}
+
+func speak(s Speaker) (text string, ok bool) {
+	defer func() {
+		if recover() != nil {
+			ok = false
+		}
+	}()
+	if s == nil {
+		return "", false
+	}
+	return s.Speak(), true
+}
+`,
+};
 
 export const finale = lesson({
   id: "z01-finale",
@@ -82,5 +230,5 @@ export const finale = lesson({
       "ตรวจ nil ก่อนเรียก และใส่ recover ไว้ในฟังก์ชันย่อยที่เรียก Speak ทีละตัว",
       "Check nil before the call, and recover inside a helper that calls Speak for one item",
     ),
-  ],
+  ].map((exercise) => solved(exercise, solutions[exercise.id])),
 });

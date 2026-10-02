@@ -1,45 +1,57 @@
 ## explanation
-io.Reader คือของที่อ่านไบต์ทีละก้อนได้ io.Writer คือของที่เขียนไบต์ลงไปได้ ไม่ต้องรู้ว่าข้างในเป็นไฟล์ หน่วยความจำ หรือเครือข่าย
+`io.Reader` คือของที่อ่านข้อมูลออกมาได้ทีละช่วง และ `io.Writer` คือของที่รับข้อมูลเขียนลงไปได้ ทั้งคู่เป็น interface ที่มี method เดียว
 
 ```
-text, err := ReadAll(strings.NewReader("go"))
+type Reader interface {
+	Read(p []byte) (n int, err error)
+}
+
+type Writer interface {
+	Write(p []byte) (n int, err error)
+}
 ```
 
-text คือ go เพราะ Reader นี้มีข้อความ go อยู่ในหน่วยความจำ
+ไฟล์, การเชื่อมต่อเครือข่าย, `strings.NewReader("...")` และ `bytes.Buffer` ล้วนเป็น Reader หรือ Writer ฟังก์ชันที่รับ `io.Reader` จึงใช้ได้กับทุกแหล่ง เหมือนท่อน้ำที่ต่อเข้ากับก๊อกไหนก็ได้
+
+Read ส่งคืน `io.EOF` เมื่ออ่านหมดแล้ว ซึ่งไม่ได้แปลว่าผิดพลาด แค่บอกว่าข้อมูลจบ
 
 ## apply
-อ่านบันทึกทั้งก้อนเมื่อข้อความสั้น เขียนข้อความซ้ำสองครั้งลง log และนับไบต์ที่ไหลผ่านโดยไม่เก็บเนื้อหาไว้
+ส่วนใหญ่ไม่ต้องเรียก Read เอง ใช้ฟังก์ชันในแพ็กเกจ io:
+
+- `io.ReadAll(r)` อ่านจนหมดแล้วคืน `[]byte` สะดวกเมื่อข้อมูลเล็ก
+- `io.Copy(w, r)` ส่งข้อมูลจาก r ไป w ทีละช่วง ไม่ต้องเก็บทั้งก้อนในหน่วยความจำ
+- `io.WriteString(w, s)` เขียนข้อความลง w
+- `io.LimitReader(r, n)` ห่อ r ให้อ่านได้ไม่เกิน n ไบต์
+- `io.Discard` คือ Writer ที่ทิ้งทุกอย่าง ใช้ตอนต้องการแค่นับหรืออ่านให้หมด
+
+ไฟล์ขนาด 2 GB ถ้าใช้ ReadAll ต้องจองหน่วยความจำ 2 GB แต่ io.Copy ใช้แค่บัฟเฟอร์เล็ก ๆ ตลอดทาง
 
 ## easy
-ReadAll อ่านจนหมดแล้วคืนเป็นสตริง
+ตัวอย่าง: อ่านข้อความทั้งหมดแล้วนับจำนวนบรรทัด
 
 ```
-func ReadAll(r io.Reader) (string, error) {
+func Lines(r io.Reader) (int, error) {
 	data, err := io.ReadAll(r)
 	if err != nil {
-		return "", err
+		return 0, err
 	}
-	return string(data), nil
+	return strings.Count(string(data), "\n"), nil
 }
 ```
+
+`Lines(strings.NewReader("a\nb\n"))` ได้ 2
 
 ## hard
-Count คืนจำนวนไบต์ที่อ่านได้โดยไม่เก็บเนื้อหา io.Copy ส่งข้อมูลทิ้งลง io.Discard ทีละช่วง จึงไม่ต้องจองหน่วยความจำทั้งก้อน WriteTwice เขียนสตริงเดิมลง Writer สองครั้ง
+ตัวอย่าง: คัดลอกข้อมูลไปที่ปลายทาง แล้วบอกว่าคัดลอกไปกี่ไบต์ โดยไม่เก็บทั้งก้อน
 
 ```
-func Count(r io.Reader) (int, error) {
-	n, err := io.Copy(io.Discard, r)
-	return int(n), err
-}
-```
-
-```
-func WriteTwice(w io.Writer, s string) error {
-	for i := 0; i < 2; i++ {
-		if _, err := io.WriteString(w, s); err != nil {
-			return err
-		}
+func Save(dst io.Writer, src io.Reader) (int64, error) {
+	n, err := io.Copy(dst, src)
+	if err != nil {
+		return n, fmt.Errorf("save: %w", err)
 	}
-	return nil
+	return n, nil
 }
 ```
+
+dst จะเป็นไฟล์, `bytes.Buffer` หรือ `os.Stdout` ก็ได้ Save ไม่ต้องรู้ เพราะรับแค่ io.Writer

@@ -1,45 +1,36 @@
 ## explanation
-The go line in go.mod states the language version this module uses, at least that version. go 1.25 means this module uses at least language version 1.25.
+The `go` line in go.mod is the minimum language version the module needs. Since Go 1.21, an installed Go that is older than this version will not build the module with the old version.
 
 ```
-module example.com/app
+module example.com/api
 
 go 1.25
+
+toolchain go1.25.3
 ```
+
+- `go 1.25`: the code uses language features up to 1.25 and must be built with Go 1.25 or newer.
+- `toolchain go1.25.3`: the suggested tool set. If the installed one is older, Go switches to this one.
+
+A toolchain is the whole `go` program, including the compiler and the other tools, while the go line is a language version. They are different things.
 
 ## apply
-A toolchain line requests that toolset, such as the compiler. The go line states the language version. The two lines are not the same thing. GOTOOLCHAIN=local tells Go to use the installed toolchain and not download another one.
+The environment variable `GOTOOLCHAIN` controls whether Go may switch versions:
 
-```
-module example.com/app
+- `auto` (the default): if go.mod asks for a newer version than the installed one, Go downloads it and uses it.
+- `local`: use only the installed version; if it is too old, the build fails.
+- `go1.25.3`: always use exactly this version.
 
-go 1.25
+In CI or a Docker image that already pins a Go version, `GOTOOLCHAIN=local` is common, so nothing is downloaded during the build and a version mismatch fails loudly.
 
-toolchain go1.25.0
-```
-
-```
-GOTOOLCHAIN=local go test ./...
-```
-
-This command runs the tests with the Go installed on the machine. It does not fetch a new toolset.
+To upgrade the whole project, run `go get go@1.26`, which rewrites the go line, then `go mod tidy`.
 
 ## easy
-The line go 1.25 says this module uses at least language version 1.25.
+Example: go.mod says `go 1.24` and Go 1.25 is installed.
 
-```
-go 1.25
-```
+Go 1.25 builds it normally, because 1.25 is newer than the minimum. Nothing is downloaded.
 
 ## hard
-GOTOOLCHAIN=local uses the installed toolchain and does not download another one. The toolchain line requests that toolset, while the go line states the language version.
+Example: a Dockerfile uses the image `golang:1.25` and sets `GOTOOLCHAIN=local`, and then someone changes go.mod to `go 1.26`.
 
-```
-GOTOOLCHAIN=local go test ./...
-```
-
-```
-go 1.25
-
-toolchain go1.25.0
-```
+The Docker build fails, saying it needs go 1.26 but only 1.25 is available. That is the outcome you want: the team learns at once that the image must be upgraded first, instead of the build quietly downloading a toolchain.

@@ -19,10 +19,10 @@ function run(source, server) {
   fs.writeFileSync(path.join(dir, "main.go"), source);
   if (server.kind === "test") {
     fs.writeFileSync(path.join(dir, "main_test.go"), server.test);
-    const result = spawnSync("go", ["test", "./..."], { cwd: dir, encoding: "utf8" });
+    const result = spawnSync("go", ["test", "-timeout", "30s", "./..."], { cwd: dir, encoding: "utf8" });
     return { ok: result.status === 0, detail: result.stdout + result.stderr };
   }
-  const result = spawnSync("go", ["run", "."], { cwd: dir, encoding: "utf8" });
+  const result = spawnSync("go", ["run", "."], { cwd: dir, encoding: "utf8", timeout: 30_000 });
   if (server.kind === "panic") {
     return { ok: result.status !== 0 && result.stderr.includes(server.needle), detail: result.stderr };
   }

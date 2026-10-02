@@ -1,65 +1,72 @@
 ## explanation
-A generic function lets the type of the data follow the caller. First[T any] works on a slice of any type. When the slice has an element it returns the first one and true. When the slice is empty it returns the zero value of that type and false.
+Lesson a02 used generics with functions. This lesson uses them with types too. A generic type has its type parameter after the name, and every method uses that same name.
 
 ```
-func First[T any](items []T) (T, bool) {
-	if len(items) == 0 {
-		var zero T
-		return zero, false
-	}
-	return items[0], true
+type Stack[T any] struct {
+	items []T
+}
+
+func (s *Stack[T]) Push(v T) {
+	s.items = append(s.items, v)
 }
 ```
 
-First([]int{4, 5}) is 4 and true. First of an empty slice is 0 and false.
+The user picks the type when declaring, such as `var s Stack[string]` or `var n Stack[int]`, without writing a new Stack for each type.
+
+As in lesson a02, the type is fixed at compile time, so a `Stack[int]` refuses a string at build time.
 
 ## apply
-Last returns the final element. At returns the element at index when index is inside 0 through len-1, and false when index is negative or past the end.
+An API that may have no value to return should return two values, `(value, ok)`, like reading a map. The caller can tell "no value" apart from "the zero value".
 
 ```
-func Last[T any](items []T) (T, bool) {
-	if len(items) == 0 {
+func (s *Stack[T]) Pop() (T, bool) {
+	if len(s.items) == 0 {
 		var zero T
 		return zero, false
 	}
-	return items[len(items)-1], true
+	last := s.items[len(s.items)-1]
+	s.items = s.items[:len(s.items)-1]
+	return last, true
 }
 ```
 
-Last([]string{"a", "b"}) is "b" and true.
+`var zero T` is the only way to get the zero value of T, because you do not know in advance which type T is.
+
+Use generics when the caller chooses the type, as with collections or caches. If a function only ever works with one type, the plain version reads better. If you only need to call a shared method, an interface as in lesson a01 is enough.
 
 ## easy
-First returns the first element and true, or the zero value and false when items is empty.
+Example: return the item at position i if it exists.
 
 ```
-func First[T any](items []T) (T, bool) {
-	if len(items) == 0 {
+func At[T any](items []T, i int) (T, bool) {
+	if i < 0 || i >= len(items) {
 		var zero T
 		return zero, false
 	}
-	return items[0], true
+	return items[i], true
 }
 ```
+
+`At([]string{"a"}, 3)` gives empty text and false instead of a panic.
 
 ## hard
-At returns items[index] and true when index is in range, and the zero value and false otherwise. Last returns the last element and true.
+Example: a generic type that counts how often each value appears.
 
 ```
-func At[T any](items []T, index int) (T, bool) {
-	if index < 0 || index >= len(items) {
-		var zero T
-		return zero, false
+type Counter[K comparable] struct {
+	counts map[K]int
+}
+
+func (c *Counter[K]) Add(k K) {
+	if c.counts == nil {
+		c.counts = make(map[K]int)
 	}
-	return items[index], true
+	c.counts[k]++
+}
+
+func (c *Counter[K]) Count(k K) int {
+	return c.counts[k]
 }
 ```
 
-```
-func Last[T any](items []T) (T, bool) {
-	if len(items) == 0 {
-		var zero T
-		return zero, false
-	}
-	return items[len(items)-1], true
-}
-```
+`var c Counter[string]` is ready to use without making the map first, because Add creates it on the first call, and Count can read a nil map and gets 0.

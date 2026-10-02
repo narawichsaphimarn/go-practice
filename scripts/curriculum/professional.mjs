@@ -1,8 +1,4 @@
-import { copy, lesson, quiz, testEx, tests, text, withHint } from "./helpers.mjs";
-
-function say(id, th, en) {
-  return { id, th, en };
-}
+import { copy, go, lesson, pick, quiz, say, solved, testEx, testFile, tests, text, unit, withHint } from "./helpers.mjs";
 
 export const professional = [
   lesson({
@@ -36,29 +32,212 @@ export const professional = [
   lesson({
     id: "p02-waitgroup",
     level: "professional",
-    title: text("sync.WaitGroup และ vet", "sync.WaitGroup and vet"),
-    goal: text("เรียก Add ก่อนเริ่ม goroutine และให้ go vet ผ่าน", "Call Add before starting the goroutine and keep go vet clean"),
-    copy: copy(
-      [
-        "WaitGroup.Add ต้องถูกเรียกก่อน go และควรถูกเรียกใน goroutine เดิมที่รอ ไม่ใช่ข้างใน goroutine ใหม่ go vet มีตัวตรวจ waitgroup ที่เตือนเมื่อ Add อยู่ใน goroutine ที่เพิ่งสร้าง Done ควรวางใน defer\n\n```\nwg.Add(1)\ngo func() {\n\tdefer wg.Done()\n}()\nwg.Wait()\n```",
-        "ใช้รอชุดงานที่ไม่มีผลส่งกลับทีละค่า เช่น ปิดทรัพยากรหลายชิ้นพร้อมกัน",
-        "นับงานที่จบครบ",
-        "จัด Add ให้อยู่ก่อน go เพื่อให้ vet ผ่าน",
-        ["เรียก Add ก่อน go", "วาง Done ใน defer", "เรียก Wait หลังปล่อยงานแล้ว", "รัน go vet ให้เงียบ"],
-      ],
-      [
-        "WaitGroup.Add must run before go, in the goroutine that will Wait, not inside the new goroutine. go vet has a waitgroup check that warns when Add happens inside the goroutine that was just started. Done belongs in defer.\n\n```\nwg.Add(1)\ngo func() {\n\tdefer wg.Done()\n}()\nwg.Wait()\n```",
-        "Use it to wait for a batch that does not return one value at a time, such as closing several resources together.",
-        "Count finished jobs.",
-        "Place Add before go so vet stays quiet.",
-        ["Call Add before go", "Put Done in defer", "Call Wait after the jobs are started", "Keep go vet quiet"],
-      ],
-    ),
+    title: text("sync.WaitGroup, Mutex และ vet", "sync.WaitGroup, Mutex, and vet"),
+    goal: text("รองาน goroutine ให้ครบ ป้องกันข้อมูลที่ใช้ร่วมกัน และให้ go vet จับบั๊กของ WaitGroup", "Wait for every goroutine, protect shared data, and let go vet catch WaitGroup bugs"),
     exercises: [
-      testEx(say("easy", "เขียน FanIn ให้คืน n โดยรอ goroutine ให้ครบ", "Write FanIn to return n after waiting for the goroutines"), tests, 'package main\n\nfunc FanIn(n int) int {\n\treturn 0\n}\n', 'package main\n\nimport "testing"\n\nfunc TestFanIn(t *testing.T) {\n\tif FanIn(4) != 4 {\n\t\tt.Fatal("fan")\n\t}\n}\n'),
-      testEx(say("mid", "เขียน Total ให้บวก 1 ต่อหนึ่ง goroutine อย่างปลอดภัย", "Write Total to add 1 per goroutine without a data race"), tests, 'package main\n\nfunc Total(n int) int {\n\treturn 0\n}\n', 'package main\n\nimport "testing"\n\nfunc TestTotal(t *testing.T) {\n\tif Total(5) != 5 {\n\t\tt.Fatal("total")\n\t}\n}\n'),
-      testEx(say("hard", "ย้าย wg.Add ไปไว้ก่อนคำสั่ง go ให้ FanIn(50) นับงานครบ 50 ทุกครั้ง", "Move wg.Add before the go statement so FanIn(50) counts all 50 jobs every time"), tests, 'package main\n\nimport (\n\t"sync"\n\t"sync/atomic"\n)\n\nfunc FanIn(n int) int {\n\tvar wg sync.WaitGroup\n\tvar done atomic.Int64\n\tfor i := 0; i < n; i++ {\n\t\tgo func() {\n\t\t\twg.Add(1)\n\t\t\tdefer wg.Done()\n\t\t\tdone.Add(1)\n\t\t}()\n\t}\n\twg.Wait()\n\treturn int(done.Load())\n}\n', 'package main\n\nimport "testing"\n\nfunc TestFanIn(t *testing.T) {\n\tfor i := 0; i < 100; i++ {\n\t\tif got := FanIn(50); got != 50 {\n\t\t\tt.Fatalf("FanIn(50) = %d", got)\n\t\t}\n\t}\n}\n'),
-      withHint(testEx(say("twist", "เขียน Sum ให้แต่ละ goroutine บวกเลขดัชนีของตัวเองอย่างปลอดภัย ผลของ 4 คือ 6", "Write Sum so each goroutine safely adds its own index. Sum(4) is 6"), tests, 'package main\n\nfunc Sum(n int) int {\n\treturn 0\n}\n', 'package main\n\nimport "testing"\n\nfunc TestSum(t *testing.T) {\n\tif Sum(4) != 6 {\n\t\tt.Fatal("four")\n\t}\n\tif Sum(0) != 0 {\n\t\tt.Fatal("zero")\n\t}\n}\n'), "แต่ละ goroutine บวกดัชนีของตัวเอง แล้วรอให้ครบก่อนคืนผลรวม", "Each goroutine adds its own index, and you wait for all of them before returning the sum"),
+      solved(
+        withHint(
+          testEx(
+            say("easy", "เขียน RunAll ให้เริ่มทุกงานใน jobs เป็น goroutine พร้อมกัน แล้วรอจนทุกงานจบก่อนคืน", "Write RunAll to start every job in jobs as a goroutine at the same time, and wait for all of them before returning"),
+            tests,
+            unit(go`func RunAll(jobs []func()) {
+	for _, job := range jobs {
+		job()
+	}
+}`),
+            testFile(go`import (
+	"sync/atomic"
+	"testing"
+	"time"
+)
+
+func TestRunAll(t *testing.T) {
+	var done atomic.Int64
+	jobs := make([]func(), 10)
+	for i := range jobs {
+		jobs[i] = func() {
+			time.Sleep(50 * time.Millisecond)
+			done.Add(1)
+		}
+	}
+	start := time.Now()
+	RunAll(jobs)
+	if done.Load() != 10 {
+		t.Fatalf("only %d of 10 jobs finished before RunAll returned", done.Load())
+	}
+	if time.Since(start) > 300*time.Millisecond {
+		t.Fatal("jobs ran one after another; start them all as goroutines")
+	}
+}`),
+          ),
+          "ประกาศ var wg sync.WaitGroup แล้วใช้ wg.Go(job) กับทุกงาน (Go 1.25) จากนั้น wg.Wait()",
+          "Declare var wg sync.WaitGroup, call wg.Go(job) for every job (Go 1.25), then wg.Wait()",
+        ),
+        unit(go`import "sync"
+
+func RunAll(jobs []func()) {
+	var wg sync.WaitGroup
+	for _, job := range jobs {
+		wg.Go(job)
+	}
+	wg.Wait()
+}`),
+      ),
+      solved(
+        withHint(
+          testEx(
+            say("mid", "แก้ Counter ให้ Inc ถูกเรียกจากหลาย goroutine พร้อมกันได้โดยไม่นับหาย", "Fix Counter so Inc can be called from many goroutines at once without losing counts"),
+            tests,
+            unit(go`type Counter struct {
+	n int
+}
+
+func (c *Counter) Inc() {
+	c.n++
+}
+
+func (c *Counter) Value() int {
+	return c.n
+}`),
+            testFile(go`import (
+	"runtime"
+	"sync"
+	"testing"
+)
+
+func TestCounter(t *testing.T) {
+	runtime.GOMAXPROCS(4)
+	var c Counter
+	var wg sync.WaitGroup
+	for range 50 {
+		wg.Go(func() {
+			for range 2000 {
+				c.Inc()
+			}
+		})
+	}
+	wg.Wait()
+	if c.Value() != 100000 {
+		t.Fatalf("Value = %d, want 100000; some increments were lost", c.Value())
+	}
+}`),
+          ),
+          "เพิ่มฟิลด์ mu sync.Mutex แล้วครอบ c.n++ และการอ่าน c.n ด้วย c.mu.Lock() กับ defer c.mu.Unlock()",
+          "Add a field mu sync.Mutex and wrap both c.n++ and the read of c.n with c.mu.Lock() and defer c.mu.Unlock()",
+        ),
+        unit(go`import "sync"
+
+type Counter struct {
+	mu sync.Mutex
+	n  int
+}
+
+func (c *Counter) Inc() {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.n++
+}
+
+func (c *Counter) Value() int {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.n
+}`),
+      ),
+      solved(
+        withHint(
+          testEx(
+            say("hard", "ย้าย wg.Add ไปไว้ก่อนคำสั่ง go ให้ FanIn(50) นับงานครบ 50 ทุกครั้ง", "Move wg.Add before the go statement so FanIn(50) counts all 50 jobs every time"),
+            tests,
+            unit(go`import (
+	"sync"
+	"sync/atomic"
+)
+
+func FanIn(n int) int {
+	var wg sync.WaitGroup
+	var done atomic.Int64
+	for i := 0; i < n; i++ {
+		go func() {
+			wg.Add(1)
+			defer wg.Done()
+			done.Add(1)
+		}()
+	}
+	wg.Wait()
+	return int(done.Load())
+}`),
+            testFile(go`func TestFanIn(t *testing.T) {
+	for i := 0; i < 100; i++ {
+		if got := FanIn(50); got != 50 {
+			t.Fatalf("FanIn(50) = %d", got)
+		}
+	}
+}`),
+          ),
+          "ถ้า Add อยู่ใน goroutine Wait อาจทำงานตอนตัวนับยังเป็น 0 ย้าย wg.Add(1) ออกมาไว้ในลูปก่อน go หรือเปลี่ยนเป็น wg.Go",
+          "With Add inside the goroutine, Wait may run while the counter is still 0. Move wg.Add(1) into the loop before go, or switch to wg.Go",
+        ),
+        unit(go`import (
+	"sync"
+	"sync/atomic"
+)
+
+func FanIn(n int) int {
+	var wg sync.WaitGroup
+	var done atomic.Int64
+	for i := 0; i < n; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			done.Add(1)
+		}()
+	}
+	wg.Wait()
+	return int(done.Load())
+}`),
+      ),
+      solved(
+        withHint(
+          testEx(
+            say("twist", "เขียน Squares ให้คำนวณกำลังสองของแต่ละตัวใน goroutine ของมันเอง แล้วคืนผลเรียงตามลำดับเดิม โดยไม่ใช้ Mutex", "Write Squares to compute each square in its own goroutine and return the results in the original order, without a Mutex"),
+            tests,
+            unit(go`func Squares(nums []int) []int {
+	return nil
+}`),
+            testFile(go`func TestSquares(t *testing.T) {
+	got := Squares([]int{1, 2, 3, 4})
+	want := []int{1, 4, 9, 16}
+	if len(got) != len(want) {
+		t.Fatalf("Squares = %v", got)
+	}
+	for i := range want {
+		if got[i] != want[i] {
+			t.Fatalf("Squares = %v, want %v", got, want)
+		}
+	}
+	if len(Squares(nil)) != 0 {
+		t.Fatal("no numbers gives an empty slice")
+	}
+}`),
+          ),
+          "สร้าง out := make([]int, len(nums)) ก่อน แต่ละ goroutine เขียนแค่ช่อง out[i] ของตัวเอง ช่องไม่ทับกันจึงไม่ต้องล็อก แล้ว wg.Wait() ก่อนคืน",
+          "Make out := make([]int, len(nums)) first. Each goroutine writes only its own slot out[i]; the slots never overlap, so no lock is needed. Call wg.Wait() before returning",
+        ),
+        unit(go`import "sync"
+
+func Squares(nums []int) []int {
+	out := make([]int, len(nums))
+	var wg sync.WaitGroup
+	for i, n := range nums {
+		wg.Go(func() {
+			out[i] = n * n
+		})
+	}
+	wg.Wait()
+	return out
+}`),
+      ),
     ],
   }),
   lesson({
@@ -93,28 +272,203 @@ export const professional = [
     id: "p04-http",
     level: "professional",
     title: text("net/http", "net/http"),
-    goal: text("ตรวจ method ของ request และตั้ง timeout ของ client", "Check the request method and set a client timeout"),
-    copy: copy(
-      [
-        "handler ควรปฏิเสธ method ที่ไม่รองรับด้วย 405 client ควรมี Timeout เพื่อไม่ให้คำขอแขวน httptest.NewRequest สร้าง request ในเทสต์โดยไม่ต้องเปิดพอร์ต\n\n```\nif r.Method != http.MethodPost {\n\treturn http.StatusMethodNotAllowed\n}\n```",
-        "ใช้ทั้งตอนเขียน API เล็กๆ และตอนเรียก service อื่นจาก backend",
-        "รับเฉพาะ POST",
-        "ตั้ง timeout ให้ client หรือเขียนสถานะลง ResponseWriter",
-        ["เทียบ r.Method กับค่าคงที่ของ http", "คืน 405 เมื่อ method ไม่ถูก", "ตั้ง Client.Timeout", "ใช้ httptest ในเทสต์ ไม่เปิดพอร์ตจริง"],
-      ],
-      [
-        "A handler should reject an unsupported method with 405. A client should have a Timeout so a call cannot hang. httptest.NewRequest builds a request in a test without opening a port.\n\n```\nif r.Method != http.MethodPost {\n\treturn http.StatusMethodNotAllowed\n}\n```",
-        "Use it when writing a small API and when this backend calls another service.",
-        "Accept only POST.",
-        "Set a client timeout, or write a status to the ResponseWriter.",
-        ["Compare r.Method with an http constant", "Return 405 for the wrong method", "Set Client.Timeout", "Use httptest in tests instead of a real port"],
-      ],
-    ),
+    goal: text("เขียน HTTP handler ที่ตรวจ method อ่าน request ตอบสถานะให้ถูก และเรียก service อื่นโดยมี timeout", "Write HTTP handlers that check the method, read the request, answer with the right status, and call other services with a timeout"),
     exercises: [
-      testEx(say("easy", "เขียน Status ให้คืน 200 สำหรับ POST และ 405 สำหรับ method อื่น", "Write Status to return 200 for POST and 405 for any other method"), tests, 'package main\n\nimport "net/http"\n\nfunc Status(r *http.Request) int {\n\treturn 0\n}\n', 'package main\n\nimport (\n\t"net/http"\n\t"net/http/httptest"\n\t"testing"\n)\n\nfunc TestStatus(t *testing.T) {\n\tif Status(httptest.NewRequest(http.MethodPost, "/", nil)) != http.StatusOK {\n\t\tt.Fatal("post")\n\t}\n\tif Status(httptest.NewRequest(http.MethodGet, "/", nil)) != http.StatusMethodNotAllowed {\n\t\tt.Fatal("get")\n\t}\n}\n'),
-      testEx(say("mid", "เขียน Client ให้คืน http.Client ที่ Timeout เป็น 1 วินาที", "Write Client to return an http.Client whose Timeout is one second"), tests, 'package main\n\nimport "net/http"\n\nfunc Client() *http.Client {\n\treturn nil\n}\n', 'package main\n\nimport (\n\t"net/http"\n\t"testing"\n\t"time"\n)\n\nfunc TestClient(t *testing.T) {\n\tc := Client()\n\tif c == nil || c.Timeout != time.Second {\n\t\tt.Fatal("timeout")\n\t}\n}\n'),
-      testEx(say("hard", "เขียน WriteOK ให้ตอบ 200 และเนื้อหา ok", "Write WriteOK to respond with 200 and the body ok"), tests, 'package main\n\nimport "net/http"\n\nfunc WriteOK(w http.ResponseWriter) {\n}\n', 'package main\n\nimport (\n\t"net/http"\n\t"net/http/httptest"\n\t"testing"\n)\n\nfunc TestWriteOK(t *testing.T) {\n\trec := httptest.NewRecorder()\n\tWriteOK(rec)\n\tif rec.Code != http.StatusOK || rec.Body.String() != "ok" {\n\t\tt.Fatal(rec.Body.String())\n\t}\n}\n'),
-      withHint(testEx(say("twist", "เขียน Allow ให้คืน 200 เมื่อ method อยู่ในรายการ และ 405 เมื่อไม่อยู่", "Write Allow to return 200 when the method is in the list and 405 when it is not"), tests, 'package main\n\nimport "net/http"\n\nfunc Allow(r *http.Request, methods ...string) int {\n\treturn 0\n}\n', 'package main\n\nimport (\n\t"net/http"\n\t"net/http/httptest"\n\t"testing"\n)\n\nfunc TestAllow(t *testing.T) {\n\tget := httptest.NewRequest(http.MethodGet, "/", nil)\n\tif Allow(get, http.MethodGet, http.MethodPost) != http.StatusOK {\n\t\tt.Fatal("get")\n\t}\n\tput := httptest.NewRequest(http.MethodPut, "/", nil)\n\tif Allow(put, http.MethodGet) != http.StatusMethodNotAllowed {\n\t\tt.Fatal("put")\n\t}\n}\n'), "คืน 200 เมื่อ method ตรงกับรายการ และ 405 เมื่อไม่ตรง", "Return 200 when the method is in the list and 405 when it is not"),
+      solved(
+        withHint(
+          testEx(
+            say("easy", "เขียน Status ให้คืน 200 สำหรับ POST และ 405 สำหรับ method อื่น", "Write Status to return 200 for POST and 405 for any other method"),
+            tests,
+            unit(go`import "net/http"
+
+func Status(r *http.Request) int {
+	return 0
+}`),
+            testFile(go`import (
+	"net/http"
+	"net/http/httptest"
+	"testing"
+)
+
+func TestStatus(t *testing.T) {
+	if Status(httptest.NewRequest(http.MethodPost, "/", nil)) != http.StatusOK {
+		t.Fatal("POST must give 200")
+	}
+	for _, m := range []string{http.MethodGet, http.MethodPut, http.MethodDelete} {
+		if Status(httptest.NewRequest(m, "/", nil)) != http.StatusMethodNotAllowed {
+			t.Fatalf("%s must give 405", m)
+		}
+	}
+}`),
+          ),
+          "เทียบ r.Method กับ http.MethodPost แล้วคืน http.StatusOK หรือ http.StatusMethodNotAllowed",
+          "Compare r.Method with http.MethodPost and return http.StatusOK or http.StatusMethodNotAllowed",
+        ),
+        unit(go`import "net/http"
+
+func Status(r *http.Request) int {
+	if r.Method == http.MethodPost {
+		return http.StatusOK
+	}
+	return http.StatusMethodNotAllowed
+}`),
+      ),
+      solved(
+        withHint(
+          testEx(
+            say("mid", "เขียน handler Hello ให้ตอบ hello, ตามด้วยค่าของ query name เช่น /?name=ann ได้ hello, ann และถ้าไม่มี name ให้ใช้ world", "Write the handler Hello to answer hello, followed by the query value name, so /?name=ann gives hello, ann. Without name, use world"),
+            tests,
+            unit(go`import "net/http"
+
+func Hello(w http.ResponseWriter, r *http.Request) {
+}`),
+            testFile(go`import (
+	"net/http/httptest"
+	"testing"
+)
+
+func TestHello(t *testing.T) {
+	cases := map[string]string{"/?name=ann": "hello, ann", "/?name=bo": "hello, bo", "/": "hello, world"}
+	for url, want := range cases {
+		rec := httptest.NewRecorder()
+		Hello(rec, httptest.NewRequest("GET", url, nil))
+		if rec.Code != 200 || rec.Body.String() != want {
+			t.Fatalf("%s gave %d %q, want %q", url, rec.Code, rec.Body.String(), want)
+		}
+	}
+}`),
+          ),
+          "r.URL.Query().Get(\"name\") คืนข้อความว่างเมื่อไม่มี แล้วเขียนคำตอบด้วย fmt.Fprintf(w, \"hello, %s\", name)",
+          "r.URL.Query().Get(\"name\") returns empty text when it is missing. Write the answer with fmt.Fprintf(w, \"hello, %s\", name)",
+        ),
+        unit(go`import (
+	"fmt"
+	"net/http"
+)
+
+func Hello(w http.ResponseWriter, r *http.Request) {
+	name := r.URL.Query().Get("name")
+	if name == "" {
+		name = "world"
+	}
+	fmt.Fprintf(w, "hello, %s", name)
+}`),
+      ),
+      solved(
+        withHint(
+          testEx(
+            say("hard", "เขียน handler CreateItem: รับเฉพาะ POST (ไม่งั้นตอบ 405), อ่าน JSON {\"name\":...} จาก body ถ้าอ่านไม่ได้หรือ name ว่างตอบ 400 ถ้าผ่านตอบ 201 พร้อม JSON {\"name\":...} กลับไป", "Write the handler CreateItem: accept only POST (otherwise 405), read the JSON {\"name\":...} from the body, answer 400 if it cannot be read or name is empty, and otherwise 201 with the JSON {\"name\":...} back"),
+            tests,
+            unit(go`import "net/http"
+
+type Item struct {
+	Name string ` + "`json:\"name\"`" + `
+}
+
+func CreateItem(w http.ResponseWriter, r *http.Request) {
+}`),
+            testFile(go`import (
+	"net/http/httptest"
+	"strings"
+	"testing"
+)
+
+func call(method, body string) *httptest.ResponseRecorder {
+	rec := httptest.NewRecorder()
+	CreateItem(rec, httptest.NewRequest(method, "/items", strings.NewReader(body)))
+	return rec
+}
+
+func TestCreateItem(t *testing.T) {
+	ok := call("POST", ` + "`{\"name\":\"tea\"}`" + `)
+	if ok.Code != 201 || strings.TrimSpace(ok.Body.String()) != ` + "`{\"name\":\"tea\"}`" + ` {
+		t.Fatalf("good POST: %d %s", ok.Code, ok.Body.String())
+	}
+	if c := call("GET", "").Code; c != 405 {
+		t.Fatalf("GET: %d, want 405", c)
+	}
+	if c := call("POST", "{").Code; c != 400 {
+		t.Fatalf("bad JSON: %d, want 400", c)
+	}
+	if c := call("POST", ` + "`{\"name\":\"\"}`" + `).Code; c != 400 {
+		t.Fatalf("empty name: %d, want 400", c)
+	}
+}`),
+          ),
+          "ลำดับคือ: เช็ก method, json.NewDecoder(r.Body).Decode(&item), เช็ก name แล้ว w.WriteHeader(http.StatusCreated) ก่อน json.NewEncoder(w).Encode(item) ใช้ http.Error ตอบ error",
+          "In order: check the method, json.NewDecoder(r.Body).Decode(&item), check name, then w.WriteHeader(http.StatusCreated) before json.NewEncoder(w).Encode(item). Use http.Error for failures",
+        ),
+        unit(go`import (
+	"encoding/json"
+	"net/http"
+)
+
+type Item struct {
+	Name string ` + "`json:\"name\"`" + `
+}
+
+func CreateItem(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	var item Item
+	if err := json.NewDecoder(r.Body).Decode(&item); err != nil || item.Name == "" {
+		http.Error(w, "bad item", http.StatusBadRequest)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(item)
+}`),
+      ),
+      solved(
+        withHint(
+          testEx(
+            say("twist", "เขียน NewClient ให้คืน http.Client ที่ยอมรอคำตอบไม่เกิน 100 มิลลิวินาที เซิร์ฟเวอร์ที่ช้ากว่านั้นต้องทำให้ Get คืน error", "Write NewClient to return an http.Client that waits at most 100 milliseconds for an answer. A slower server must make Get return an error"),
+            tests,
+            unit(go`import "net/http"
+
+func NewClient() *http.Client {
+	return &http.Client{}
+}`),
+            testFile(go`import (
+	"net/http"
+	"net/http/httptest"
+	"testing"
+	"time"
+)
+
+func TestNewClient(t *testing.T) {
+	slow := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		time.Sleep(500 * time.Millisecond)
+	}))
+	defer slow.Close()
+	fast := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
+	defer fast.Close()
+	c := NewClient()
+	if _, err := c.Get(slow.URL); err == nil {
+		t.Fatal("a slow server must time out")
+	}
+	resp, err := c.Get(fast.URL)
+	if err != nil {
+		t.Fatalf("a fast server must answer: %v", err)
+	}
+	resp.Body.Close()
+}`),
+          ),
+          "ตั้งฟิลด์ Timeout: &http.Client{Timeout: 100 * time.Millisecond} ค่าศูนย์ของ Timeout แปลว่ารอได้ไม่จำกัด",
+          "Set the Timeout field: &http.Client{Timeout: 100 * time.Millisecond}. A zero Timeout means wait forever",
+        ),
+        unit(go`import (
+	"net/http"
+	"time"
+)
+
+func NewClient() *http.Client {
+	return &http.Client{Timeout: 100 * time.Millisecond}
+}`),
+      ),
     ],
   }),
   lesson({
@@ -149,50 +503,86 @@ export const professional = [
     id: "p06-bench-fuzz",
     level: "professional",
     title: text("benchmark และ fuzz", "Benchmarks and fuzzing"),
-    goal: text("อ่านผล benchmark และรู้ว่า fuzz target ขั้นต่ำหน้าตาเป็นอย่างไร", "Read a benchmark result and recognize a minimal fuzz target"),
-    copy: copy(
-      [
-        "go test -bench วัดเวลาต่องานหนึ่งหน่วย ผลมี ns/op และอาจมี allocs/op fuzz ส่งข้อมูลสุ่มเข้าฟังก์ชันแล้วดูว่า panic หรือไม่ เป้าหมาย fuzz รับ *testing.F แล้วเรียก f.Add กับ f.Fuzz\n\n```\nfunc FuzzParse(f *testing.F) {\n\tf.Add(\"seed\")\n\tf.Fuzz(func(t *testing.T, s string) {\n\t\t_ = len(s)\n\t})\n}\n```",
-        "ใช้ตอนจูนฟังก์ชันที่ถูกเรียกบ่อย และตอนหา input ที่ทำให้ parser พัง",
-        "อ่านคอลัมน์ของผล bench",
-        "รูปร่างของ fuzz target",
-        ["แยก ns/op ออกจาก allocs/op", "ดูว่าตัวเลขน้อยลงคือเร็วขึ้น", "จำว่า fuzz อยู่ใน _test.go", "ตอบในหน้านี้"],
-      ],
-      [
-        "go test -bench measures time per operation. The result shows ns/op and may show allocs/op. Fuzzing feeds random inputs and watches for a panic. A fuzz target takes *testing.F, then calls f.Add and f.Fuzz.\n\n```\nfunc FuzzParse(f *testing.F) {\n\tf.Add(\"seed\")\n\tf.Fuzz(func(t *testing.T, s string) {\n\t\t_ = len(s)\n\t})\n}\n```",
-        "Use it when tuning a hot function and when searching for input that breaks a parser.",
-        "Read the columns of a bench result.",
-        "The shape of a fuzz target.",
-        ["Separate ns/op from allocs/op", "A smaller number means faster", "Remember that fuzz lives in _test.go", "Answer on this page"],
-      ],
-    ),
+    goal: text("อ่านผล benchmark ออก และใช้ fuzz หาค่าที่ทำให้ฟังก์ชันพัง", "Read benchmark results and use fuzzing to find inputs that break a function"),
     exercises: [
-      quiz(
-        say("easy", "ns/op ในผล benchmark หมายถึงอะไร", "What does ns/op in a benchmark result mean?"),
-        { th: "มันคือเวลาเฉลี่ยเป็นนาโนวินาทีต่องานหนึ่งครั้ง", en: "It is the average time in nanoseconds for one operation" },
+      pick(
+        "easy",
+        "ผล benchmark บรรทัด BenchmarkJoin-8  2000000  612 ns/op ตัวเลข 612 ns/op หมายถึงอะไร",
+        "In the benchmark line BenchmarkJoin-8  2000000  612 ns/op, what does 612 ns/op mean?",
+        text("ns/op คือเวลาเฉลี่ยเป็นนาโนวินาทีต่อการเรียกหนึ่งครั้ง ส่วน 2000000 คือจำนวนรอบที่วัด", "ns/op is the average time in nanoseconds per call; 2000000 is how many rounds were measured"),
         {
-          th: ["จำนวน goroutine", "เวลาเฉลี่ยเป็นนาโนวินาทีต่องานหนึ่งครั้ง", "ขนาดไบนารี", "จำนวนเทสต์ที่พัง"],
-          en: ["The goroutine count", "The average time in nanoseconds for one operation", "The binary size", "The number of failing tests"],
+          th: ["มี goroutine 612 ตัว", "เรียกหนึ่งครั้งใช้เวลาเฉลี่ย 612 นาโนวินาที", "ไบนารีมีขนาด 612 ไบต์", "มีเทสต์พัง 612 ข้อ"],
+          en: ["There are 612 goroutines", "One call takes 612 nanoseconds on average", "The binary is 612 bytes", "612 tests failed"],
         },
         1,
       ),
-      quiz(
-        say("mid", "allocs/op ที่ลดลงบอกอะไร", "What does a lower allocs/op tell you?"),
-        { th: "งานหนึ่งครั้งจองหน่วยความจำบน heap น้อยลง", en: "One operation allocates less on the heap" },
+      pick(
+        "mid",
+        "หลังแก้โค้ด allocs/op ลดจาก 5 เหลือ 1 แปลว่าอะไร",
+        "After a change, allocs/op drops from 5 to 1. What does that mean?",
+        text("allocs/op คือจำนวนครั้งที่จองหน่วยความจำบน heap ต่อการเรียกหนึ่งครั้ง น้อยลงแปลว่าตัวเก็บขยะมีงานน้อยลง", "allocs/op is how many heap allocations one call makes. Fewer means less work for the garbage collector"),
         {
-          th: ["โปรแกรมใช้ CPU มากขึ้นเสมอ", "งานหนึ่งครั้งจองหน่วยความจำบน heap น้อยลง", "เทสต์ถูกลบ", "โมดูลไม่มี dependency"],
-          en: ["The program always uses more CPU", "One operation allocates less on the heap", "The test was deleted", "The module has no dependencies"],
+          th: ["โปรแกรมใช้ CPU มากขึ้นเสมอ", "การเรียกหนึ่งครั้งจองหน่วยความจำบน heap น้อยลง", "เทสต์ถูกลบไป 4 ข้อ", "โมดูลไม่มี dependency แล้ว"],
+          en: ["The program always uses more CPU", "One call makes fewer heap allocations", "Four tests were deleted", "The module has no dependencies now"],
         },
         1,
       ),
-      quiz(
-        say("hard", "fuzz target ขั้นต่ำต้องมีอะไร", "What does a minimal fuzz target need?"),
-        { th: "ฟังก์ชัน Fuzz ที่รับ *testing.F แล้วเรียก f.Fuzz", en: "A Fuzz function that takes *testing.F and calls f.Fuzz" },
+      pick(
+        "hard",
+        "fuzz target ขั้นต่ำต้องมีอะไร",
+        "What does a minimal fuzz target need?",
+        text("ชื่อขึ้นต้นด้วย Fuzz รับ *testing.F และเรียก f.Fuzz ด้วยฟังก์ชันที่รับ *testing.T กับค่าที่จะสุ่ม", "A name starting with Fuzz, a *testing.F parameter, and a call to f.Fuzz with a function that takes *testing.T and the values to vary"),
         {
-          th: ["ฟังก์ชัน main ที่เรียก rand", "ไฟล์ go.mod เท่านั้น", "ฟังก์ชัน Fuzz ที่รับ *testing.F แล้วเรียก f.Fuzz", "คำสั่ง go vet"],
-          en: ["A main function that calls rand", "Only a go.mod file", "A Fuzz function that takes *testing.F and calls f.Fuzz", "The go vet command"],
+          th: ["ฟังก์ชัน main ที่เรียก rand", "ไฟล์ go.mod อย่างเดียว", "ฟังก์ชันชื่อขึ้นต้นด้วย Fuzz ที่รับ *testing.F แล้วเรียก f.Fuzz", "คำสั่ง go vet"],
+          en: ["A main function that calls rand", "Only a go.mod file", "A function whose name starts with Fuzz, takes *testing.F, and calls f.Fuzz", "The go vet command"],
         },
         2,
+      ),
+      solved(
+        withHint(
+          testEx(
+            say("twist", "แก้ Reverse ให้กลับลำดับข้อความได้ถูกต้องกับทุกภาษา โค้ดทดสอบเป็น fuzz target ที่มีข้อความไทยอยู่ในชุดเริ่มต้น", "Fix Reverse so it reverses text correctly in every language. The hidden test is a fuzz target whose seed inputs include Thai text"),
+            tests,
+            unit(go`func Reverse(s string) string {
+	b := []byte(s)
+	for i, j := 0, len(b)-1; i < j; i, j = i+1, j-1 {
+		b[i], b[j] = b[j], b[i]
+	}
+	return string(b)
+}`),
+            testFile(go`import (
+	"testing"
+	"unicode/utf8"
+)
+
+func FuzzReverse(f *testing.F) {
+	for _, seed := range []string{"go", "", "สวัสดี", "héllo"} {
+		f.Add(seed)
+	}
+	f.Fuzz(func(t *testing.T, s string) {
+		if !utf8.ValidString(s) {
+			t.Skip()
+		}
+		r := Reverse(s)
+		if !utf8.ValidString(r) {
+			t.Fatalf("Reverse(%q) = %q is not valid UTF-8", s, r)
+		}
+		if Reverse(r) != s {
+			t.Fatalf("reversing twice changed %q", s)
+		}
+	})
+}`),
+          ),
+          "ตัวอักษรไทยหนึ่งตัวใช้หลายไบต์ การสลับไบต์จึงทำให้ตัวอักษรแตก แปลงเป็น []rune ก่อนสลับ แล้วแปลงกลับด้วย string(...)",
+          "One Thai character takes several bytes, so swapping bytes breaks it. Convert to []rune before swapping, then back with string(...)",
+        ),
+        unit(go`func Reverse(s string) string {
+	r := []rune(s)
+	for i, j := 0, len(r)-1; i < j; i, j = i+1, j-1 {
+		r[i], r[j] = r[j], r[i]
+	}
+	return string(r)
+}`),
       ),
     ],
   }),
@@ -236,106 +626,405 @@ export const professional = [
     id: "p08-slog",
     level: "professional",
     title: text("log/slog", "log/slog"),
-    goal: text("เขียน log เป็น key และ value", "Write logs as keys and values"),
-    copy: copy(
-      [
-        "log/slog ส่งข้อความพร้อมคู่ key และ value handler แบบ text พิมพ์เป็น msg= และ key=value การต่อสตริงเองทำให้เครื่องที่อ่าน log แยกฟิลด์ไม่ได้\n\n```\nlogger.Info(\"hello\", \"user\", \"ada\")\n```",
-        "ใช้ใน service ที่ต้องค้น log ตามรหัสผู้ใช้หรือรหัส request",
-        "เขียนหนึ่งบรรทัดที่มี msg และ key",
-        "ส่งค่าคนละชนิดโดยยังเป็นคู่",
-        ["สร้าง logger จาก handler", "ส่ง key แล้วตามด้วย value", "อย่าต่อข้อความทั้งก้อนเอง", "ตรวจว่าผลมีทั้ง msg และ key"],
-      ],
-      [
-        "log/slog records a message plus key and value pairs. The text handler prints msg= and key=value. Concatenating one string makes it hard for a machine to split the fields.\n\n```\nlogger.Info(\"hello\", \"user\", \"ada\")\n```",
-        "Use it in a service that searches logs by user id or request id.",
-        "Write one line that has a message and a key.",
-        "Pass values of different kinds while keeping pairs.",
-        ["Build a logger from a handler", "Pass a key followed by its value", "Do not concatenate the whole line yourself", "Check that the result has both msg and the key"],
-      ],
-    ),
+    goal: text("เขียน log แบบมีโครงสร้างเป็นคู่ key กับ value ผูกข้อมูลประจำ logger และกรองตามระดับ", "Write structured logs as key and value pairs, attach shared fields to a logger, and filter by level"),
     exercises: [
-      testEx(say("easy", "เขียน Line ให้บันทึก msg กับคู่ key value ลง Writer", "Write Line to record msg and a key value pair to a Writer"), tests, 'package main\n\nimport "io"\n\nfunc Line(w io.Writer, msg, key, value string) {\n}\n', 'package main\n\nimport (\n\t"bytes"\n\t"strings"\n\t"testing"\n)\n\nfunc TestLine(t *testing.T) {\n\tvar b bytes.Buffer\n\tLine(&b, "hello", "user", "ada")\n\tgot := b.String()\n\tif !strings.Contains(got, "msg=hello") || !strings.Contains(got, "user=ada") {\n\t\tt.Fatal(got)\n\t}\n}\n'),
-      testEx(say("mid", "เขียน Warn ให้ใช้ระดับ Warn และมี key code", "Write Warn to use level Warn and include the key code"), tests, 'package main\n\nimport "io"\n\nfunc Warn(w io.Writer, code int) {\n}\n', 'package main\n\nimport (\n\t"bytes"\n\t"strings"\n\t"testing"\n)\n\nfunc TestWarn(t *testing.T) {\n\tvar b bytes.Buffer\n\tWarn(&b, 7)\n\tgot := b.String()\n\tif !strings.Contains(got, "level=WARN") || !strings.Contains(got, "code=7") {\n\t\tt.Fatal(got)\n\t}\n}\n'),
-      testEx(say("hard", "เขียน WithUser ให้ logger มี attribute user ติดไปกับทุกบรรทัด", "Write WithUser so the logger attaches the user attribute to every line"), tests, 'package main\n\nimport "io"\n\nfunc WithUser(w io.Writer, user, msg string) {\n}\n', 'package main\n\nimport (\n\t"bytes"\n\t"strings"\n\t"testing"\n)\n\nfunc TestWithUser(t *testing.T) {\n\tvar b bytes.Buffer\n\tWithUser(&b, "ada", "saved")\n\tgot := b.String()\n\tif !strings.Contains(got, "user=ada") || !strings.Contains(got, "msg=saved") {\n\t\tt.Fatal(got)\n\t}\n}\n'),
-      withHint(testEx(say("twist", "เขียน InfoPair ให้บันทึกระดับ Info พร้อม attribute left และ right และข้อความ pair", "Write InfoPair to log at Info with attributes left and right and the message pair"), tests, 'package main\n\nimport "io"\n\nfunc InfoPair(w io.Writer, left, right string) {\n}\n', 'package main\n\nimport (\n\t"bytes"\n\t"strings"\n\t"testing"\n)\n\nfunc TestInfoPair(t *testing.T) {\n\tvar b bytes.Buffer\n\tInfoPair(&b, "a", "b")\n\tgot := b.String()\n\tif !strings.Contains(got, "level=INFO") || !strings.Contains(got, "msg=pair") || !strings.Contains(got, "left=a") || !strings.Contains(got, "right=b") {\n\t\tt.Fatal(got)\n\t}\n\tb.Reset()\n\tInfoPair(&b, "x", "y")\n\tgot = b.String()\n\tif !strings.Contains(got, "left=x") || !strings.Contains(got, "right=y") {\n\t\tt.Fatal(got)\n\t}\n}\n'), "ใช้ slog ระดับ Info และใส่ attribute สองตัวชื่อ left กับ right", "Use slog at Info and attach two attributes named left and right"),
+      solved(
+        withHint(
+          testEx(
+            say("easy", "เขียน Line ให้บันทึกข้อความ msg พร้อมคู่ key กับ value ลง w ด้วย slog แบบข้อความ", "Write Line to log the message msg with one key and value pair to w, using slog's text format"),
+            tests,
+            unit(go`import "io"
+
+func Line(w io.Writer, msg, key, value string) {
+}`),
+            testFile(go`import (
+	"bytes"
+	"strings"
+	"testing"
+)
+
+func TestLine(t *testing.T) {
+	var b bytes.Buffer
+	Line(&b, "hello", "user", "ada")
+	got := b.String()
+	if !strings.Contains(got, "level=INFO") || !strings.Contains(got, "msg=hello") || !strings.Contains(got, "user=ada") {
+		t.Fatal(got)
+	}
+}`),
+          ),
+          "slog.New(slog.NewTextHandler(w, nil)) ได้ logger แล้วเรียก .Info(msg, key, value)",
+          "slog.New(slog.NewTextHandler(w, nil)) gives a logger; then call .Info(msg, key, value)",
+        ),
+        unit(go`import (
+	"io"
+	"log/slog"
+)
+
+func Line(w io.Writer, msg, key, value string) {
+	slog.New(slog.NewTextHandler(w, nil)).Info(msg, key, value)
+}`),
+      ),
+      solved(
+        withHint(
+          testEx(
+            say("mid", "เขียน Warn ให้บันทึกข้อความ slow ระดับ Warn พร้อม key code ที่เป็นตัวเลข", "Write Warn to log the message slow at level Warn, with a numeric key code"),
+            tests,
+            unit(go`import "io"
+
+func Warn(w io.Writer, code int) {
+}`),
+            testFile(go`import (
+	"bytes"
+	"fmt"
+	"strings"
+	"testing"
+)
+
+func TestWarn(t *testing.T) {
+	for _, code := range []int{7, 503} {
+		var b bytes.Buffer
+		Warn(&b, code)
+		got := b.String()
+		if !strings.Contains(got, "level=WARN") || !strings.Contains(got, "msg=slow") || !strings.Contains(got, fmt.Sprintf("code=%d", code)) {
+			t.Fatal(got)
+		}
+	}
+}`),
+          ),
+          "ใช้ .Warn(\"slow\", \"code\", code) หรือ slog.Int(\"code\", code) ถ้าอยากระบุชนิดให้ชัด",
+          "Use .Warn(\"slow\", \"code\", code), or slog.Int(\"code\", code) to make the type explicit",
+        ),
+        unit(go`import (
+	"io"
+	"log/slog"
+)
+
+func Warn(w io.Writer, code int) {
+	slog.New(slog.NewTextHandler(w, nil)).Warn("slow", slog.Int("code", code))
+}`),
+      ),
+      solved(
+        withHint(
+          testEx(
+            say("hard", "เขียน ForUser ให้คืน logger ที่ทุกบรรทัดที่บันทึกผ่านมันมี user ติดไปด้วยเสมอ", "Write ForUser to return a logger whose every line carries the user field"),
+            tests,
+            unit(go`import (
+	"io"
+	"log/slog"
+)
+
+func ForUser(w io.Writer, user string) *slog.Logger {
+	return slog.New(slog.NewTextHandler(w, nil))
+}`),
+            testFile(go`import (
+	"bytes"
+	"strings"
+	"testing"
+)
+
+func TestForUser(t *testing.T) {
+	var b bytes.Buffer
+	log := ForUser(&b, "ada")
+	log.Info("login")
+	log.Warn("retry", "n", 2)
+	lines := strings.Split(strings.TrimSpace(b.String()), "\n")
+	if len(lines) != 2 {
+		t.Fatalf("want 2 lines, got %q", b.String())
+	}
+	for _, line := range lines {
+		if !strings.Contains(line, "user=ada") {
+			t.Fatalf("line without user: %s", line)
+		}
+	}
+}`),
+          ),
+          "logger.With(\"user\", user) คืน logger ใหม่ที่แนบ user ไปกับทุกบรรทัด",
+          "logger.With(\"user\", user) returns a new logger that attaches user to every line",
+        ),
+        unit(go`import (
+	"io"
+	"log/slog"
+)
+
+func ForUser(w io.Writer, user string) *slog.Logger {
+	return slog.New(slog.NewTextHandler(w, nil)).With("user", user)
+}`),
+      ),
+      solved(
+        withHint(
+          testEx(
+            say("twist", "เขียน Quiet ให้คืน logger ที่ทิ้งบรรทัดระดับ Info แต่ยังบันทึกระดับ Warn และ Error", "Write Quiet to return a logger that drops Info lines but still records Warn and Error"),
+            tests,
+            unit(go`import (
+	"io"
+	"log/slog"
+)
+
+func Quiet(w io.Writer) *slog.Logger {
+	return slog.New(slog.NewTextHandler(w, nil))
+}`),
+            testFile(go`import (
+	"bytes"
+	"strings"
+	"testing"
+)
+
+func TestQuiet(t *testing.T) {
+	var b bytes.Buffer
+	log := Quiet(&b)
+	log.Info("noise")
+	log.Warn("disk")
+	log.Error("down")
+	got := b.String()
+	if strings.Contains(got, "noise") {
+		t.Fatalf("Info must be dropped: %s", got)
+	}
+	if !strings.Contains(got, "msg=disk") || !strings.Contains(got, "msg=down") {
+		t.Fatalf("Warn and Error must stay: %s", got)
+	}
+}`),
+          ),
+          "ส่ง &slog.HandlerOptions{Level: slog.LevelWarn} เป็นค่าตัวที่สองของ slog.NewTextHandler",
+          "Pass &slog.HandlerOptions{Level: slog.LevelWarn} as the second argument of slog.NewTextHandler",
+        ),
+        unit(go`import (
+	"io"
+	"log/slog"
+)
+
+func Quiet(w io.Writer) *slog.Logger {
+	return slog.New(slog.NewTextHandler(w, &slog.HandlerOptions{Level: slog.LevelWarn}))
+}`),
+      ),
     ],
   }),
   lesson({
     id: "p09-generic-api",
     level: "professional",
-    title: text("generics ใน API จริง", "Generics in a real API"),
-    goal: text("เลือก generic เมื่อชนิดต้องไปกับผู้เรียก", "Choose generics when the type must follow the caller"),
-    copy: copy(
-      [
-        "ถ้าฟังก์ชันคืนค่าชนิดเดียวกับที่รับมา และไม่ได้เรียก method ของค่านั้น generic ชัดกว่า interface ว่าง ถ้าพฤติกรรมคือ Speak ให้ใช้ interface แทน\n\n```\nfunc First[T any](items []T) (T, bool) {\n\tif len(items) == 0 {\n\t\tvar zero T\n\t\treturn zero, false\n\t}\n\treturn items[0], true\n}\n```",
-        "ใช้ใน helper ของไลบรารีที่รับ slice ของชนิดที่ผู้เรียกกำหนด",
-        "คืนสมาชิกตัวแรก",
-        "คืนตัวสุดท้ายพร้อมบอกว่ามีค่า",
-        ["ใช้ type parameter เมื่อต้องคืนชนิดเดิม", "คืน zero value เมื่อว่าง", "อย่าใช้ any แล้วให้ผู้เรียก assert", "ใช้ interface เมื่อต้องการพฤติกรรม"],
-      ],
-      [
-        "If a function returns the same type it received and does not call methods on that value, a generic is clearer than the empty interface. If the behavior is Speak, use an interface instead.\n\n```\nfunc First[T any](items []T) (T, bool) {\n\tif len(items) == 0 {\n\t\tvar zero T\n\t\treturn zero, false\n\t}\n\treturn items[0], true\n}\n```",
-        "Use it in a library helper that accepts a slice of a caller-chosen type.",
-        "Return the first element.",
-        "Return the last element and whether it exists.",
-        ["Use a type parameter when you must return the same type", "Return the zero value when empty", "Do not return any and force the caller to assert", "Use an interface when you need behavior"],
-      ],
-    ),
+    title: text("generics ใน API จริง", "Generics in real APIs"),
+    goal: text("ออกแบบชนิดและฟังก์ชัน generic ที่ผู้เรียกใช้ได้กับข้อมูลของตัวเอง และคืนผลแบบ (ค่า, ok) เมื่ออาจไม่มีค่า", "Design generic types and functions callers can use with their own data, returning (value, ok) when a value may be missing"),
     exercises: [
-      testEx(say("easy", "เขียน First ให้คืนสมาชิกแรกและ true หรือ zero กับ false เมื่อว่าง", "Write First to return the first element and true, or the zero value and false when empty"), tests, 'package main\n\nfunc First[T any](items []T) (T, bool) {\n\tvar zero T\n\treturn zero, false\n}\n', 'package main\n\nimport "testing"\n\nfunc TestFirst(t *testing.T) {\n\tgot, ok := First([]int{4, 5})\n\tif !ok || got != 4 {\n\t\tt.Fatal("int")\n\t}\n\tif _, ok = First([]string{}); ok {\n\t\tt.Fatal("empty")\n\t}\n}\n'),
-      testEx(say("mid", "เขียน Last ให้คืนสมาชิกสุดท้ายและ true", "Write Last to return the last element and true"), tests, 'package main\n\nfunc Last[T any](items []T) (T, bool) {\n\tvar zero T\n\treturn zero, false\n}\n', 'package main\n\nimport "testing"\n\nfunc TestLast(t *testing.T) {\n\tgot, ok := Last([]string{"a", "b"})\n\tif !ok || got != "b" {\n\t\tt.Fatal("last")\n\t}\n}\n'),
-      testEx(say("hard", "เขียน At ให้คืนสมาชิกที่ index เมื่ออยู่ในขอบ และ false เมื่ออยู่นอกขอบ (รวม index ติดลบ)", "Write At to return the element at index when it is in range, and false otherwise (including a negative index)"), tests, 'package main\n\nfunc At[T any](items []T, index int) (T, bool) {\n\tvar zero T\n\treturn zero, false\n}\n', 'package main\n\nimport "testing"\n\nfunc TestAt(t *testing.T) {\n\tgot, ok := At([]int{7, 8}, 1)\n\tif !ok || got != 8 {\n\t\tt.Fatal("at")\n\t}\n\tif _, ok = At([]int{7}, 3); ok {\n\t\tt.Fatal("oob")\n\t}\n}\n'),
-      withHint(testEx(say("twist", "เขียน NonZero ให้คืน slice ที่ตัด zero value ออก ทั้งตัวเลขและสตริง", "Write NonZero to return the slice with zero values removed, for both numbers and strings"), tests, 'package main\n\nfunc NonZero[T comparable](items []T) []T {\n\treturn nil\n}\n', 'package main\n\nimport "testing"\n\nfunc TestNonZero(t *testing.T) {\n\tgot := NonZero([]int{0, 2, 0, 3})\n\tif len(got) != 2 || got[0] != 2 || got[1] != 3 {\n\t\tt.Fatal("ints")\n\t}\n\twords := NonZero([]string{"", "a"})\n\tif len(words) != 1 || words[0] != "a" {\n\t\tt.Fatal("strings")\n\t}\n}\n'), "ตัดค่าที่เป็น zero value ของชนิดนั้นออก ทั้ง 0 และสตริงว่าง", "Drop values that are the zero value of the type, both 0 and the empty string"),
+      solved(
+        withHint(
+          testEx(
+            say("easy", "เขียน First ให้คืนสมาชิกแรกกับ true หรือค่าศูนย์กับ false เมื่อ slice ว่าง", "Write First to return the first item and true, or the zero value and false when the slice is empty"),
+            tests,
+            unit(go`func First[T any](items []T) (T, bool) {
+	var zero T
+	return zero, false
+}`),
+            testFile(go`func TestFirst(t *testing.T) {
+	if got, ok := First([]int{4, 5}); !ok || got != 4 {
+		t.Fatal("ints")
+	}
+	if got, ok := First([]string{"x"}); !ok || got != "x" {
+		t.Fatal("strings")
+	}
+	if got, ok := First([]string{}); ok || got != "" {
+		t.Fatal("empty")
+	}
+}`),
+          ),
+          "ถ้า len(items) == 0 ให้คืน zero, false ไม่งั้นคืน items[0], true",
+          "If len(items) == 0, return zero, false; otherwise return items[0], true",
+        ),
+        unit(go`func First[T any](items []T) (T, bool) {
+	if len(items) == 0 {
+		var zero T
+		return zero, false
+	}
+	return items[0], true
+}`),
+      ),
+      solved(
+        withHint(
+          testEx(
+            say("mid", "เขียน method Add และ Has ของชนิด generic Set[T] ที่เก็บค่าไม่ซ้ำ และ Len ที่คืนจำนวนค่า", "Write the methods Add and Has of the generic type Set[T], which stores distinct values, and Len, which returns how many"),
+            tests,
+            unit(go`type Set[T comparable] struct {
+	items map[T]struct{}
+}
+
+func (s *Set[T]) Add(v T) {
+}
+
+func (s *Set[T]) Has(v T) bool {
+	return false
+}
+
+func (s *Set[T]) Len() int {
+	return 0
+}`),
+            testFile(go`func TestSet(t *testing.T) {
+	var s Set[string]
+	s.Add("go")
+	s.Add("go")
+	s.Add("rust")
+	if !s.Has("go") || s.Has("c") || s.Len() != 2 {
+		t.Fatalf("set: has go=%v c=%v len=%d", s.Has("go"), s.Has("c"), s.Len())
+	}
+	var n Set[int]
+	if n.Has(1) || n.Len() != 0 {
+		t.Fatal("a zero Set is empty")
+	}
+}`),
+          ),
+          "map ที่เป็น nil อ่านได้แต่เขียนไม่ได้ ใน Add ให้สร้าง s.items = make(map[T]struct{}) ถ้ายังเป็น nil แล้วค่อยใส่ s.items[v] = struct{}{}",
+          "A nil map can be read but not written. In Add, create s.items = make(map[T]struct{}) if it is still nil, then set s.items[v] = struct{}{}",
+        ),
+        unit(go`type Set[T comparable] struct {
+	items map[T]struct{}
+}
+
+func (s *Set[T]) Add(v T) {
+	if s.items == nil {
+		s.items = make(map[T]struct{})
+	}
+	s.items[v] = struct{}{}
+}
+
+func (s *Set[T]) Has(v T) bool {
+	_, ok := s.items[v]
+	return ok
+}
+
+func (s *Set[T]) Len() int {
+	return len(s.items)
+}`),
+      ),
+      solved(
+        withHint(
+          testEx(
+            say("hard", "เขียน GetOr ของ Cache[K, V]: ถ้ามี key อยู่แล้วให้คืนค่าเดิม ถ้าไม่มีให้เรียก load หนึ่งครั้ง เก็บผลไว้ แล้วคืนผลนั้น", "Write GetOr on Cache[K, V]: if the key is there, return its value; otherwise call load once, store the result, and return it"),
+            tests,
+            unit(go`type Cache[K comparable, V any] struct {
+	data map[K]V
+}
+
+func (c *Cache[K, V]) GetOr(key K, load func() V) V {
+	return load()
+}`),
+            testFile(go`func TestGetOr(t *testing.T) {
+	var c Cache[string, int]
+	calls := 0
+	load := func() int {
+		calls++
+		return 42
+	}
+	if c.GetOr("a", load) != 42 || c.GetOr("a", load) != 42 {
+		t.Fatal("GetOr must return the loaded value")
+	}
+	if calls != 1 {
+		t.Fatalf("load ran %d times, want 1", calls)
+	}
+	if c.GetOr("b", func() int { return 7 }) != 7 {
+		t.Fatal("a new key loads again")
+	}
+}`),
+          ),
+          "ใช้ v, ok := c.data[key] ถ้า ok ให้คืน v ถ้าไม่ ให้สร้าง map เมื่อยังเป็น nil แล้วเก็บ c.data[key] = load()",
+          "Use v, ok := c.data[key]. If ok, return v. Otherwise create the map when it is nil and store c.data[key] = load()",
+        ),
+        unit(go`type Cache[K comparable, V any] struct {
+	data map[K]V
+}
+
+func (c *Cache[K, V]) GetOr(key K, load func() V) V {
+	if v, ok := c.data[key]; ok {
+		return v
+	}
+	if c.data == nil {
+		c.data = make(map[K]V)
+	}
+	v := load()
+	c.data[key] = v
+	return v
+}`),
+      ),
+      solved(
+        withHint(
+          testEx(
+            say("twist", "เขียน NonZero ให้คืน slice ใหม่ที่ตัดค่าศูนย์ของชนิดนั้นออก ใช้ได้ทั้งตัวเลขและข้อความ", "Write NonZero to return a new slice without the zero values of the type, for numbers and text alike"),
+            tests,
+            unit(go`func NonZero[T comparable](items []T) []T {
+	return nil
+}`),
+            testFile(go`func TestNonZero(t *testing.T) {
+	got := NonZero([]int{0, 2, 0, 3})
+	if len(got) != 2 || got[0] != 2 || got[1] != 3 {
+		t.Fatalf("ints: %v", got)
+	}
+	words := NonZero([]string{"", "a", ""})
+	if len(words) != 1 || words[0] != "a" {
+		t.Fatalf("strings: %v", words)
+	}
+}`),
+          ),
+          "ประกาศ var zero T ไว้เทียบ แล้วเก็บเฉพาะค่าที่ v != zero",
+          "Declare var zero T to compare against, and keep only values where v != zero",
+        ),
+        unit(go`func NonZero[T comparable](items []T) []T {
+	var zero T
+	var out []T
+	for _, v := range items {
+		if v != zero {
+			out = append(out, v)
+		}
+	}
+	return out
+}`),
+      ),
     ],
   }),
   lesson({
     id: "p10-mod-prod",
     level: "professional",
     title: text("module ในงานจริง", "Modules in production"),
-    goal: text("กำหนดรุ่น Go ใน go.mod และรู้ว่า Go 1.25 เลือก toolchain อย่างไร", "Set the Go version in go.mod and know how Go 1.25 selects a toolchain"),
-    copy: copy(
-      [
-        "บรรทัด go ใน go.mod คือรุ่นภาษาขั้นต่ำของโมดูล บรรทัด toolchain ถ้าระบุ จะขอ toolchain นั้น GOTOOLCHAIN=local หมายถึงใช้ toolchain ที่ติดตั้งอยู่ ไม่ดาวน์โหลดเพิ่ม Go 1.25 ยังใช้กติกานี้\n\n```\ngo 1.25\n\ntoolchain go1.25.0\n```",
-        "ใช้ตอนล็อกเวอร์ชันใน CI และตอนกันไม่ให้เครื่องพัฒนาไปดึง toolchain คนละรุ่นเงียบๆ",
-        "ความหมายของบรรทัด go",
-        "toolchain กับ GOTOOLCHAIN=local",
-        ["แยกบรรทัด go ออกจากบรรทัด toolchain", "รู้ว่า local ไม่ดาวน์โหลด", "อย่าเดาว่ารุ่นภาษาเท่ากับรุ่นไบนารีเสมอ", "ตอบในหน้านี้"],
-      ],
-      [
-        "The go line in go.mod is the module's minimum language version. A toolchain line, when present, requests that toolchain. GOTOOLCHAIN=local means use the installed toolchain and do not download another. Go 1.25 still uses this rule.\n\n```\ngo 1.25\n\ntoolchain go1.25.0\n```",
-        "Use it to pin CI and to stop a developer machine from quietly fetching a different toolchain.",
-        "What the go line means.",
-        "toolchain and GOTOOLCHAIN=local.",
-        ["Separate the go line from the toolchain line", "Know that local does not download", "Do not assume the language version always equals the binary version", "Answer on this page"],
-      ],
-    ),
+    goal: text("กำหนดรุ่น Go ใน go.mod และรู้ว่า Go เลือก toolchain ที่ใช้ build อย่างไร", "Set the Go version in go.mod and know how Go picks the toolchain that builds it"),
     exercises: [
-      quiz(
-        say("easy", "บรรทัด go 1.25 ใน go.mod บอกอะไร", "What does the line go 1.25 in go.mod say?"),
-        { th: "โมดูลนี้ใช้ภาษาอย่างน้อยรุ่น 1.25", en: "This module uses at least language version 1.25" },
+      pick(
+        "easy",
+        "บรรทัด go 1.25 ใน go.mod บอกอะไร",
+        "What does the line go 1.25 in go.mod say?",
+        text("โมดูลนี้ต้องใช้ภาษา Go รุ่น 1.25 ขึ้นไป Go รุ่นเก่ากว่านั้นจะไม่ build ให้เอง", "This module needs Go language version 1.25 or newer. An older Go will not build it on its own"),
         {
-          th: ["ต้องมีไฟล์ 25 ไฟล์", "โมดูลนี้ใช้ภาษาอย่างน้อยรุ่น 1.25", "ปิด module", "ตั้งพอร์ต 25"],
-          en: ["The module must contain 25 files", "This module uses at least language version 1.25", "It disables modules", "It sets port 25"],
+          th: ["โมดูลมีไฟล์ 25 ไฟล์", "โมดูลนี้ต้องใช้ Go รุ่น 1.25 ขึ้นไป", "ปิดการใช้โมดูล", "ตั้งพอร์ต 25"],
+          en: ["The module has 25 files", "This module needs Go 1.25 or newer", "It turns modules off", "It sets port 25"],
         },
         1,
       ),
-      quiz(
-        say("mid", "บรรทัด toolchain ต่างจากบรรทัด go อย่างไร", "How is a toolchain line different from the go line?"),
-        { th: "toolchain ขอชุดเครื่องมือรุ่นนั้น ส่วน go บอกรุ่นภาษา", en: "toolchain requests that toolset, while go states the language version" },
+      pick(
+        "mid",
+        "บรรทัด toolchain go1.25.3 ต่างจากบรรทัด go 1.25 อย่างไร",
+        "How is the line toolchain go1.25.3 different from the line go 1.25?",
+        text("go บอกรุ่นภาษาขั้นต่ำ ส่วน toolchain บอกชุดเครื่องมือที่แนะนำให้ใช้ build ถ้าเครื่องมีรุ่นเก่ากว่า", "go states the minimum language version; toolchain names the tool set suggested for the build when the installed one is older"),
         {
-          th: ["ทั้งสองบรรทัดคือสิ่งเดียวกัน", "toolchain ขอชุดเครื่องมือรุ่นนั้น ส่วน go บอกรุ่นภาษา", "toolchain ลบ dependency", "go ตั้ง GOPROXY"],
-          en: ["The two lines are the same thing", "toolchain requests that toolset, while go states the language version", "toolchain deletes dependencies", "go sets GOPROXY"],
+          th: ["สองบรรทัดเหมือนกัน", "go คือรุ่นภาษาขั้นต่ำ ส่วน toolchain คือชุดเครื่องมือที่แนะนำ", "toolchain ลบ dependency", "go ตั้งค่า GOPROXY"],
+          en: ["They mean the same", "go is the minimum language version; toolchain is the suggested tool set", "toolchain deletes dependencies", "go sets GOPROXY"],
         },
         1,
       ),
-      quiz(
-        say("hard", "GOTOOLCHAIN=local ทำให้เกิดอะไร", "What does GOTOOLCHAIN=local do?"),
-        { th: "ใช้ toolchain ที่ติดตั้งอยู่ และไม่ดาวน์โหลด toolchain อื่น", en: "Use the installed toolchain and do not download another one" },
+      pick(
+        "hard",
+        "ตั้ง GOTOOLCHAIN=local แล้วเกิดอะไร",
+        "What happens with GOTOOLCHAIN=local?",
+        text("Go ใช้เฉพาะ toolchain ที่ติดตั้งในเครื่อง ไม่ดาวน์โหลดรุ่นอื่น ถ้า go.mod ขอรุ่นที่ใหม่กว่าจะ build ไม่ผ่าน", "Go uses only the installed toolchain and never downloads another. If go.mod asks for a newer one, the build fails"),
         {
-          th: ["ใช้ toolchain ที่ติดตั้งอยู่ และไม่ดาวน์โหลด toolchain อื่น", "ดาวน์โหลด toolchain ล่าสุดทุกครั้ง", "ปิด go test", "เปลี่ยนชื่อโมดูล"],
-          en: ["Use the installed toolchain and do not download another one", "Download the newest toolchain every time", "Disable go test", "Rename the module"],
+          th: ["ใช้ toolchain ในเครื่องเท่านั้นและไม่ดาวน์โหลดรุ่นอื่น", "ดาวน์โหลดรุ่นใหม่สุดทุกครั้ง", "ปิด go test", "เปลี่ยนชื่อโมดูล"],
+          en: ["Use only the installed toolchain and never download another", "Download the newest toolchain every time", "Disable go test", "Rename the module"],
         },
         0,
+      ),
+      pick(
+        "twist",
+        "เครื่องติดตั้ง Go 1.25 แต่ go.mod ของโปรเจกต์เขียนว่า go 1.26 และไม่ได้ตั้ง GOTOOLCHAIN (ค่าเริ่มต้นคือ auto) สั่ง go build แล้วเกิดอะไร",
+        "Go 1.25 is installed, but the project's go.mod says go 1.26 and GOTOOLCHAIN is not set (the default is auto). What happens on go build?",
+        text("ค่า auto ให้ Go ดาวน์โหลด toolchain 1.26 มาใช้ build เอง ถ้าตั้งเป็น local จะ build ไม่ผ่านแทน", "With auto, Go downloads the 1.26 toolchain and builds with it. With local, the build would fail instead"),
+        {
+          th: ["build ด้วย 1.25 แล้วข้ามโค้ดใหม่", "ดาวน์โหลด toolchain 1.26 มาใช้ build", "ลบบรรทัด go 1.26 ออกให้", "แก้ go.mod เป็น 1.25 ให้เอง"],
+          en: ["Build with 1.25 and skip the new code", "Download the 1.26 toolchain and build with it", "Delete the go 1.26 line", "Rewrite go.mod to 1.25"],
+        },
+        1,
       ),
     ],
   }),

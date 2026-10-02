@@ -1,8 +1,4 @@
-import { copy, lesson, quiz, testEx, tests, text, withHint } from "./helpers.mjs";
-
-function say(id, th, en) {
-  return { id, th, en };
-}
+import { copy, go, lesson, pick, say, solved, testEx, testFile, tests, text, unit, withHint, withinHelper } from "./helpers.mjs";
 
 export const advancedRest = [
   lesson({
@@ -93,28 +89,215 @@ export const advancedRest = [
     id: "a09-context",
     level: "advanced",
     title: text("context", "context"),
-    goal: text("ส่ง cancellation ข้ามฟังก์ชันและเลิกงานเมื่อ context จบ", "Pass cancellation across functions and stop when the context ends"),
-    copy: copy(
-      [
-        "context.Context พกสัญญาณยกเลิกและเส้นตาย ผู้เรียกสร้างด้วย WithCancel หรือ WithTimeout แล้วส่งเป็นอาร์กิวเมนต์แรก งานที่รอต้องเลือก ctx.Done()\n\n```\nif err := ctx.Err(); err != nil {\n\treturn err\n}\n```",
-        "ใช้ตัดงาน HTTP เมื่อผู้ใช้ปิดหน้า หรือเมื่อหมดเวลาที่กำหนดไว้ที่ขอบของ request",
-        "บอกว่า context จบแล้วหรือยัง",
-        "คืนค่าเริ่มเมื่อถูกยกเลิก หรือรอจน Done",
-        ["รับ ctx เป็นอาร์กิวเมนต์แรก", "ตรวจ ctx.Err()", "เลิกงานเมื่อ Done", "อย่าเก็บ context ไว้ใน struct ของ request"],
-      ],
-      [
-        "context.Context carries cancellation and a deadline. The caller builds it with WithCancel or WithTimeout and passes it as the first argument. Waiting work selects on ctx.Done().\n\n```\nif err := ctx.Err(); err != nil {\n\treturn err\n}\n```",
-        "Use it to stop HTTP work when the user leaves or when the deadline set at the request boundary is reached.",
-        "Report whether the context has already ended.",
-        "Return a default when it is canceled, or wait until Done.",
-        ["Take ctx as the first argument", "Check ctx.Err()", "Stop on Done", "Do not store a request context in a struct"],
-      ],
-    ),
+    goal: text("หยุดงานที่รออยู่เมื่อผู้เรียกยกเลิกหรือหมดเวลา และตั้งเวลาจำกัดให้งานเอง", "Stop waiting work when the caller cancels or time runs out, and set a time limit yourself"),
     exercises: [
-      testEx(say("easy", "เขียน Done ให้คืน true เมื่อ context จบแล้ว", "Write Done to return true when the context has ended"), tests, 'package main\n\nimport "context"\n\nfunc Done(ctx context.Context) bool {\n\treturn false\n}\n', 'package main\n\nimport (\n\t"context"\n\t"testing"\n)\n\nfunc TestDone(t *testing.T) {\n\tif Done(context.Background()) {\n\t\tt.Fatal("open")\n\t}\n\tctx, cancel := context.WithCancel(context.Background())\n\tcancel()\n\tif !Done(ctx) {\n\t\tt.Fatal("canceled")\n\t}\n}\n'),
-      testEx(say("mid", "เขียน OrDefault ให้คืน 0 เมื่อ context จบ และคืน value เมื่อยังไม่จบ", "Write OrDefault to return 0 when the context has ended and value otherwise"), tests, 'package main\n\nimport "context"\n\nfunc OrDefault(ctx context.Context, value int) int {\n\treturn 0\n}\n', 'package main\n\nimport (\n\t"context"\n\t"testing"\n)\n\nfunc TestOrDefault(t *testing.T) {\n\tif OrDefault(context.Background(), 5) != 5 {\n\t\tt.Fatal("open")\n\t}\n\tctx, cancel := context.WithCancel(context.Background())\n\tcancel()\n\tif OrDefault(ctx, 5) != 0 {\n\t\tt.Fatal("canceled")\n\t}\n}\n'),
-      testEx(say("hard", "เขียน Wait ให้รอจน context จบแล้วคืน ctx.Err()", "Write Wait to wait until the context ends and return ctx.Err()"), tests, 'package main\n\nimport "context"\n\nfunc Wait(ctx context.Context) error {\n\treturn nil\n}\n', 'package main\n\nimport (\n\t"context"\n\t"testing"\n)\n\nfunc TestWait(t *testing.T) {\n\tctx, cancel := context.WithCancel(context.Background())\n\tcancel()\n\tif err := Wait(ctx); err == nil {\n\t\tt.Fatal("err")\n\t}\n}\n'),
-      withHint(testEx(say("twist", "เขียน Value ให้คืนตัวเลขเมื่อ context ยังทำงาน และคืน ctx.Err() เมื่อจบแล้ว", "Write Value to return the number while the context is active, and ctx.Err() when it has ended"), tests, 'package main\n\nimport "context"\n\nfunc Value(ctx context.Context, n int) (int, error) {\n\treturn 0, nil\n}\n', 'package main\n\nimport (\n\t"context"\n\t"testing"\n)\n\nfunc TestValue(t *testing.T) {\n\tgot, err := Value(context.Background(), 5)\n\tif err != nil || got != 5 {\n\t\tt.Fatal("open")\n\t}\n\tctx, cancel := context.WithCancel(context.Background())\n\tcancel()\n\tgot, err = Value(ctx, 5)\n\tif err == nil || got != 0 {\n\t\tt.Fatal("canceled")\n\t}\n}\n'), "ถ้า context จบแล้วให้คืน 0 กับ ctx.Err() ไม่งั้นคืนตัวเลขกับ nil", "When the context has ended, return 0 and ctx.Err. Otherwise return the number and nil"),
+      solved(
+        withHint(
+          testEx(
+            say("easy", "เขียน Done ให้คืน true เมื่อ context จบแล้ว และคืน false ทันทีเมื่อยังไม่จบ", "Write Done to return true when the context has ended, and false right away when it has not"),
+            tests,
+            unit(go`import "context"
+
+func Done(ctx context.Context) bool {
+	return false
+}`),
+            testFile(go`import (
+	"context"
+	"testing"
+)
+
+func TestDone(t *testing.T) {
+	if Done(context.Background()) {
+		t.Fatal("an open context is not done")
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	if !Done(ctx) {
+		t.Fatal("a canceled context is done")
+	}
+}`),
+          ),
+          "ใช้ select ที่มี case <-ctx.Done() กับ default ตัว default ทำให้ไม่ต้องรอเมื่อยังไม่จบ",
+          "Use a select with case <-ctx.Done() and a default. The default means you never wait when it is still open",
+        ),
+        unit(go`import "context"
+
+func Done(ctx context.Context) bool {
+	select {
+	case <-ctx.Done():
+		return true
+	default:
+		return false
+	}
+}`),
+      ),
+      solved(
+        withHint(
+          testEx(
+            say("mid", "เขียน Sleep ให้รอ d แล้วคืน nil แต่ถ้า context จบก่อนให้เลิกรอทันทีแล้วคืน ctx.Err()", "Write Sleep to wait for d and return nil, but if the context ends first, stop waiting at once and return ctx.Err()"),
+            tests,
+            unit(go`import (
+	"context"
+	"time"
+)
+
+func Sleep(ctx context.Context, d time.Duration) error {
+	time.Sleep(d)
+	return nil
+}`),
+            testFile(go`import (
+	"context"
+	"errors"
+	"testing"
+	"time"
+)
+
+func TestSleep(t *testing.T) {
+	if err := Sleep(context.Background(), 5*time.Millisecond); err != nil {
+		t.Fatalf("open context: %v", err)
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	var err error
+	within(t, func() { err = Sleep(ctx, time.Hour) })
+	if !errors.Is(err, context.Canceled) {
+		t.Fatalf("canceled context must return context.Canceled, got %v", err)
+	}
+}` + withinHelper),
+          ),
+          "select รอสองอย่างพร้อมกัน: case <-time.After(d) คืน nil และ case <-ctx.Done() คืน ctx.Err() อันไหนมาก่อนก็ได้อันนั้น",
+          "Select on two things at once: case <-time.After(d) returns nil and case <-ctx.Done() returns ctx.Err(). Whichever comes first wins",
+        ),
+        unit(go`import (
+	"context"
+	"time"
+)
+
+func Sleep(ctx context.Context, d time.Duration) error {
+	select {
+	case <-time.After(d):
+		return nil
+	case <-ctx.Done():
+		return ctx.Err()
+	}
+}`),
+      ),
+      solved(
+        withHint(
+          testEx(
+            say("hard", "เขียน SumUntil ให้บวกค่าจาก ch จนกว่า ch จะถูกปิดแล้วคืนผลรวมกับ nil ถ้า context จบก่อนให้คืนผลรวมเท่าที่ได้กับ ctx.Err()", "Write SumUntil to add values from ch until ch is closed, then return the sum and nil. If the context ends first, return the sum so far and ctx.Err()"),
+            tests,
+            unit(go`import "context"
+
+func SumUntil(ctx context.Context, ch <-chan int) (int, error) {
+	return 0, nil
+}`),
+            testFile(go`import (
+	"context"
+	"errors"
+	"testing"
+	"time"
+)
+
+func TestSumUntil(t *testing.T) {
+	ch := make(chan int, 3)
+	ch <- 1
+	ch <- 2
+	ch <- 3
+	close(ch)
+	if sum, err := SumUntil(context.Background(), ch); err != nil || sum != 6 {
+		t.Fatalf("closed channel: %d, %v", sum, err)
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	open := make(chan int)
+	go func() {
+		open <- 4
+		cancel()
+	}()
+	var sum int
+	var err error
+	within(t, func() { sum, err = SumUntil(ctx, open) })
+	if !errors.Is(err, context.Canceled) || sum != 4 {
+		t.Fatalf("canceled: %d, %v", sum, err)
+	}
+}` + withinHelper),
+          ),
+          "วนด้วย for แล้วใช้ select: case v, ok := <-ch ถ้า ok เป็น false แปลว่าปิดแล้วให้คืนผลรวม ส่วน case <-ctx.Done() คืนผลรวมกับ ctx.Err()",
+          "Loop with for and select: in case v, ok := <-ch, ok is false once the channel is closed, so return the sum. In case <-ctx.Done(), return the sum and ctx.Err()",
+        ),
+        unit(go`import "context"
+
+func SumUntil(ctx context.Context, ch <-chan int) (int, error) {
+	sum := 0
+	for {
+		select {
+		case v, ok := <-ch:
+			if !ok {
+				return sum, nil
+			}
+			sum += v
+		case <-ctx.Done():
+			return sum, ctx.Err()
+		}
+	}
+}`),
+      ),
+      solved(
+        withHint(
+          testEx(
+            say("twist", "เขียน Within ให้เรียก work ด้วย context ที่หมดเวลาหลัง d และคืน error ของ work อย่าลืมยกเลิก context เมื่อเสร็จ", "Write Within to call work with a context that times out after d, and return work's error. Remember to cancel the context when done"),
+            tests,
+            unit(go`import (
+	"context"
+	"time"
+)
+
+func Within(parent context.Context, d time.Duration, work func(context.Context) error) error {
+	return work(parent)
+}`),
+            testFile(go`import (
+	"context"
+	"errors"
+	"testing"
+	"time"
+)
+
+func waitForEnd(ctx context.Context) error {
+	<-ctx.Done()
+	return ctx.Err()
+}
+
+func TestWithin(t *testing.T) {
+	var err error
+	within(t, func() { err = Within(context.Background(), 10*time.Millisecond, waitForEnd) })
+	if !errors.Is(err, context.DeadlineExceeded) {
+		t.Fatalf("slow work must hit the deadline, got %v", err)
+	}
+	if Within(context.Background(), time.Second, func(context.Context) error { return nil }) != nil {
+		t.Fatal("fast work returns its own result")
+	}
+	parent, cancel := context.WithCancel(context.Background())
+	cancel()
+	within(t, func() { err = Within(parent, time.Hour, waitForEnd) })
+	if !errors.Is(err, context.Canceled) {
+		t.Fatalf("a canceled parent must cancel the child, got %v", err)
+	}
+}` + withinHelper),
+          ),
+          "ctx, cancel := context.WithTimeout(parent, d) แล้ว defer cancel() ทันที จากนั้น return work(ctx)",
+          "ctx, cancel := context.WithTimeout(parent, d), then defer cancel() right away, then return work(ctx)",
+        ),
+        unit(go`import (
+	"context"
+	"time"
+)
+
+func Within(parent context.Context, d time.Duration, work func(context.Context) error) error {
+	ctx, cancel := context.WithTimeout(parent, d)
+	defer cancel()
+	return work(ctx)
+}`),
+      ),
     ],
   }),
   lesson({
@@ -149,50 +332,51 @@ export const advancedRest = [
     id: "a11-modules",
     level: "advanced",
     title: text("module และ workspace", "Modules and workspaces"),
-    goal: text("อ่าน go.mod และแยกของในโมดูลกับของข้างนอก", "Read go.mod and separate what is inside the module from what is outside"),
-    copy: copy(
-      [
-        "go.mod บรรทัด module คือ path ของโมดูลนี้ บรรทัด go คือรุ่นภาษา บรรทัด require คือโมดูลอื่นที่ต้องใช้ ของที่ import แล้ว path ไม่ได้อยู่ใต้ module path นี้คือของข้างนอก ไฟล์ go.work ใช้ตอนพัฒนาหลายโมดูลบนเครื่องเดียวกัน และไม่ได้แทน go.mod\n\n```\nmodule example.com/app\n\ngo 1.25\n```",
-        "ใช้ตอนแยก service ออกเป็นโมดูล หรือตอนแก้ของในเครื่องโดยยังไม่เผยแพร่",
-        "ความหมายของ require",
-        "อะไรอยู่ข้างนอกโมดูล และ go.work ทำอะไร",
-        ["อ่านบรรทัด module", "ตาม import ว่าอยู่ใต้ path นั้นไหม", "อย่าสับสน go.work กับ go.mod", "ตอบในหน้านี้โดยไม่ส่งโค้ดไปรัน"],
-      ],
-      [
-        "The module line in go.mod is this module's path. The go line is the language version. A require line is another module you need. An import whose path is not under this module path is outside. A go.work file is for developing several modules on one machine and does not replace go.mod.\n\n```\nmodule example.com/app\n\ngo 1.25\n```",
-        "Use it when splitting a service into modules or when editing local code that is not published yet.",
-        "What require means.",
-        "What sits outside the module, and what go.work does.",
-        ["Read the module line", "Check whether an import is under that path", "Do not confuse go.work with go.mod", "Answer on this page without sending code to the runner"],
-      ],
-    ),
+    goal: text("อ่าน go.mod ออก แยกได้ว่า import ไหนอยู่ในหรือนอกโมดูล และรู้ว่าเมื่อไรใช้ go.work", "Read go.mod, tell which imports are inside or outside the module, and know when to use go.work"),
     exercises: [
-      quiz(
-        say("easy", "บรรทัด require ใน go.mod หมายถึงอะไร", "What does a require line in go.mod mean?"),
-        { th: "มันบันทึกว่าโมดูลนี้ต้องการโมดูลนั้นที่รุ่นที่ระบุ", en: "It records that this module needs that module at the given version" },
+      pick(
+        "easy",
+        "บรรทัด require golang.org/x/mod v0.21.0 ใน go.mod หมายถึงอะไร",
+        "What does the line require golang.org/x/mod v0.21.0 in go.mod mean?",
+        text("require บันทึกว่าโมดูลนี้ใช้โมดูล golang.org/x/mod รุ่น v0.21.0", "require records that this module uses the module golang.org/x/mod at version v0.21.0"),
         {
-          th: ["สั่งให้ลบโฟลเดอร์นั้นตอน build", "บันทึกว่าโมดูลนี้ต้องการโมดูลนั้นที่รุ่นที่ระบุ", "ตั้งค่า GOPROXY", "ปิดการตรวจ checksum"],
-          en: ["It deletes that folder during the build", "It records that this module needs that module at the given version", "It sets GOPROXY", "It turns off checksum checks"],
+          th: ["ลบโฟลเดอร์นั้นตอน build", "โมดูลนี้ใช้ golang.org/x/mod รุ่น v0.21.0", "ตั้งค่า GOPROXY", "ปิดการตรวจ checksum"],
+          en: ["Delete that folder during the build", "This module uses golang.org/x/mod at version v0.21.0", "Set GOPROXY", "Turn off checksum checks"],
         },
         1,
       ),
-      quiz(
-        say("mid", "import แบบไหนอยู่นอกโมดูล example.com/app", "Which import is outside the module example.com/app?"),
-        { th: "path ที่ไม่ได้ขึ้นต้นด้วย module path เป็นของโมดูลอื่น", en: "A path that does not start with the module path belongs to another module" },
+      pick(
+        "mid",
+        "go.mod เขียนว่า module example.com/app import ไหนมาจากนอกโมดูล",
+        "go.mod says module example.com/app. Which import comes from outside the module?",
+        text("path ที่ไม่ได้ขึ้นต้นด้วย example.com/app เป็นของโมดูลอื่น", "A path that does not start with example.com/app belongs to another module"),
         {
           th: ["example.com/app/internal/web", "example.com/app", "golang.org/x/mod/semver", "example.com/app/cmd/api"],
           en: ["example.com/app/internal/web", "example.com/app", "golang.org/x/mod/semver", "example.com/app/cmd/api"],
         },
         2,
       ),
-      quiz(
-        say("hard", "ไฟล์ go.work ใช้ทำอะไร", "What is a go.work file for?"),
-        { th: "มันจัดหลายโมดูลบนดิสก์ให้พัฒนาพร้อมกัน โดยไม่แทน go.mod", en: "It groups modules on disk for local development and does not replace go.mod" },
+      pick(
+        "hard",
+        "แก้โมดูล app กับโมดูล lib บนเครื่องพร้อมกัน และอยากให้ app ใช้ lib ฉบับในเครื่องโดยไม่แก้ go.mod ควรใช้อะไร",
+        "You are editing module app and module lib on your machine together, and want app to use the local lib without editing go.mod. What do you use?",
+        text("go.work บอกให้ใช้โมดูลจากโฟลเดอร์ในเครื่องระหว่างพัฒนา ส่วน go.mod ของแต่ละโมดูลยังอยู่ครบ", "go.work points the build at local module folders while you develop, and each module keeps its own go.mod"),
         {
-          th: ["แทนที่ go.mod ทั้งไฟล์", "ปิด checksum database", "จัดหลายโมดูลบนดิสก์ให้พัฒนาพร้อมกัน", "ตั้ง GOMAXPROCS"],
-          en: ["It replaces go.mod", "It disables the checksum database", "It groups modules on disk for local development", "It sets GOMAXPROCS"],
+          th: ["ลบ go.mod ของ lib", "ไฟล์ go.work ที่มี use ./app และ use ./lib", "ตั้ง GOMAXPROCS", "คัดลอกโค้ด lib ไปไว้ใน app"],
+          en: ["Delete lib's go.mod", "A go.work file with use ./app and use ./lib", "Set GOMAXPROCS", "Copy lib's code into app"],
         },
-        2,
+        1,
+      ),
+      pick(
+        "twist",
+        "เพิ่ม import ของโมดูลใหม่ในโค้ดแล้ว build ไม่ผ่านเพราะ go.mod ยังไม่มี require ของโมดูลนั้น ควรรันคำสั่งไหน",
+        "You added an import from a new module and the build fails because go.mod has no require for it. Which command do you run?",
+        text("go mod tidy อ่าน import ทั้งหมดแล้วเพิ่ม require ที่ขาดและลบ require ที่ไม่ได้ใช้", "go mod tidy reads every import, adds missing requires, and removes unused ones"),
+        {
+          th: ["go mod tidy", "go vet", "go fmt", "go clean"],
+          en: ["go mod tidy", "go vet", "go fmt", "go clean"],
+        },
+        0,
       ),
     ],
   }),
